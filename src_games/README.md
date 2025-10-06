@@ -1,0 +1,88 @@
+# A set of Arduboy applications for the class project.
+
+Some of these have worked without modification, but many of these have subtle differences from their original versions.
+
+In `platformio.ini`, set the src_dir variable to one of the application folders, and then compile. E.g.
+
+```
+[platformio]
+src_dir = src_games/HelloNOISE
+```
+
+Remove or comment out the `src_dir` line to go back to using the default `src/` directory for development.
+
+## A list of games we have
+
+### 3in1 Series
+    A set of games by Daniel C, which fit 3 small games in one firmware image
+#### 3in1A
+    - Tiny Invaders
+    - Tiny Pinball
+    - PAC-MAN
+#### 3in1B
+    - Tiny Bomber
+    - Tiny Arkanoid (Block Breaker)
+    - Tiny Gilbert
+#### 3in1C
+    - Tiny Bert (Q*bert)
+    - Tiny Bike (Bike Racing)
+    - Tiny Trick (Hockey)
+#### 3in1D 
+    - Tiny DDug
+    - Tiny Plaque
+    - Tiny Tris (Tetris)
+#### 3in1E
+    - Tiny Missile
+    - Tiny Morpion (O and Xs)
+    - Tiny Pipe
+### ArduboyLife
+    Conway's game of life. (More a mathematical oddity than a game to play)
+### ArduLO
+    Light's Out style game: You want to extinguish all the lights, but turning off/on one light also inverts its neighbours.
+### ArduMetronome
+    A metronome
+### CastleBoy
+### Catacombs of the Damned
+    A DOOM-like 3D shooter
+### CircuitDude
+    Place components on the footprints to complete a level, but the components you place block your way.
+### FlappyBall
+    Time your flaps to fit through the course
+### HelloNOISE
+    A noise synthesiser.
+### HP35boy
+    A simulator for an HP35 calculator, which uses reverse polish notation.
+### minesweeper
+    A simple minesweeper game
+### MysticBaloon
+    Deploy baloons while jumping to float around this platform game.
+### Picovaders
+    Another space invaders clone
+### Shadowrunner
+    Jump and slide. (Has some problems with the sound not stopping...)
+### Snake
+    Classic game of feeding the snake and not eating your own tail (or the walls). This is actually running an emulator for a hand-held sega console.
+### Tiny-1010
+    Fill a 10x10 grid in a similar way to tetris.
+### Virus LQP-79 (VLQP_AB)
+    2D shooter
+### Obono Games
+    None of these have working high-score systems, sorry. Those which have MyArduboyTones in them also have some background sound problems.
+
+    - Ardubullets: Space Shooter (Sound Problems)
+    - chiemagari
+    - chribocchi: Juggle
+    - evasion: Run away while not running into something (Sound Problems)
+    - gosencho
+    - hollow: Don't get crushed
+    - hopper: Hop up in 3D without falling
+    - knightmove
+    - pi24k: Investigate the first 24k digits of pi with sound and light 
+    - quarto: Play the quarto board game
+    - reversi: Play the reversi board game
+    - rysk
+    - samegame
+    - stairsweep: Tetris with a twist
+
+
+
