@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include <ch32x035.h>
 
+#if HW_VERSION == 2
+
 void spi_init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure = {0};
@@ -66,3 +68,5 @@ void spi_cs_high(void)
 {
     GPIO_SetBits(GPIOA, GPIO_Pin_4);
 }
+
+#endif // HW_VERSION == 2

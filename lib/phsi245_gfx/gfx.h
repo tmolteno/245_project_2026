@@ -32,6 +32,33 @@ void fillCircle(int16_t x0, int16_t y0, int16_t r, uint8_t color = GFX_WHITE);
 void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
                 int16_t w, int16_t h, uint8_t color = GFX_WHITE);
 
+// --- Sprite draw modes ---
+#define GFX_SPRITE_UNMASKED    0   // overwrite: image copied directly
+#define GFX_SPRITE_MASKED      1   // external mask: separate image+mask arrays
+#define GFX_SPRITE_PLUS_MASK   2   // interleaved image+mask byte pairs
+#define GFX_SPRITE_SELF_MASKED 3   // self-masked: 1=draw, 0=transparent
+#define GFX_SPRITE_ERASE       4   // erase: 1=clear, 0=transparent
+
+// Raw sprite (explicit width/height, no embedded size header)
+void drawSprite(int16_t x, int16_t y, const uint8_t *bitmap,
+                int16_t w, int16_t h, uint8_t mode = GFX_SPRITE_UNMASKED);
+
+// External-mask sprite (separate image+mask, explicit w/h)
+void drawSpriteMasked(int16_t x, int16_t y, const uint8_t *bitmap,
+                      const uint8_t *mask, int16_t w, int16_t h);
+
+// Data-first sprite sheet (width/height in first 2 bytes)
+void drawSpriteSheet(int16_t x, int16_t y, const uint8_t *sheet, uint8_t frame,
+                     uint8_t mode = GFX_SPRITE_UNMASKED);
+
+// Data-first sprite sheet with external mask
+void drawSpriteSheetMasked(int16_t x, int16_t y, const uint8_t *sheet,
+                           const uint8_t *maskSheet, uint8_t frame,
+                           uint8_t maskFrame = 0);
+
+// Data-first plus-mask sprite (interleaved img+mask within sheet)
+void drawPlusMask(int16_t x, int16_t y, const uint8_t *sheet, uint8_t frame);
+
 // Text output (5x7 font)
 void setCursor(int16_t x, int16_t y);
 void setTextSize(uint8_t s);

@@ -2,6 +2,8 @@
 #include <HAL.h>
 #include <Arduino.h>
 
+#if HW_VERSION == 2
+
 // SD card commands (SPI mode)
 #define CMD0    0x00  // GO_IDLE_STATE
 #define CMD1    0x01  // SEND_OP_COND
@@ -238,3 +240,5 @@ const BlockDevice DEVICE = {
 };
 
 } // namespace sd
+
+#endif // HW_VERSION == 2

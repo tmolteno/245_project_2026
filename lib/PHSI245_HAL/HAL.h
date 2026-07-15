@@ -2,12 +2,29 @@
 
 #include <stdint.h>
 
+// --- Hardware version selection ---
+// Build with -D HW_VERSION=1 for v1 (original) pinout
+// Build with -D HW_VERSION=2 for v2 (SD card) pinout
+#ifndef HW_VERSION
+#define HW_VERSION 2
+#endif
+
 #define PIN_BTN_UP PA0
 #define PIN_BTN_LEFT PA1
 #define PIN_BTN_DOWN PA2
 #define PIN_BTN_RIGHT PA3
-#define PIN_BTN_A PB0
-#define PIN_BTN_B PB1
+
+#if HW_VERSION == 1
+    // v1: buttons A/B on PA5/PA4, no SD card
+    #define PIN_BTN_A PA5
+    #define PIN_BTN_B PA4
+#elif HW_VERSION == 2
+    // v2: buttons A/B on PB0/PB1, SD card on SPI1
+    #define PIN_BTN_A PB0
+    #define PIN_BTN_B PB1
+#else
+    #error "HW_VERSION must be 1 or 2"
+#endif
 
 #define PIN_LED_0 PB12
 #define PIN_LED_1 PB13
@@ -20,12 +37,14 @@
 #define IO_D2 PA17
 #define IO_D3 PA18
 
-// SPI SD Card interface (SPI1)
+// SD card interface (v2 only)
+#if HW_VERSION == 2
 #define SD_SPI_PORT     SPI1
 #define SD_CS_PIN       PA4
 #define SD_SCK_PIN      PA5
 #define SD_MISO_PIN     PA6
 #define SD_MOSI_PIN     PA7
+#endif
 
 // Button Management
     // Tune Sensitivity
@@ -40,16 +59,21 @@
     // Useful for random numbers
     uint16_t Touch_Key_Adc(uint8_t ch);
 
+    // Map pin to ADC touch-key channel
+    uint8_t pin_to_touch_adc(uint8_t pin);
+
 /// I2C connection to display
     void i2c_init(void);
     void i2c_start(void);
     void i2c_send_byte(unsigned char data);
     void i2c_stop(void);
 
+#if HW_VERSION == 2
 /// SPI connection (for SD card)
     void spi_init(void);
     uint8_t spi_transfer(uint8_t data);
     void spi_cs_low(void);
     void spi_cs_high(void);
+#endif
 
 #include "extras.h"

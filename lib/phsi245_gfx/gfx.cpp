@@ -116,6 +116,8 @@ static const PROGMEM uint8_t font5x7[] = {
 
 void init()
 {
+    i2c_init();
+
     // SSD1306 init sequence
     static const PROGMEM uint8_t initSeq[] = {
         0xAE,           // display off
@@ -343,6 +345,156 @@ void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap,
             if (byte & 0x80) {
                 drawPixel(x + i, y + j, color);
             }
+        }
+    }
+}
+
+// --- Sprites ---
+
+void drawSprite(int16_t x, int16_t y, const uint8_t *bitmap,
+                int16_t w, int16_t h, uint8_t mode)
+{
+    if (w <= 0 || h <= 0) return;
+    int16_t byteWidth = (w + 7) / 8;
+
+    for (int16_t j = 0; j < h; j++) {
+        int16_t py = y + j;
+        if (py < 0 || py >= GFX_HEIGHT) continue;
+        uint16_t bufRowOff = (py >> 3) * GFX_WIDTH;
+        uint8_t bufBit = 1 << (py & 7);
+
+        for (int16_t i = 0; i < w; i++) {
+            int16_t px = x + i;
+            if (px < 0 || px >= GFX_WIDTH) continue;
+
+            uint8_t spriteByte = pgm_read_byte(bitmap + (j * byteWidth) + (i >> 3));
+            uint8_t spriteBit = spriteByte & (0x80 >> (i & 7));
+
+            if (!spriteBit) continue;
+
+            uint16_t bufIdx = bufRowOff + px;
+
+            switch (mode) {
+            case GFX_SPRITE_UNMASKED:
+                if (spriteBit)
+                    buffer[bufIdx] |= bufBit;
+                else
+                    buffer[bufIdx] &= ~bufBit;
+                break;
+            case GFX_SPRITE_SELF_MASKED:
+                if (spriteBit)
+                    buffer[bufIdx] |= bufBit;
+                break;
+            case GFX_SPRITE_ERASE:
+                if (spriteBit)
+                    buffer[bufIdx] &= ~bufBit;
+                break;
+            }
+        }
+    }
+}
+
+void drawSpriteMasked(int16_t x, int16_t y, const uint8_t *bitmap,
+                      const uint8_t *mask, int16_t w, int16_t h)
+{
+    if (w <= 0 || h <= 0) return;
+    int16_t byteWidth = (w + 7) / 8;
+
+    for (int16_t j = 0; j < h; j++) {
+        int16_t py = y + j;
+        if (py < 0 || py >= GFX_HEIGHT) continue;
+        uint16_t bufRowOff = (py >> 3) * GFX_WIDTH;
+        uint8_t bufBit = 1 << (py & 7);
+
+        for (int16_t i = 0; i < w; i++) {
+            int16_t px = x + i;
+            if (px < 0 || px >= GFX_WIDTH) continue;
+
+            uint8_t maskByte = pgm_read_byte(mask + (j * byteWidth) + (i >> 3));
+            if (!(maskByte & (0x80 >> (i & 7)))) continue;
+
+            uint8_t imgByte = pgm_read_byte(bitmap + (j * byteWidth) + (i >> 3));
+            uint16_t bufIdx = bufRowOff + px;
+
+            if (imgByte & (0x80 >> (i & 7)))
+                buffer[bufIdx] |= bufBit;
+            else
+                buffer[bufIdx] &= ~bufBit;
+        }
+    }
+}
+
+// Data-first sprite sheet helpers
+
+static int16_t sheetWidth(const uint8_t *sheet)
+{
+    return pgm_read_byte(sheet);
+}
+
+static int16_t sheetHeight(const uint8_t *sheet)
+{
+    return pgm_read_byte(sheet + 1);
+}
+
+static const uint8_t *sheetFrame(const uint8_t *sheet, uint8_t frame,
+                                 int16_t w, int16_t h)
+{
+    int16_t byteWidth = (w + 7) / 8;
+    return sheet + 2 + (frame * byteWidth * h);
+}
+
+void drawSpriteSheet(int16_t x, int16_t y, const uint8_t *sheet, uint8_t frame,
+                     uint8_t mode)
+{
+    int16_t w = sheetWidth(sheet);
+    int16_t h = sheetHeight(sheet);
+    const uint8_t *data = sheetFrame(sheet, frame, w, h);
+    drawSprite(x, y, data, w, h, mode);
+}
+
+void drawSpriteSheetMasked(int16_t x, int16_t y, const uint8_t *sheet,
+                           const uint8_t *maskSheet, uint8_t frame,
+                           uint8_t maskFrame)
+{
+    int16_t w = sheetWidth(sheet);
+    int16_t h = sheetHeight(sheet);
+    const uint8_t *data = sheetFrame(sheet, frame, w, h);
+    const uint8_t *maskData = sheetFrame(maskSheet, maskFrame, w, h);
+    drawSpriteMasked(x, y, data, maskData, w, h);
+}
+
+void drawPlusMask(int16_t x, int16_t y, const uint8_t *sheet, uint8_t frame)
+{
+    int16_t w = sheetWidth(sheet);
+    int16_t h = sheetHeight(sheet);
+    int16_t byteWidth = (w + 7) / 8;
+    // Plus-mask: pairs of (image byte, mask byte), so stride is 2 * byteWidth
+    const uint8_t *frameData = sheet + 2 + (frame * byteWidth * h * 2);
+
+    if (w <= 0 || h <= 0) return;
+
+    for (int16_t j = 0; j < h; j++) {
+        int16_t py = y + j;
+        if (py < 0 || py >= GFX_HEIGHT) continue;
+        uint16_t bufRowOff = (py >> 3) * GFX_WIDTH;
+        uint8_t bufBit = 1 << (py & 7);
+
+        for (int16_t i = 0; i < w; i++) {
+            int16_t px = x + i;
+            if (px < 0 || px >= GFX_WIDTH) continue;
+
+            // Plus-mask: row stride is 2 * byteWidth, byte pair at (i>>3)*2
+            uint8_t pairIdx = (j * byteWidth * 2) + ((i >> 3) * 2);
+            uint8_t maskByte = pgm_read_byte(frameData + pairIdx + 1);
+            if (!(maskByte & (0x80 >> (i & 7)))) continue;
+
+            uint8_t imgByte = pgm_read_byte(frameData + pairIdx);
+            uint16_t bufIdx = bufRowOff + px;
+
+            if (imgByte & (0x80 >> (i & 7)))
+                buffer[bufIdx] |= bufBit;
+            else
+                buffer[bufIdx] &= ~bufBit;
         }
     }
 }
