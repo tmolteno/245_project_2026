@@ -23,12 +23,28 @@ This document describes the software changes for the next hardware revision (202
 | PA13 | *(unused)* | **I2C SCL** | I2C1 PartialRemap1 (display) |
 | PA14 | *(unused)* | **I2C SDA** | I2C1 PartialRemap1 (display) |
 | PA15 | IO_D0 | **Speaker** | Moved from PA9 |
+| PA21 | *(NRST)* | **NRST / Reset** | External reset button to GND |
 | PB0 | *(unused)* | **Button A** | Touch key channel TK8 |
 | PB1 | *(unused)* | **Button B** | Touch key channel TK9 |
 
 Buttons A and B move from PA5/PA4 to PB0/PB1 to free the SPI1 peripheral pins for the SD card. The CH32X035 touch key controller supports channels TK8 (PB0) and TK9 (PB1) natively.
 
 The SD card uses **SPI1 PartialRemap2**, which maps SPI1 to PA9–PA12. The display uses **I2C1 PartialRemap1**, which maps I2C1 to PA13–PA14. Both remaps are configured via AFIO at init time. The speaker moves from PA9 to PA15 to avoid conflict with the SPI MISO pin.
+
+### External Reset Button
+
+PA21 is the hardware NRST pin. A momentary push-button from PA21 to GND
+provides a full hardware reset that works even if firmware hangs:
+
+```
+PA21 (LQFP48 pin 7) ──┬── button ── GND
+                      │
+                      └── 10kΩ (optional) ── VDD
+```
+
+No firmware changes required — the CH32X035 configures PA21 as active-low
+reset by default. The internal pull-up (~40kΩ) is usually sufficient;
+the external 10kΩ pull-up improves noise immunity in harsh environments.
 
 ### HAL Changes (`lib/PHSI245_HAL/`)
 

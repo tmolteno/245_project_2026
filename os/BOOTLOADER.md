@@ -99,6 +99,16 @@ Three options available on both v1 and v2:
 | **Calibrate Touch** | Live display of raw ADC values for all 6 touch buttons |
 | **Restart** | Full MCU reset via `NVIC_SystemReset()` |
 
+### Hardware Reset (v2)
+
+v2 hardware includes an external reset button on **PA21 (NRST, pin 7)**.
+Momentarily pulling NRST to GND triggers a full hardware reset that works
+regardless of firmware state. No firmware configuration is needed — the
+CH32X035 defaults PA21 to active-low reset input.
+
+The "Restart" menu option provides a software-only reset for v1 hardware
+or when the physical button is not accessible.
+
 ## Building
 
 ```bash
