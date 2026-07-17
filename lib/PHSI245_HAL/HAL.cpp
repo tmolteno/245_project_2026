@@ -293,6 +293,13 @@ void touchCalibrate(uint8_t buildHash)
             touchDebounce[ch]  = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + 6 + i)) << 4;
         }
         touchCalibrated = true;
+
+        // Brief visual confirmation so user knows something happened
+        gfx::clear();
+        gfx::setCursor(8, 22);
+        gfx::print("Already calibrated.");
+        gfx::display();
+        delay(800);
         return;
     }
 
