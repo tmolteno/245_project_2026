@@ -15,12 +15,12 @@ void os_libs_init()
     beep::init();
     rng::init();
     pong::init();
+
+    // Check SD availability (handles v1/v2) and retain storage linker symbols
+    volatile bool sdCheck = storage::sdAvailable();
+    (void)sdCheck;
 #if HW_VERSION == 2
-    // Pull in storage library (SD + FAT + EEPROM save) on v2 hardware
     storage::initSave();
-    volatile bool storage_retain = false;
-    if (storage_retain)
-        fat::mount(&sd::DEVICE);
 #endif
     // Touch calibration — runs on first boot or after firmware reflash
     {

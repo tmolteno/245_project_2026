@@ -19,7 +19,6 @@ struct FileEntry {
 
 static FileEntry files[MAX_FILES];
 static uint8_t  fileCount = 0;
-static bool     sdReady = false;
 #endif
 
 // --- UI State ---
@@ -232,7 +231,7 @@ static void drawExecuting()
     gfx::setCursor(2, LIST_Y);
     gfx::print(e->name);
 
-    if (!e->isDir && sdReady) {
+    if (!e->isDir && storage::sdAvailable()) {
         char path[64];
         path[0] = '/';
         uint8_t pos = 1;
@@ -297,9 +296,9 @@ void setup()
     gfx::setTextColor(GFX_WHITE);
     input::init();
 
-#if HW_VERSION == 1
-    state = STATE_V1_INFO;
-#endif
+    // Wait for user to release all buttons (debounce from boot)
+    // before attempting SD mount (touch ADC may interfere with SPI)
+    ostime::delay_ms(100);
 }
 
 void loop()
@@ -315,32 +314,25 @@ void loop()
         if (loadingPct < 30) {
             loadingPct += 2;
         } else if (loadingPct < 60) {
-#if HW_VERSION == 2
-            fat::Result r = fat::mount(&sd::DEVICE);
-            if (r == fat::OK) {
-                sdReady = true;
+            if (storage::sdAvailable())
                 loadingPct += 3;
-            } else {
-                // Card missing or unreadable — skip to error immediately
-                loadingPct = 100;
-                sdReady = false;
-            }
-#else
-            loadingPct += 3;
-#endif
+            else
+                loadingPct = 100;  // skip to end — no SD card
         } else if (loadingPct < 90) {
             loadingPct += 2;
         } else if (loadingPct < 100) {
             loadingPct += 1;
         } else {
+            if (storage::sdAvailable()) {
 #if HW_VERSION == 2
-            if (sdReady) {
                 collectFiles();
-            }
-            cursor    = 0;
-            scrollOff = 0;
-            state     = sdReady ? STATE_BROWSE : STATE_ERROR;
+                scrollOff = 0;
 #endif
+                cursor    = 0;
+                state     = STATE_BROWSE;
+            } else {
+                state = STATE_V1_INFO;
+            }
         }
         break;
 
@@ -432,15 +424,14 @@ void loop()
         gfx::clear();
         drawHeader("PHSI245 OS");
 
-        gfx::setCursor(14, LIST_Y + 4);
-        gfx::print("Hardware v1");
-
-        gfx::setCursor(4, LIST_Y + 16);
-        gfx::print("This revision has");
-        gfx::setCursor(4, LIST_Y + 26);
-        gfx::print("no SD card slot.");
-        gfx::setCursor(4, LIST_Y + 36);
-        gfx::print("Storage unavailable.");
+        gfx::setCursor(4, LIST_Y + 4);
+        gfx::print("No SD card detected.");
+        gfx::setCursor(4, LIST_Y + 14);
+        gfx::print("Insert a FAT-formatted");
+        gfx::setCursor(4, LIST_Y + 22);
+        gfx::print("SD card for storage.");
+        gfx::setCursor(4, LIST_Y + 30);
+        gfx::print("Press A for menu.");
 
         gfx::drawFastHLine(0, GFX_HEIGHT - 9, GFX_WIDTH, GFX_WHITE);
         gfx::setCursor(2, GFX_HEIGHT - 7);
@@ -498,11 +489,10 @@ void loop()
             }
         }
         if (input::justPressed(PIN_BTN_B)) {
-#if HW_VERSION == 1
-            state = STATE_V1_INFO;
-#else
-            state = STATE_BROWSE;
-#endif
+            if (storage::sdAvailable())
+                state = STATE_BROWSE;
+            else
+                state = STATE_V1_INFO;
         }
         ostime::delay_ms(80);
         break;

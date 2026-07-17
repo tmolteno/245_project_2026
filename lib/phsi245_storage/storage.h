@@ -62,3 +62,9 @@ Result write(const void *buf, uint16_t btw, uint16_t *bw);
 
 // EEPROM save/load API (high scores, game state)
 #include "eeprom_save.h"
+
+// SD card detection — call once during boot, returns true if a card is present.
+// Handles v1 (no SD hardware, always false) and v2 (mounts and checks).
+namespace storage {
+bool sdAvailable();
+}
