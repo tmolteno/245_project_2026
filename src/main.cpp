@@ -1,13 +1,5 @@
 #include <Arduino.h>
-#include <HAL.h>
-#include "gfx.h"
-#if HW_VERSION == 2
-#include "storage.h"
-#endif
-#include "input.h"
-#include "led.h"
-#include "ostime.h"
-#include "beep.h"
+#include "os_libs.h"
 
 // --- Constants ---
 
@@ -274,6 +266,8 @@ static void drawExecuting()
 
 void setup()
 {
+    os_libs_init();  // ensure all OS libraries are linked (even if unused elsewhere)
+
     // Blink test: 3 quick flashes to confirm the MCU is alive
     led::init();
     ostime::init();
