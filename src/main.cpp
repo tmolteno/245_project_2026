@@ -305,6 +305,9 @@ void setup()
 void loop()
 {
     input::update();
+#if HW_VERSION == 2
+    usb_msd::update();  // process USB MSD commands
+#endif
 
     switch (state) {
 

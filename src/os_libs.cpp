@@ -21,6 +21,7 @@ void os_libs_init()
     (void)sdCheck;
 #if HW_VERSION == 2
     storage::initSave();
+    usb_msd::init();
 #endif
     // Touch calibration — runs on first boot or after firmware reflash
     {
