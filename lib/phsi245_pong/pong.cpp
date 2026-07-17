@@ -23,18 +23,18 @@ static const int16_t PADDLE_X = 120;
 void init()
 {
     ballX = 64; ballY = 32;
-    ballDX = 2; ballDY = 1;
+    ballDX = 1; ballDY = 1;
     paddleY = 24;
     score = 0;
     playing = false;
-    ballSpeed = 8;
+    ballSpeed = 12;
     ballTick  = 0;
 }
 
 static void randomDirection()
 {
-    ballDX = 2 + rng::next(1);           // speed 2-2 (direction only, not magnitude)
-    ballDY = (rng::next(2) ? 1 : -1);    // random up or down
+    ballDX = 1;                            // 1 pixel per tick
+    ballDY = (rng::next(2) ? 1 : -1);     // random up or down
 }
 
 bool isPlaying()
@@ -50,7 +50,7 @@ void update()
             randomDirection();
             paddleY = 24;
             score = 0;
-            ballSpeed = 8;
+            ballSpeed = 12;
             ballTick  = 0;
             playing = true;
         }
