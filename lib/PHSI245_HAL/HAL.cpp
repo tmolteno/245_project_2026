@@ -306,6 +306,19 @@ void touchCalibrate(uint8_t buildHash)
     doInteractiveCalibration(buildHash);
 }
 
+void touchRecalibrate(uint8_t buildHash)
+{
+    calibChannelMap[0] = pin_to_touch_adc(PIN_BTN_UP);
+    calibChannelMap[1] = pin_to_touch_adc(PIN_BTN_DOWN);
+    calibChannelMap[2] = pin_to_touch_adc(PIN_BTN_LEFT);
+    calibChannelMap[3] = pin_to_touch_adc(PIN_BTN_RIGHT);
+    calibChannelMap[4] = pin_to_touch_adc(PIN_BTN_A);
+    calibChannelMap[5] = pin_to_touch_adc(PIN_BTN_B);
+
+    calibEEPROM.begin();
+    doInteractiveCalibration(buildHash);
+}
+
 bool touchIsCalibrated()
 {
     return touchCalibrated;

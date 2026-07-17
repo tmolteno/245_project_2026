@@ -512,12 +512,11 @@ void loop()
     }
 
     case STATE_CALIBRATE: {
-        // Brief delay so user can release the button they used to select this
         ostime::delay_ms(300);
         const char *s = __DATE__ " " __TIME__;
         uint8_t hash = 0;
         while (*s) hash ^= (uint8_t)*s++;
-        touchCalibrate(hash);
+        touchRecalibrate(hash);
         state = STATE_MENU;
         cursor = 1;
         break;

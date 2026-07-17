@@ -68,6 +68,9 @@
     // (e.g. XOR of __DATE__ __TIME__ from a recompiled source file).
     extern void touchCalibrate(uint8_t buildHash);
 
+    // Force recalibration regardless of stored state.
+    extern void touchRecalibrate(uint8_t buildHash);
+
     // Useful for random numbers
     uint16_t Touch_Key_Adc(uint8_t ch);
 
