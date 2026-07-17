@@ -16,9 +16,10 @@
 extern void DanCSound(uint8_t freq,uint8_t dur);
 
 
-// Patch EEPROM library version
-// Reduires you to compile with NO_GLOBAL_EEPROM defined
+// EEPROM shim for Arduboy2-compatible games.
+// Only included when the game/app explicitly needs it (includes <EEPROM.h> first).
 #ifdef NO_GLOBAL_EEPROM
+#if __has_include(<EEPROM.h>)
 #include <EEPROM.h>
 
 class EEPROMShim : public EEPROMClass
@@ -29,4 +30,5 @@ class EEPROMShim : public EEPROMClass
     void begin ();
 };
 extern EEPROMShim EEPROM;
+#endif
 #endif

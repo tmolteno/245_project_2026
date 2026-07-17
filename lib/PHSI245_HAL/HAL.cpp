@@ -105,23 +105,29 @@ int IsTouched(unsigned long int channel)
     return (TouchState & (1 << adc_ch));
 }
 
-#if HW_VERSION == 2
-#include "storage.h"
-#endif
+#include <EEPROM.h>
+#include "gfx.h"
+
+// Calibration stored at EEPROM offsets 0–11 (12 bytes for 6 channels).
+// Offset 12 stores a magic byte (0xA5) to indicate valid calibration.
+#define CALIB_EEPROM_OFFSET 0
+#define CALIB_MAGIC_OFFSET  12
+#define CALIB_MAGIC_BYTE    0xA5
 
 // Packed calibration: 8-bit values (threshold/16, debounce/16) per channel.
-// 6 channels used (PA0-PA3, PB0-PB1) = 12 bytes, fits in EEPROM.
 struct CalibData {
     uint8_t threshold[6];
     uint8_t debounce[6];
 };
 
-// Map logical channels (0-5) to physical ADC channels
+// Map logical channels (0-5) to physical ADC channels + button names
 static uint8_t calibChannelMap[6];
+static const char *calibNames[] = {"UP", "DOWN", "LEFT", "RIGHT", "A", "B"};
+
+static EEPROMClass calibEEPROM;
 
 void touchCalibrate()
 {
-    // Build channel map: PA0-PA3 (adc 0-3), PB0-PB1 (adc 8-9)
     calibChannelMap[0] = pin_to_touch_adc(PIN_BTN_UP);
     calibChannelMap[1] = pin_to_touch_adc(PIN_BTN_DOWN);
     calibChannelMap[2] = pin_to_touch_adc(PIN_BTN_LEFT);
@@ -129,44 +135,99 @@ void touchCalibrate()
     calibChannelMap[4] = pin_to_touch_adc(PIN_BTN_A);
     calibChannelMap[5] = pin_to_touch_adc(PIN_BTN_B);
 
-#if HW_VERSION == 2
-    // v2: try to load calibration from EEPROM first
-    CalibData calib;
-    if (storage::loadGame("TCH#", &calib, sizeof(calib)) == sizeof(calib)) {
+    calibEEPROM.begin();
+
+    // Check if calibration already stored in flash
+    if (calibEEPROM.read(CALIB_MAGIC_OFFSET) == CALIB_MAGIC_BYTE) {
+        // Restore saved calibration
         for (uint8_t i = 0; i < 6; i++) {
             uint8_t ch = calibChannelMap[i];
-            touchThreshold[ch] = ((uint16_t)calib.threshold[i]) << 4;
-            touchDebounce[ch]  = ((uint16_t)calib.debounce[i])  << 4;
+            touchThreshold[ch] = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + i)) << 4;
+            touchDebounce[ch]  = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + 6 + i)) << 4;
         }
         touchCalibrated = true;
         return;
     }
-#endif
 
-    // Run calibration: measure baseline for each channel
+    // --- Interactive calibration ---
+    gfx::clear();
+    gfx::setCursor(4, 4);
+    gfx::print("Touch Calibration");
+    gfx::drawFastHLine(0, 12, GFX_WIDTH, GFX_WHITE);
+    gfx::display();
+
+    // Wait for user to release all buttons (debounce)
+    bool anyTouched = true;
+    while (anyTouched) {
+        anyTouched = false;
+        for (uint8_t i = 0; i < 6; i++) {
+            if (Touch_Key_Adc(calibChannelMap[i]) < TOUCH_THRESHOLD_DEFAULT)
+                anyTouched = true;
+        }
+        delay(50);
+    }
+    delay(500);
+
+    CalibData calib;
+
     for (uint8_t i = 0; i < 6; i++) {
         uint8_t ch = calibChannelMap[i];
-        uint32_t sum = 0;
-        for (uint8_t s = 0; s < 16; s++) {
-            sum += Touch_Key_Adc(ch);
-            delay(2);
+
+        gfx::setCursor(8, 18);
+        gfx::print("Press and hold: ");
+        gfx::setCursor(8, 30);
+        gfx::setTextSize(2);
+        gfx::print(calibNames[i]);
+        gfx::setTextSize(1);
+        gfx::setCursor(8, 50);
+        gfx::print("Then release...");
+        gfx::display();
+
+        // Wait for touch
+        uint16_t minVal = 0xFFFF;
+        bool wasTouched = false;
+        while (true) {
+            uint16_t val = Touch_Key_Adc(ch);
+            if (val < TOUCH_THRESHOLD_DEFAULT) {
+                wasTouched = true;
+                if (val < minVal) minVal = val;
+            } else if (wasTouched) {
+                break;
+            }
+            delay(30);
         }
-        uint16_t baseline = (uint16_t)(sum / 16);
-        uint16_t thresh = (uint16_t)((uint32_t)baseline * 60 / 100);
-        if (thresh < 0x200) thresh = 0x200;
+
+        // Threshold at 2x the minimum touched value
+        uint16_t thresh = minVal * 2;
+        if (thresh < 0x300) thresh = 0x300;
+        if (thresh > 0xE00) thresh = 0xE00;
 
         touchThreshold[ch] = thresh;
-        touchDebounce[ch]  = thresh / 10;
+        touchDebounce[ch]  = thresh / 8;
 
-#if HW_VERSION == 2
         calib.threshold[i] = (uint8_t)(thresh >> 4);
         calib.debounce[i]  = (uint8_t)(touchDebounce[ch] >> 4);
-#endif
+
+        gfx::setCursor(8, 50);
+        gfx::print("OK!");
+        gfx::display();
+        delay(300);
     }
 
-#if HW_VERSION == 2
-    storage::saveGame("TCH#", &calib, sizeof(calib));
-#endif
+    // Save to internal flash (EEPROM)
+    for (uint8_t i = 0; i < 6; i++) {
+        calibEEPROM.write(CALIB_EEPROM_OFFSET + i,     calib.threshold[i]);
+        calibEEPROM.write(CALIB_EEPROM_OFFSET + 6 + i, calib.debounce[i]);
+    }
+    calibEEPROM.write(CALIB_MAGIC_OFFSET, CALIB_MAGIC_BYTE);
+    calibEEPROM.commit();
+
+    gfx::clear();
+    gfx::setCursor(8, 22);
+    gfx::print("Calibration done!");
+    gfx::display();
+    delay(800);
+
     touchCalibrated = true;
 }
 
