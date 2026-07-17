@@ -109,16 +109,24 @@ int IsTouched(unsigned long int channel)
 #include "gfx.h"
 
 // Calibration stored at EEPROM offsets 0–11 (12 bytes for 6 channels).
-// Offset 12 stores a magic byte (0xA5) to indicate valid calibration.
+// Offset 12 stores a build hash to detect firmware reflash.
 #define CALIB_EEPROM_OFFSET 0
-#define CALIB_MAGIC_OFFSET  12
-#define CALIB_MAGIC_BYTE    0xA5
+#define CALIB_HASH_OFFSET   12
 
 // Packed calibration: 8-bit values (threshold/16, debounce/16) per channel.
 struct CalibData {
     uint8_t threshold[6];
     uint8_t debounce[6];
 };
+
+// Simple build hash from __DATE__ __TIME__ — changes on every recompile
+static uint8_t buildHash()
+{
+    const char *s = __DATE__ " " __TIME__;
+    uint8_t h = 0;
+    while (*s) h ^= (uint8_t)*s++;
+    return h;
+}
 
 // Map logical channels (0-5) to physical ADC channels + button names
 static uint8_t calibChannelMap[6];
@@ -137,8 +145,8 @@ void touchCalibrate()
 
     calibEEPROM.begin();
 
-    // Check if calibration already stored in flash
-    if (calibEEPROM.read(CALIB_MAGIC_OFFSET) == CALIB_MAGIC_BYTE) {
+    // Check if calibration already stored AND firmware hasn't been reflashed
+    if (calibEEPROM.read(CALIB_HASH_OFFSET) == buildHash()) {
         // Restore saved calibration
         for (uint8_t i = 0; i < 6; i++) {
             uint8_t ch = calibChannelMap[i];
@@ -233,7 +241,7 @@ void touchCalibrate()
         calibEEPROM.write(CALIB_EEPROM_OFFSET + i,     calib.threshold[i]);
         calibEEPROM.write(CALIB_EEPROM_OFFSET + 6 + i, calib.debounce[i]);
     }
-    calibEEPROM.write(CALIB_MAGIC_OFFSET, CALIB_MAGIC_BYTE);
+    calibEEPROM.write(CALIB_HASH_OFFSET, buildHash());
     calibEEPROM.commit();
 
     gfx::clear();
