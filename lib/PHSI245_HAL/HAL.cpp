@@ -176,6 +176,18 @@ static void doInteractiveCalibration(uint8_t buildHash)
             } else if (wasTouched) {
                 break;
             }
+
+            // Show live ADC values on the right
+            gfx::setCursor(80, 18);
+            gfx::print("ADC:");
+            gfx::setCursor(80, 28);
+            gfx::print((int16_t)val);
+            gfx::setCursor(80, 40);
+            gfx::print("min:");
+            gfx::setCursor(80, 50);
+            gfx::print((int16_t)minVal);
+            gfx::display();
+
             delay(30);
         }
 
