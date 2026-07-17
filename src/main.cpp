@@ -512,7 +512,8 @@ void loop()
     }
 
     case STATE_CALIBRATE: {
-        // Run interactive calibration and save to flash
+        // Brief delay so user can release the button they used to select this
+        ostime::delay_ms(300);
         const char *s = __DATE__ " " __TIME__;
         uint8_t hash = 0;
         while (*s) hash ^= (uint8_t)*s++;
