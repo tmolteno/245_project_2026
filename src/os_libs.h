@@ -14,5 +14,6 @@
 #include "storage.h"
 #endif
 #include <HAL.h>
+#include "pong.h"
 
 void os_libs_init();

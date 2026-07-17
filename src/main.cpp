@@ -10,6 +10,7 @@
 
 // --- File entry ---
 
+#if HW_VERSION == 2
 struct FileEntry {
     char name[13];
     bool isDir;
@@ -19,6 +20,7 @@ struct FileEntry {
 static FileEntry files[MAX_FILES];
 static uint8_t  fileCount = 0;
 static bool     sdReady = false;
+#endif
 
 // --- UI State ---
 
@@ -36,7 +38,9 @@ enum State {
 
 static State   state      = STATE_LOADING;
 static uint8_t cursor     = 0;
+#if HW_VERSION == 2
 static uint8_t scrollOff  = 0;
+#endif
 static uint8_t loadingPct = 0;
 
 // --- Helpers ---
@@ -83,6 +87,7 @@ static void collectFiles()
 }
 #endif
 
+#if HW_VERSION == 2
 static void formatSize(char *buf, uint32_t size)
 {
     if (size < 1024) {
@@ -105,6 +110,7 @@ static void formatSize(char *buf, uint32_t size)
         buf[0] = '>'; buf[1] = '1'; buf[2] = 'M'; buf[3] = '\0';
     }
 }
+#endif
 
 // --- Drawing ---
 
@@ -121,6 +127,7 @@ static void drawLoading()
     gfx::display();
 }
 
+#if HW_VERSION == 2
 static void drawBrowse()
 {
     gfx::clear();
@@ -175,7 +182,9 @@ static void drawBrowse()
 
     gfx::display();
 }
+#endif
 
+#if HW_VERSION == 2
 static void drawFileInfo()
 {
     FileEntry *e = &files[cursor];
@@ -210,6 +219,7 @@ static void drawFileInfo()
 
     gfx::display();
 }
+#endif
 
 #if HW_VERSION == 2
 static void drawExecuting()
@@ -499,81 +509,13 @@ void loop()
     }
 
     case STATE_PONG: {
-        static int16_t ballX = 64, ballY = 32;
-        static int8_t  ballDX = 2, ballDY = 1;
-        static int16_t paddleY = 24;
-        static uint8_t score = 0;
-        static bool    pongPlaying = false;
-
-        const int16_t paddleH = 16;
-        const int16_t paddleX = 120;
-
-        if (!pongPlaying) {
-            // Start screen
-            gfx::clear();
-            gfx::drawFastHLine(0, 9, GFX_WIDTH, GFX_WHITE);
-            gfx::setCursor(20, 1);
-            gfx::print("PONG");
-            gfx::setCursor(14, 22);
-            gfx::print("UP / DOWN: move");
-            gfx::setCursor(14, 32);
-            gfx::print("A: start game");
-            gfx::setCursor(14, 42);
-            gfx::print("B: back to menu");
-            gfx::display();
-
-            if (input::justPressed(PIN_BTN_A)) {
-                ballX = 64; ballY = 32;
-                ballDX = 2; ballDY = 1;
-                paddleY = 24;
-                score = 0;
-                pongPlaying = true;
-            }
-            if (input::justPressed(PIN_BTN_B)) {
-                state = STATE_MENU;
-                cursor = 0;
-            }
-            ostime::delay_ms(30);
-            break;
-        }
-
-        // Update
-        ballX += ballDX;
-        ballY += ballDY;
-
-        if (ballY <= 1)  { ballY = 1;  ballDY = -ballDY; }
-        if (ballY >= 62) { ballY = 62; ballDY = -ballDY; }
-        if (ballX <= 1)  { ballX = 1;  ballDX = -ballDX; }
-
-        if (ballX >= paddleX - 2 && ballX <= paddleX + 1 &&
-            ballY >= paddleY && ballY <= paddleY + paddleH) {
-            ballX = paddleX - 2;
-            ballDX = -ballDX;
-            score++;
-            beep::tone(880, 20);
-        }
-
-        if (ballX >= 127) {
-            beep::tone(220, 300);
-            pongPlaying = false;
-        }
-
-        if (input::pressed(PIN_BTN_UP)   && paddleY > 2)           paddleY -= 2;
-        if (input::pressed(PIN_BTN_DOWN) && paddleY < 62 - paddleH) paddleY += 2;
-
-        // Draw
-        gfx::clear();
-        gfx::drawPixel(ballX, ballY, GFX_WHITE);
-        gfx::drawFastVLine(paddleX, paddleY, paddleH, GFX_WHITE);
-
-        gfx::drawFastHLine(0, 0, GFX_WIDTH, GFX_WHITE);
-        gfx::drawNumber(120, GFX_HEIGHT - 7, score, 3);
-        gfx::setCursor(90, GFX_HEIGHT - 7);
-        gfx::print("B:Quit");
+        pong::update();
+        pong::draw();
         gfx::display();
 
-        if (input::justPressed(PIN_BTN_B)) {
-            pongPlaying = false;
+        if (!pong::isPlaying() && input::justPressed(PIN_BTN_B)) {
+            state = STATE_MENU;
+            cursor = 0;
         }
         ostime::delay_ms(25);
         break;
@@ -589,5 +531,12 @@ void loop()
         cursor = 1;
         break;
     }
+
+#if HW_VERSION == 1
+    case STATE_BROWSE:
+    case STATE_FILE_INFO:
+    case STATE_EXECUTING:
+        break;
+#endif
     }
 }

@@ -14,6 +14,7 @@ void os_libs_init()
     ostime::init();
     beep::init();
     rng::init();
+    pong::init();
 #if HW_VERSION == 2
     // Pull in storage library (SD + FAT + EEPROM save) on v2 hardware
     storage::initSave();
