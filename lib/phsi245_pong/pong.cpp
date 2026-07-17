@@ -3,6 +3,7 @@
 #include "gfx.h"
 #include "input.h"
 #include "beep.h"
+#include "random.h"
 
 namespace pong {
 
@@ -24,6 +25,12 @@ void init()
     playing = false;
 }
 
+static void randomDirection()
+{
+    ballDX = 2 + rng::next(2);           // speed 2-3
+    ballDY = (rng::next(2) ? 1 : -1);    // random up or down
+}
+
 bool isPlaying()
 {
     return playing;
@@ -34,7 +41,7 @@ void update()
     if (!playing) {
         if (input::justPressed(PIN_BTN_A)) {
             ballX = 64; ballY = 32;
-            ballDX = 2; ballDY = 1;
+            randomDirection();
             paddleY = 24;
             score = 0;
             playing = true;
@@ -90,7 +97,11 @@ void draw()
     gfx::drawPixel(ballX, ballY, GFX_WHITE);
     gfx::drawFastVLine(PADDLE_X, paddleY, PADDLE_H, GFX_WHITE);
 
+    // Walls (top, left, bottom)
     gfx::drawFastHLine(0, 0, GFX_WIDTH, GFX_WHITE);
+    gfx::drawFastVLine(0, 0, GFX_HEIGHT, GFX_WHITE);
+    gfx::drawFastHLine(0, GFX_HEIGHT - 1, GFX_WIDTH, GFX_WHITE);
+
     gfx::drawNumber(120, GFX_HEIGHT - 7, score, 3);
     gfx::setCursor(90, GFX_HEIGHT - 7);
     gfx::print("B:Quit");
