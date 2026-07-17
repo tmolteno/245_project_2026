@@ -9,6 +9,7 @@
 #include "led.h"
 #include "ostime.h"
 #include "beep.h"
+#include "random.h"
 #if HW_VERSION == 2
 #include "storage.h"
 #endif

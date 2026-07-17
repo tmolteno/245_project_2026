@@ -13,8 +13,10 @@ void os_libs_init()
     led::init();
     ostime::init();
     beep::init();
+    rng::init();
 #if HW_VERSION == 2
-    // Pull in storage library (SD + FAT) on v2 hardware
+    // Pull in storage library (SD + FAT + EEPROM save) on v2 hardware
+    storage::initSave();
     volatile bool storage_retain = false;
     if (storage_retain)
         fat::mount(&sd::DEVICE);

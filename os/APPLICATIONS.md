@@ -130,6 +130,41 @@ LED pins: `PIN_LED_0` (PB12), `PIN_LED_1` (PB13).
 | `ostime::init()` | Initialize SysTick timer |
 | `ostime::ticks()` | Millisecond counter (32-bit, wraps every ~49 days) |
 | `ostime::delay_ms(ms)` | Blocking delay in milliseconds |
+| `ostime::setFrameRate(fps)` | Set target frame rate (e.g. 30) |
+| `ostime::nextFrame()` | Block until next frame boundary, returns true |
+| `ostime::frameCount()` | Monotonic frame counter since boot |
+
+Typical game loop using frame-rate control:
+
+```cpp
+void setup() {
+    ostime::setFrameRate(30);
+}
+void loop() {
+    if (!ostime::nextFrame()) return;
+
+    input::update();
+    gfx::clear();
+    // ... draw ...
+    gfx::display();
+}
+```
+
+### Random (`random.h`)
+
+| Function | Description |
+|----------|-------------|
+| `rng::init()` | Seed from touch-key ADC noise |
+| `rng::next(max)` | Random integer in [0, max-1] |
+| `rng::next(min, max)` | Random integer in [min, max] inclusive |
+
+Uses xorshift32 — fast, no division, good distribution.
+
+```cpp
+rng::init();
+uint8_t x = rng::next(10);       // 0..9
+uint8_t y = rng::next(5, 15);    // 5..15
+```
 
 ### Audio (`beep.h`)
 
@@ -167,6 +202,31 @@ LED pins: `PIN_LED_0` (PB12), `PIN_LED_1` (PB13).
 
 FAT result codes: `OK`, `DISK_ERR`, `NOT_READY`, `NO_FILE`, `NOT_OPENED`,
 `NOT_ENABLED`, `NO_FILESYSTEM`.
+
+**EEPROM Save/Load** (namespace `storage`, v2 only):
+
+| Function | Description |
+|----------|-------------|
+| `storage::initSave()` | Initialize EEPROM save area (26 bytes available) |
+| `storage::saveGame(tag, data, len)` | Save blob under 4-char tag. Returns bool. |
+| `storage::loadGame(tag, buf, maxLen)` | Load blob, returns bytes read (0 if none) |
+| `storage::eraseGame(tag)` | Delete saved data for a tag |
+| `storage::highScoreLoad()` | Load high score (uses "HISC" tag) |
+| `storage::highScoreSave(score)` | Save high score if higher |
+
+```cpp
+storage::initSave();
+
+// Save/load game state
+uint8_t level = 3;
+storage::saveGame("LVL", &level, sizeof(level));
+uint8_t loaded;
+storage::loadGame("LVL", &loaded, sizeof(loaded));
+
+// High score
+if (score > storage::highScoreLoad())
+    storage::highScoreSave(score);
+```
 
 ### Hardware Abstraction (`HAL.h`)
 

@@ -59,3 +59,6 @@ Result create(const char *path);
 Result write(const void *buf, uint16_t btw, uint16_t *bw);
 
 } // namespace fat
+
+// EEPROM save/load API (high scores, game state)
+#include "eeprom_save.h"
