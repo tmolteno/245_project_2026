@@ -173,6 +173,10 @@ void touchCalibrate()
     for (uint8_t i = 0; i < 6; i++) {
         uint8_t ch = calibChannelMap[i];
 
+        gfx::clear();
+        gfx::setCursor(4, 4);
+        gfx::print("Touch Calibration");
+        gfx::drawFastHLine(0, 12, GFX_WIDTH, GFX_WHITE);
         gfx::setCursor(8, 18);
         gfx::print("Press and hold: ");
         gfx::setCursor(8, 30);
@@ -208,6 +212,16 @@ void touchCalibrate()
         calib.threshold[i] = (uint8_t)(thresh >> 4);
         calib.debounce[i]  = (uint8_t)(touchDebounce[ch] >> 4);
 
+        gfx::clear();
+        gfx::setCursor(4, 4);
+        gfx::print("Touch Calibration");
+        gfx::drawFastHLine(0, 12, GFX_WIDTH, GFX_WHITE);
+        gfx::setCursor(8, 18);
+        gfx::print("Press and hold: ");
+        gfx::setCursor(8, 30);
+        gfx::setTextSize(2);
+        gfx::print(calibNames[i]);
+        gfx::setTextSize(1);
         gfx::setCursor(8, 50);
         gfx::print("OK!");
         gfx::display();
