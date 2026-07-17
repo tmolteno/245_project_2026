@@ -192,8 +192,8 @@ static void doInteractiveCalibration(uint8_t buildHash)
                 break;
             }
 
-            // Show live ADC values on the right (clear area first)
-            gfx::fillRect(80, 18, 48, 36, GFX_BLACK);
+            // Show live ADC values on the right
+            gfx::setTextBgColor(GFX_BLACK);
             gfx::setCursor(80, 18);
             gfx::print("ADC:");
             gfx::setCursor(80, 28);
@@ -202,6 +202,7 @@ static void doInteractiveCalibration(uint8_t buildHash)
             gfx::print("min:");
             gfx::setCursor(80, 50);
             gfx::print((int16_t)minVal);
+            gfx::setTextBgColor(GFX_TRANSPARENT);
             gfx::display();
 
             delay(30);

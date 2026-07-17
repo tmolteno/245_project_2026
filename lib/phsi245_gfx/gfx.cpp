@@ -11,6 +11,7 @@ static int16_t cursorX = 0;
 static int16_t cursorY = 0;
 static uint8_t textSize = 1;
 static uint8_t textColor = GFX_WHITE;
+static uint8_t textBgColor = GFX_TRANSPARENT;
 
 // --- 5x7 font (ASCII 32-127, 96 glyphs × 5 bytes) ---
 static const PROGMEM uint8_t font5x7[] = {
@@ -517,10 +518,20 @@ void setTextColor(uint8_t c)
     textColor = c;
 }
 
+void setTextBgColor(uint8_t c)
+{
+    textBgColor = c;
+}
+
 static void drawChar(int16_t x, int16_t y, char c, uint8_t color, uint8_t size)
 {
     if (c < 32 || c > 127) c = 32;
     c -= 32;
+
+    // Fill character cell background if a background color is set
+    if (textBgColor != GFX_TRANSPARENT) {
+        fillRect(x, y, 6 * size, 8 * size, textBgColor);
+    }
 
     for (uint8_t col = 0; col < 5; col++) {
         uint8_t line = pgm_read_byte(font5x7 + (c * 5) + col);

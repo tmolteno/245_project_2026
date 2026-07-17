@@ -6,6 +6,7 @@
 #define GFX_HEIGHT 64
 #define GFX_BLACK  0
 #define GFX_WHITE  1
+#define GFX_TRANSPARENT 0xFF  // sentinel for "no background fill"
 
 namespace gfx {
 
@@ -63,6 +64,7 @@ void drawPlusMask(int16_t x, int16_t y, const uint8_t *sheet, uint8_t frame);
 void setCursor(int16_t x, int16_t y);
 void setTextSize(uint8_t s);
 void setTextColor(uint8_t c);
+void setTextBgColor(uint8_t c);  // GFX_TRANSPARENT = no background (default)
 void print(const char *str);
 void print(int16_t n);
 void print(uint16_t n);
