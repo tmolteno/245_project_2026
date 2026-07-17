@@ -192,7 +192,8 @@ static void doInteractiveCalibration(uint8_t buildHash)
                 break;
             }
 
-            // Show live ADC values on the right
+            // Show live ADC values on the right (clear area first)
+            gfx::fillRect(80, 18, 48, 36, GFX_BLACK);
             gfx::setCursor(80, 18);
             gfx::print("ADC:");
             gfx::setCursor(80, 28);
