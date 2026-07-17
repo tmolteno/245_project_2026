@@ -33,6 +33,7 @@ enum State {
     STATE_MENU,
     STATE_PONG,
     STATE_CALIBRATE,
+    STATE_FORMAT,
 };
 
 static State   state      = STATE_LOADING;
@@ -450,9 +451,10 @@ void loop()
         static const char *items[] = {
             "Play Pong",
             "Calibrate Touch",
+            "Format SD Card",
             "Restart",
         };
-        const uint8_t itemCount = 3;
+        const uint8_t itemCount = 4;
 
         gfx::clear();
         drawHeader("Main Menu");
@@ -484,6 +486,8 @@ void loop()
                 state = STATE_PONG;
             } else if (cursor == 1) {
                 state = STATE_CALIBRATE;
+            } else if (cursor == 2) {
+                state = STATE_FORMAT;
             } else {
                 NVIC_SystemReset();
             }
@@ -511,14 +515,65 @@ void loop()
         break;
     }
 
-    case STATE_CALIBRATE: {
-        ostime::delay_ms(300);
-        const char *s = __DATE__ " " __TIME__;
-        uint8_t hash = 0;
-        while (*s) hash ^= (uint8_t)*s++;
-        touchRecalibrate(hash);
-        state = STATE_MENU;
-        cursor = 1;
+    case STATE_FORMAT: {
+        static bool confirmed = false;
+
+        if (!confirmed) {
+            gfx::clear();
+            drawHeader("Format SD Card");
+            gfx::setCursor(4, LIST_Y + 2);
+            gfx::print("This will erase ALL");
+            gfx::setCursor(4, LIST_Y + 12);
+            gfx::print("data on the card!");
+            gfx::setCursor(4, LIST_Y + 28);
+            gfx::print("A: Confirm format");
+            gfx::setCursor(4, LIST_Y + 38);
+            gfx::print("B: Cancel");
+            gfx::display();
+
+            if (input::justPressed(PIN_BTN_A)) {
+                confirmed = true;
+            }
+            if (input::justPressed(PIN_BTN_B)) {
+                state = STATE_MENU;
+                cursor = 2;
+            }
+            ostime::delay_ms(80);
+            break;
+        }
+
+        // Do the format
+        gfx::clear();
+        drawHeader("Formatting...");
+        gfx::setCursor(4, LIST_Y + 8);
+        gfx::print("Please wait...");
+        gfx::display();
+
+        fat::Result r = fat::format();
+
+        gfx::clear();
+        drawHeader("Format");
+        gfx::setCursor(4, LIST_Y + 8);
+        if (r == fat::OK) {
+            gfx::print("Format successful!");
+            gfx::setCursor(4, LIST_Y + 18);
+            gfx::print("Card is ready to use.");
+        } else {
+            gfx::print("Format failed!");
+            gfx::setCursor(4, LIST_Y + 18);
+            gfx::print("Error: ");
+            gfx::print((int16_t)r);
+        }
+        gfx::setCursor(4, LIST_Y + 34);
+        gfx::print("Press A to continue");
+        gfx::display();
+
+        if (input::justPressed(PIN_BTN_A)) {
+            confirmed = false;
+            state = STATE_MENU;
+            cursor = 2;
+        }
+        ostime::delay_ms(80);
         break;
     }
 
@@ -526,6 +581,7 @@ void loop()
     case STATE_BROWSE:
     case STATE_FILE_INFO:
     case STATE_EXECUTING:
+    case STATE_FORMAT:
         break;
 #endif
     }

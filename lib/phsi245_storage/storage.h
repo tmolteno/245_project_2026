@@ -58,6 +58,10 @@ bool   readDir(char *name, bool *isDir, uint32_t *fileSize);
 Result create(const char *path);
 Result write(const void *buf, uint16_t btw, uint16_t *bw);
 
+// Format the SD card with a fresh FAT32 filesystem.
+// All existing data is lost. Returns OK on success.
+Result format();
+
 } // namespace fat
 
 // EEPROM save/load API (high scores, game state)

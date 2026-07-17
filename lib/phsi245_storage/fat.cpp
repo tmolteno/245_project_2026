@@ -803,4 +803,157 @@ Result write(const void *buf, uint16_t btw, uint16_t *bw)
     return OK;
 }
 
+// --- Format SD Card ---
+// Creates a FAT32 filesystem with MBR partition table.
+// All existing data is lost. Returns OK on success.
+
+Result format()
+{
+    if (!dev) return NOT_READY;
+
+    uint32_t totalBlocks = dev->blockCount();
+    uint32_t totalSectors = totalBlocks;
+
+    // FAT32 parameters (cluster size grows with card size)
+    uint8_t  secPerClus = 1;
+    if (totalSectors > 65536)    secPerClus = 2;     // >32MB
+    if (totalSectors > 131072)   secPerClus = 4;     // >64MB
+    if (totalSectors > 524288)   secPerClus = 8;     // >256MB
+    if (totalSectors > 1048576)  secPerClus = 16;    // >512MB
+    if (totalSectors > 2097152)  secPerClus = 32;    // >1GB
+    if (totalSectors > 4194304)  secPerClus = 64;    // >2GB
+
+    uint16_t reservedSec = 32;   // FAT32: enough for BPB, FSInfo, backup
+    uint8_t  fatCount    = 2;
+
+    // Compute FAT size (FAT32: 4 bytes per cluster)
+    uint32_t dataArea     = totalSectors - reservedSec;
+    uint32_t clusterCount = dataArea / secPerClus;
+    uint32_t fatSize      = (clusterCount * 4 + 511) / 512;
+    if (fatSize < 1) fatSize = 1;
+
+    // Build MBR (sector 0)
+    memset(sectorBuf, 0, 512);
+
+    uint8_t *part = sectorBuf + 0x1BE;
+    part[0] = 0x80;    // bootable
+    part[1] = 0xFE; part[2] = 0xFF; part[3] = 0xFF;
+    part[4] = 0x0C;    // FAT32 LBA partition type
+    part[5] = 0xFE; part[6] = 0xFF; part[7] = 0xFF;
+    // LBA start = reservedSec (after MBR, before BPB area)
+    part[8]  = (uint8_t)(reservedSec);
+    part[9]  = (uint8_t)(reservedSec >> 8);
+    part[10] = (uint8_t)(reservedSec >> 16);
+    part[11] = (uint8_t)(reservedSec >> 24);
+    // LBA size
+    uint32_t partSize = totalSectors - reservedSec;
+    part[12] = (uint8_t)(partSize);
+    part[13] = (uint8_t)(partSize >> 8);
+    part[14] = (uint8_t)(partSize >> 16);
+    part[15] = (uint8_t)(partSize >> 24);
+    sectorBuf[0x1FE] = 0x55;
+    sectorBuf[0x1FF] = 0xAA;
+
+    if (!dev->writeBlock(0, sectorBuf)) return DISK_ERR;
+
+    // Build BPB (sector = reservedSec)
+    memset(sectorBuf, 0, 512);
+    sectorBuf[0] = 0xEB; sectorBuf[1] = 0x58; sectorBuf[2] = 0x90;
+    memcpy(sectorBuf + 3, "PHSI245 ", 8);
+    sectorBuf[11] = 0x00; sectorBuf[12] = 0x02;            // bytes/sector = 512
+    sectorBuf[13] = secPerClus;
+    sectorBuf[14] = (uint8_t)(reservedSec);
+    sectorBuf[15] = (uint8_t)(reservedSec >> 8);
+    sectorBuf[16] = fatCount;
+    // rootEnts = 0 for FAT32
+    // totalSectors16 = 0 for FAT32
+    sectorBuf[21] = 0xF8;                                   // media descriptor
+    // sectorsPerFAT16 = 0 for FAT32
+    sectorBuf[24] = 0x3F; sectorBuf[25] = 0x00;             // 63 sectors/track
+    sectorBuf[26] = 0xFF; sectorBuf[27] = 0x00;             // 255 heads
+    // hidden sectors
+    sectorBuf[28] = (uint8_t)(reservedSec);
+    sectorBuf[29] = (uint8_t)(reservedSec >> 8);
+    sectorBuf[30] = (uint8_t)(reservedSec >> 16);
+    sectorBuf[31] = (uint8_t)(reservedSec >> 24);
+    // total sectors 32-bit
+    sectorBuf[32] = (uint8_t)(totalSectors);
+    sectorBuf[33] = (uint8_t)(totalSectors >> 8);
+    sectorBuf[34] = (uint8_t)(totalSectors >> 16);
+    sectorBuf[35] = (uint8_t)(totalSectors >> 24);
+    // sectorsPerFAT32
+    sectorBuf[36] = (uint8_t)(fatSize);
+    sectorBuf[37] = (uint8_t)(fatSize >> 8);
+    sectorBuf[38] = (uint8_t)(fatSize >> 16);
+    sectorBuf[39] = (uint8_t)(fatSize >> 24);
+    // FAT32 flags
+    sectorBuf[40] = 0x00; sectorBuf[41] = 0x00;             // no mirroring flags
+    // FAT32 version
+    sectorBuf[42] = 0x00; sectorBuf[43] = 0x00;
+    // root dir cluster = 2
+    sectorBuf[44] = 2; sectorBuf[45] = 0; sectorBuf[46] = 0; sectorBuf[47] = 0;
+    // FSInfo sector = 1
+    sectorBuf[48] = 1; sectorBuf[49] = 0;
+    // backup BPB sector = 6
+    sectorBuf[50] = 6; sectorBuf[51] = 0;
+    // Volume label
+    memcpy(sectorBuf + 71, "PHSI245    ", 11);
+    // Filesystem type
+    memcpy(sectorBuf + 82, "FAT32   ", 8);
+    sectorBuf[510] = 0x55;
+    sectorBuf[511] = 0xAA;
+
+    if (!dev->writeBlock(reservedSec, sectorBuf)) return DISK_ERR;
+    // Write backup BPB at sector 6
+    if (!dev->writeBlock(6, sectorBuf)) return DISK_ERR;
+
+    // Write FSInfo sector (sector 1)
+    memset(sectorBuf, 0, 512);
+    sectorBuf[0] = 0x52; sectorBuf[1] = 0x52; sectorBuf[2] = 0x61; sectorBuf[3] = 0x41;  // "RRaA"
+    sectorBuf[484] = 0x72; sectorBuf[485] = 0x72; sectorBuf[486] = 0x41; sectorBuf[487] = 0x61;  // "rrAa"
+    sectorBuf[488] = (uint8_t)(clusterCount - 2);       // free cluster count
+    sectorBuf[489] = (uint8_t)((clusterCount - 2) >> 8);
+    sectorBuf[490] = (uint8_t)((clusterCount - 2) >> 16);
+    sectorBuf[491] = (uint8_t)((clusterCount - 2) >> 24);
+    sectorBuf[492] = 2;                                  // next free cluster = 2
+    sectorBuf[510] = 0x55; sectorBuf[511] = 0xAA;
+    if (!dev->writeBlock(1, sectorBuf)) return DISK_ERR;
+
+    // Initialize FAT tables
+    uint32_t fatStart = reservedSec;
+    // First FAT sector: cluster 0 and 1
+    memset(sectorBuf, 0, 512);
+    sectorBuf[0] = 0xF8; sectorBuf[1] = 0xFF; sectorBuf[2] = 0xFF; sectorBuf[3] = 0x0F;  // cluster 0
+    sectorBuf[4] = 0xFF; sectorBuf[5] = 0xFF; sectorBuf[6] = 0xFF; sectorBuf[7] = 0x0F;  // cluster 1
+    // Cluster 2: EOC (root dir uses it, mark as end of chain)
+    sectorBuf[8] = 0xFF; sectorBuf[9] = 0xFF; sectorBuf[10] = 0xFF; sectorBuf[11] = 0x0F;
+
+    for (uint8_t f = 0; f < fatCount; f++) {
+        uint32_t start = fatStart + f * fatSize;
+        if (!dev->writeBlock(start, sectorBuf)) return DISK_ERR;
+        // Clear remaining FAT sectors
+        memset(sectorBuf, 0, 512);
+        for (uint32_t s = 1; s < fatSize; s++) {
+            if (!dev->writeBlock(start + s, sectorBuf)) return DISK_ERR;
+        }
+    }
+
+    // Initialize root directory cluster (cluster 2)
+    memset(sectorBuf, 0, 512);
+    // Volume label entry
+    memcpy(sectorBuf, "PHSI245 ", 8);
+    memcpy(sectorBuf + 8, "   ", 3);
+    sectorBuf[11] = ATTR_VOLUME_ID;
+
+    uint32_t rootStart = fatStart + fatCount * fatSize + (2 - 2) * secPerClus;
+    if (!dev->writeBlock(rootStart, sectorBuf)) return DISK_ERR;
+    // Clear remaining sectors in root dir cluster
+    memset(sectorBuf, 0, 512);
+    for (uint8_t s = 1; s < secPerClus; s++) {
+        if (!dev->writeBlock(rootStart + s, sectorBuf)) return DISK_ERR;
+    }
+
+    return OK;
+}
+
 } // namespace fat
