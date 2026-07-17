@@ -12,14 +12,23 @@ This document describes the software changes for the next hardware revision (202
 | PA1 | Button LEFT | Button LEFT | Unchanged (TK1) |
 | PA2 | Button DOWN | Button DOWN | Unchanged (TK2) |
 | PA3 | Button RIGHT | Button RIGHT | Unchanged (TK3) |
-| PA4 | Button B | **SD CS** | SPI1 chip select |
-| PA5 | Button A | **SD SCK** | SPI1 clock |
-| PA6 | *(unused)* | **SD MISO** | SPI1 data in |
-| PA7 | *(unused)* | **SD MOSI** | SPI1 data out |
+| PA4 | Button B | IO_D0 | Freed from SPI (was SD CS) |
+| PA5 | Button A | *(free)* | Freed from SPI (was SD SCK) |
+| PA6 | *(unused)* | *(free)* | Freed from SPI (was SD MISO) |
+| PA7 | *(unused)* | *(free)* | Freed from SPI (was SD MOSI) |
+| PA9 | *(speaker)* | **SD MISO** | SPI1 PartialRemap2 |
+| PA10 | *(I2C SCL)* | **SD MOSI** | SPI1 PartialRemap2 |
+| PA11 | *(I2C SDA)* | **SD SCK** | SPI1 PartialRemap2 |
+| PA12 | *(unused)* | **SD CS** | SPI1 PartialRemap2 |
+| PA13 | *(unused)* | **I2C SCL** | I2C1 PartialRemap1 (display) |
+| PA14 | *(unused)* | **I2C SDA** | I2C1 PartialRemap1 (display) |
+| PA15 | IO_D0 | **Speaker** | Moved from PA9 |
 | PB0 | *(unused)* | **Button A** | Touch key channel TK8 |
 | PB1 | *(unused)* | **Button B** | Touch key channel TK9 |
 
 Buttons A and B move from PA5/PA4 to PB0/PB1 to free the SPI1 peripheral pins for the SD card. The CH32X035 touch key controller supports channels TK8 (PB0) and TK9 (PB1) natively.
+
+The SD card uses **SPI1 PartialRemap2**, which maps SPI1 to PA9–PA12. The display uses **I2C1 PartialRemap1**, which maps I2C1 to PA13–PA14. Both remaps are configured via AFIO at init time. The speaker moves from PA9 to PA15 to avoid conflict with the SPI MISO pin.
 
 ### HAL Changes (`lib/PHSI245_HAL/`)
 
@@ -30,14 +39,20 @@ Buttons A and B move from PA5/PA4 to PB0/PB1 to free the SPI1 peripheral pins fo
 #define PIN_BTN_B PB1   // was PA4
 ```
 
-Added SPI SD card pin definitions:
+Added SPI SD card pin definitions (SPI1 PartialRemap2):
 
 ```cpp
 #define SD_SPI_PORT  SPI1
-#define SD_CS_PIN    PA4
-#define SD_SCK_PIN   PA5
-#define SD_MISO_PIN  PA6
-#define SD_MOSI_PIN  PA7
+#define SD_CS_PIN    PA12
+#define SD_SCK_PIN   PA11
+#define SD_MISO_PIN  PA9
+#define SD_MOSI_PIN  PA10
+```
+
+Speaker moved from PA9 to PA15:
+
+```cpp
+#define PIN_BEEP PA15  // was PA9
 ```
 
 Added SPI function declarations:
@@ -54,11 +69,17 @@ void spi_cs_high(void);
 - `initTouchButtons()` now configures PA0–PA3 on GPIOA and PB0–PB1 on GPIOB
 - `IsTouched()` uses the ADC channel mapping internally; the external API (passing pin names) is unchanged
 
-**`SPI.cpp`** *(new)* — Hardware SPI1 driver:
+**`SPI.cpp`** *(new)* — Hardware SPI1 driver with PartialRemap2:
+- AFIO remap enabled at init time (`GPIO_PinRemapConfig(GPIO_PartialRemap2_SPI1, ENABLE)`)
 - Mode 0 (CPOL=0, CPHA=0)
 - Initial speed ~187 kHz (prescaler 256) for SD card init
-- Manual CS control via PA4
+- Manual CS control via PA12
 - `spi_transfer(data)`, `spi_cs_low()`, `spi_cs_high()`
+
+**`I2C.cpp`** — Updated for I2C1 PartialRemap1 on v2:
+- AFIO remap enabled at init time (`GPIO_PinRemapConfig(GPIO_PartialRemap1_I2C1, ENABLE)`)
+- v2 pins: SCL=PA13, SDA=PA14
+- v1 pins unchanged: SCL=PA10, SDA=PA11
 
 ### New Libraries
 
