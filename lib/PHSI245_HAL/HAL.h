@@ -63,6 +63,11 @@
     // Returns true if calibration has been run (v2 only; always false on v1).
     extern bool touchIsCalibrated();
 
+    // Run calibration unconditionally (ignores stored state), saves to flash.
+    // `buildHash` is a one-byte identifier that changes on firmware reflash
+    // (e.g. XOR of __DATE__ __TIME__ from a recompiled source file).
+    extern void touchCalibrate(uint8_t buildHash);
+
     // Useful for random numbers
     uint16_t Touch_Key_Adc(uint8_t ch);
 

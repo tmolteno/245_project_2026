@@ -119,43 +119,16 @@ struct CalibData {
     uint8_t debounce[6];
 };
 
-// Simple build hash from __DATE__ __TIME__ — changes on every recompile
-static uint8_t buildHash()
-{
-    const char *s = __DATE__ " " __TIME__;
-    uint8_t h = 0;
-    while (*s) h ^= (uint8_t)*s++;
-    return h;
-}
-
 // Map logical channels (0-5) to physical ADC channels + button names
 static uint8_t calibChannelMap[6];
 static const char *calibNames[] = {"UP", "DOWN", "LEFT", "RIGHT", "A", "B"};
 
 static EEPROMClass calibEEPROM;
 
-void touchCalibrate()
+// Internal: run the interactive calibration, store results
+static void doInteractiveCalibration(uint8_t buildHash)
 {
-    calibChannelMap[0] = pin_to_touch_adc(PIN_BTN_UP);
-    calibChannelMap[1] = pin_to_touch_adc(PIN_BTN_DOWN);
-    calibChannelMap[2] = pin_to_touch_adc(PIN_BTN_LEFT);
-    calibChannelMap[3] = pin_to_touch_adc(PIN_BTN_RIGHT);
-    calibChannelMap[4] = pin_to_touch_adc(PIN_BTN_A);
-    calibChannelMap[5] = pin_to_touch_adc(PIN_BTN_B);
-
-    calibEEPROM.begin();
-
-    // Check if calibration already stored AND firmware hasn't been reflashed
-    if (calibEEPROM.read(CALIB_HASH_OFFSET) == buildHash()) {
-        // Restore saved calibration
-        for (uint8_t i = 0; i < 6; i++) {
-            uint8_t ch = calibChannelMap[i];
-            touchThreshold[ch] = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + i)) << 4;
-            touchDebounce[ch]  = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + 6 + i)) << 4;
-        }
-        touchCalibrated = true;
-        return;
-    }
+    CalibData calib;
 
     // --- Interactive calibration ---
     gfx::clear();
@@ -164,7 +137,7 @@ void touchCalibrate()
     gfx::drawFastHLine(0, 12, GFX_WIDTH, GFX_WHITE);
     gfx::display();
 
-    // Wait for user to release all buttons (debounce)
+    // Wait for user to release all buttons
     bool anyTouched = true;
     while (anyTouched) {
         anyTouched = false;
@@ -175,8 +148,6 @@ void touchCalibrate()
         delay(50);
     }
     delay(500);
-
-    CalibData calib;
 
     for (uint8_t i = 0; i < 6; i++) {
         uint8_t ch = calibChannelMap[i];
@@ -195,7 +166,6 @@ void touchCalibrate()
         gfx::print("Then release...");
         gfx::display();
 
-        // Wait for touch
         uint16_t minVal = 0xFFFF;
         bool wasTouched = false;
         while (true) {
@@ -209,7 +179,6 @@ void touchCalibrate()
             delay(30);
         }
 
-        // Threshold at 2x the minimum touched value
         uint16_t thresh = minVal * 2;
         if (thresh < 0x300) thresh = 0x300;
         if (thresh > 0xE00) thresh = 0xE00;
@@ -236,12 +205,12 @@ void touchCalibrate()
         delay(300);
     }
 
-    // Save to internal flash (EEPROM)
+    // Save to internal flash
     for (uint8_t i = 0; i < 6; i++) {
         calibEEPROM.write(CALIB_EEPROM_OFFSET + i,     calib.threshold[i]);
         calibEEPROM.write(CALIB_EEPROM_OFFSET + 6 + i, calib.debounce[i]);
     }
-    calibEEPROM.write(CALIB_HASH_OFFSET, buildHash());
+    calibEEPROM.write(CALIB_HASH_OFFSET, buildHash);
     calibEEPROM.commit();
 
     gfx::clear();
@@ -251,6 +220,54 @@ void touchCalibrate()
     delay(800);
 
     touchCalibrated = true;
+}
+
+void touchCalibrate()
+{
+    calibChannelMap[0] = pin_to_touch_adc(PIN_BTN_UP);
+    calibChannelMap[1] = pin_to_touch_adc(PIN_BTN_DOWN);
+    calibChannelMap[2] = pin_to_touch_adc(PIN_BTN_LEFT);
+    calibChannelMap[3] = pin_to_touch_adc(PIN_BTN_RIGHT);
+    calibChannelMap[4] = pin_to_touch_adc(PIN_BTN_A);
+    calibChannelMap[5] = pin_to_touch_adc(PIN_BTN_B);
+
+    calibEEPROM.begin();
+
+    // Check if calibration already stored
+    if (calibEEPROM.read(CALIB_HASH_OFFSET) != 0) {
+        for (uint8_t i = 0; i < 6; i++) {
+            uint8_t ch = calibChannelMap[i];
+            touchThreshold[ch] = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + i)) << 4;
+            touchDebounce[ch]  = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + 6 + i)) << 4;
+        }
+        touchCalibrated = true;
+        return;
+    }
+}
+
+void touchCalibrate(uint8_t buildHash)
+{
+    calibChannelMap[0] = pin_to_touch_adc(PIN_BTN_UP);
+    calibChannelMap[1] = pin_to_touch_adc(PIN_BTN_DOWN);
+    calibChannelMap[2] = pin_to_touch_adc(PIN_BTN_LEFT);
+    calibChannelMap[3] = pin_to_touch_adc(PIN_BTN_RIGHT);
+    calibChannelMap[4] = pin_to_touch_adc(PIN_BTN_A);
+    calibChannelMap[5] = pin_to_touch_adc(PIN_BTN_B);
+
+    calibEEPROM.begin();
+
+    // Check if already calibrated with this firmware build
+    if (calibEEPROM.read(CALIB_HASH_OFFSET) == buildHash) {
+        for (uint8_t i = 0; i < 6; i++) {
+            uint8_t ch = calibChannelMap[i];
+            touchThreshold[ch] = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + i)) << 4;
+            touchDebounce[ch]  = ((uint16_t)calibEEPROM.read(CALIB_EEPROM_OFFSET + 6 + i)) << 4;
+        }
+        touchCalibrated = true;
+        return;
+    }
+
+    doInteractiveCalibration(buildHash);
 }
 
 bool touchIsCalibrated()

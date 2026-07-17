@@ -561,39 +561,13 @@ void loop()
     }
 
     case STATE_CALIBRATE: {
-        gfx::clear();
-        drawHeader("Touch Calibrate");
-
-        uint8_t btns[] = {PIN_BTN_UP, PIN_BTN_DOWN, PIN_BTN_LEFT, PIN_BTN_RIGHT, PIN_BTN_A, PIN_BTN_B};
-        const char *names[] = {"UP", "DN", "LT", "RT", "A", "B"};
-        int16_t y = LIST_Y;
-
-        for (uint8_t i = 0; i < 6; i++) {
-            uint16_t val = Touch_Key_Adc(pin_to_touch_adc(btns[i]));
-            bool touched = IsTouched(btns[i]);
-
-            gfx::setCursor(4, y);
-            gfx::print(names[i]);
-            gfx::setCursor(30, y);
-            gfx::print((int16_t)val);
-            if (touched) {
-                gfx::setCursor(90, y);
-                gfx::print("TOUCH");
-            }
-            y += 8;
-        }
-
-        gfx::drawFastHLine(0, GFX_HEIGHT - 9, GFX_WIDTH, GFX_WHITE);
-        gfx::setCursor(2, GFX_HEIGHT - 7);
-        gfx::print("B:Back");
-
-        gfx::display();
-
-        if (input::justPressed(PIN_BTN_B)) {
-            state = STATE_MENU;
-            cursor = 1;
-        }
-        ostime::delay_ms(40);
+        // Run interactive calibration and save to flash
+        const char *s = __DATE__ " " __TIME__;
+        uint8_t hash = 0;
+        while (*s) hash ^= (uint8_t)*s++;
+        touchCalibrate(hash);
+        state = STATE_MENU;
+        cursor = 1;
         break;
     }
     }

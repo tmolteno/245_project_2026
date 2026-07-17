@@ -21,6 +21,11 @@ void os_libs_init()
     if (storage_retain)
         fat::mount(&sd::DEVICE);
 #endif
-    // Touch calibration — interactive on first boot, loads from flash thereafter
-    touchCalibrate();
+    // Touch calibration — runs on first boot or after firmware reflash
+    {
+        const char *s = __DATE__ " " __TIME__;
+        uint8_t hash = 0;
+        while (*s) hash ^= (uint8_t)*s++;
+        touchCalibrate(hash);
+    }
 }
