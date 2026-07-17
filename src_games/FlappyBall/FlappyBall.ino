@@ -1,436 +1,435 @@
 /*
-  FlappyBall (aka FloatyBall) for the Arduboy
-  Written by Chris Martinez, 3/5/2014
-  Modified by Scott Allen, April 2016
+  FlappyBall — ported to PHSI245 OS
+  Original: Chris Martinez (2014), Scott Allen (2016)
+  Port:    PHSI245 OS native (no Arduboy2 dependency)
 */
 
-/*
-------------------------------------------------------------------------------
-Original work copyright (c) 2014, Chris Martinez
-Modifications copyright (c) 2016, 2017, Scott Allen
-All rights reserved.
+#include <Arduino.h>
+#include "os_libs.h"
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+// --- Bitmap data (unchanged from original) ---
+#ifndef BITMAPS_H
+#define BITMAPS_H
+const unsigned char floatyball[] PROGMEM = {
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x1,0x80,0x0,0x1,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x80,0x0,
+0x1,0x80,0x1,0x40,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80,
+0x0,0x2,0x80,0x1,0x20,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x80,0x0,0x4,0x80,0x1,0x98,0x0,0x1,0x0,0x3f,0xff,0xff,0xfc,0x0,
+0x0,0x0,0x80,0x0,0x19,0x80,0x0,0xce,0x0,0x1,0x0,0x3f,0xff,0xfc,
+0x0,0x0,0x0,0x0,0x80,0x0,0x73,0x0,0x0,0xf3,0x80,0x1,0x0,0x3f,
+0xf8,0x0,0x0,0x0,0x0,0x0,0x80,0x1,0xcf,0x0,0x1,0x3c,0xe0,0x1,0x0,
+0x38,0x0,0x0,0x0,0x0,0x0,0x0,0x80,0x7,0x3c,0x80,0x1,0x8e,0x30,
+0x1,0x0,0x38,0x39,0xf9,0xb9,0xb9,0x83,0x0,0x80,0xc,0x71,0x80,0x0,
+0xc3,0x10,0x1,0x0,0x38,0x3b,0xfd,0xfd,0xfd,0xc7,0x0,0x80,0x8,0xc3,
+0x0,0x0,0xf0,0x50,0x1,0x0,0x3f,0x39,0xfd,0xfd,0xfc,0xc6,0x0,0x80,
+0xa,0xf,0x0,0x0,0x78,0x98,0x1,0x0,0x3f,0x38,0x1d,0xdd,0xdc,0xee,
+0x0,0x80,0x19,0x1e,0x0,0x0,0x4c,0xc8,0x1,0x0,0x3f,0x38,0x1d,0xdd,
+0xdc,0x7e,0x0,0x80,0x13,0x32,0x0,0x0,0x63,0xcc,0x1,0x0,0x38,0x39,
+0xfd,0xfd,0xfc,0x3c,0x0,0x80,0x33,0xc6,0x0,0x0,0x30,0x66,0x1,0x0,
+0x38,0x3b,0xfd,0xfd,0xfc,0x3c,0x0,0x80,0x66,0xc,0x0,0x0,0x3c,0xeb,
+0x81,0x0,0x38,0x3b,0xfd,0xf9,0xf8,0x38,0x0,0x81,0xd7,0x3c,0x0,0x0,
+0x2f,0xb8,0xe1,0x0,0x38,0x3b,0x9d,0xc1,0xc0,0x38,0x0,0x87,0x1d,
+0xf4,0x0,0x0,0x33,0x3a,0x19,0x0,0x38,0x3b,0xfd,0xc1,0xc0,0x38,0x0,
+0x98,0x5c,0xcc,0x0,0x0,0x1e,0x6c,0xf,0x0,0x38,0x3b,0xfd,0xc1,0xc0,
+0x70,0x0,0xf0,0x36,0x78,0x0,0x0,0x17,0xc4,0x89,0x0,0x38,0x39,0xed,
+0xc1,0xc1,0xf0,0x0,0x91,0x23,0xe8,0x0,0x0,0x19,0x8f,0x27,0x0,0x38,
+0x38,0x1,0x81,0x83,0xc0,0x0,0xe4,0xf1,0x98,0x0,0x0,0xf,0x39,0xdb,
+0x0,0x38,0x39,0xff,0xff,0xff,0x80,0x0,0xdb,0x9c,0xf0,0x0,0x0,0x7,
+0xf3,0x37,0x0,0x0,0x0,0x0,0x7f,0xfe,0x0,0x0,0xec,0xcf,0xe0,0x0,
+0x0,0x0,0xc3,0x6b,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xd6,0xc3,0x0,
+0x0,0x0,0x0,0xfe,0xcf,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf3,0x7f,
+0x0,0x0,0x0,0x0,0x7b,0x93,0x0,0x0,0x3f,0xc0,0x1,0xdc,0x0,0x0,
+0xc9,0xde,0x0,0x0,0x0,0x0,0x3,0x17,0x0,0x0,0x3f,0xe0,0x1,0xdc,
+0x0,0x0,0xe8,0xc0,0x0,0x0,0x0,0x0,0x0,0x2f,0x0,0x0,0x3f,0xf0,0x1,
+0xdc,0x0,0x0,0xf4,0x0,0x0,0x0,0x0,0x0,0x0,0x79,0x0,0x0,0x38,0x78,
+0x1,0xdc,0x0,0x0,0x9e,0x0,0x0,0x0,0x0,0x0,0x0,0x31,0x0,0x0,0x38,
+0x38,0x1,0xdc,0x0,0x0,0x8c,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,
+0x38,0x38,0x1,0xdc,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,
+0x0,0x38,0x31,0xf9,0xdc,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,
+0x0,0x0,0x3f,0xf3,0xfd,0xdc,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,
+0x1,0x0,0x0,0x3f,0xe1,0xfd,0xdc,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,
+0x0,0x1,0x0,0x0,0x3f,0xf0,0x1d,0xdc,0x0,0x0,0x80,0x0,0x0,0x0,0x0,
+0x0,0x0,0x1,0x0,0x0,0x38,0x38,0x1d,0xdc,0x0,0x0,0x80,0x0,0x0,0x0,
+0x0,0x0,0x0,0x1,0x0,0x0,0x38,0x39,0xfd,0xdc,0x0,0x0,0x80,0x0,0x0,
+0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x38,0x3b,0xfd,0xdc,0x0,0x0,0x80,0x0,
+0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x38,0x3b,0xfd,0xdc,0x0,0x0,0x80,
+0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x38,0x7b,0x9d,0xdc,0x0,0x0,
+0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x3f,0xfb,0xfd,0xdc,0x0,
+0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x3f,0xf3,0xfd,0xdc,
+0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x3f,0xe1,0xed,
+0xdc,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0xff,
+0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x80,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0
+};
+const unsigned char gameover[] PROGMEM = {
+0xff,0x80,0x0,0x3f,0xc3,0xfc,0x7,0xf8,0x0,0x80,0xff,0xff,0xe0,
+0x42,0x7,0xfc,0xf,0xf0,0x80,0x83,0x0,0x20,0x42,0x4,0x4c,0x8,0x10,
+0x80,0x83,0x0,0x24,0x42,0x4,0x4c,0x88,0x10,0x8f,0xf3,0x0,0x24,
+0x42,0x64,0x4c,0x88,0x10,0x89,0x3,0x23,0x20,0x42,0x64,0x4c,0x9,
+0x90,0x89,0x3,0x23,0x20,0x42,0x64,0x4c,0x9,0x90,0x89,0x3,0x23,
+0x20,0x42,0x64,0x4c,0x9,0xf0,0x89,0x13,0x23,0x21,0xc2,0x64,0x4c,
+0x39,0x0,0x89,0x13,0x23,0x27,0xc2,0x4,0xc,0xf9,0x0,0x81,0x3,0x23,
+0x20,0x42,0x4,0xc,0x9,0x0,0x81,0x3,0x23,0x20,0x42,0x6,0xc,0x9,
+0x0,0xff,0xff,0xff,0xff,0xc3,0xfd,0xf7,0xff,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0
+};
+#endif
 
-1. Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-3. Neither the name of the copyright holders nor the names of its contributors
-   may be used to endorse or promote products derived from this software
-   without specific prior written permission.
+// --- Melodies (converted from ArduboyTones to freq+duration pairs) ---
+// Format: {freq_hi, freq_lo, dur_hi, dur_lo, ..., 0,0,0,0}
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
-OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-------------------------------------------------------------------------------
-*/
+static const PROGMEM uint8_t melody_hit[] = {
+    0x01,0x05, 0x00,0x1F,  // C4=261Hz, 31ms
+    0x01,0x15, 0x00,0x1F,  // C#4=277Hz, 31ms
+    0x01,0x25, 0x00,0x1F,  // D4=294Hz, 31ms
+    0x00,0x00, 0x00,0x00,
+};
 
-#include <Arduboy2.h>
-#include <ArduboyTones.h>
-#include "bitmaps.h"
+static const PROGMEM uint8_t melody_point[] = {
+    0x03,0xE8, 0x00,0x4B,  // B5=988Hz, 75ms
+    0x05,0x28, 0x00,0xE1,  // E6=1319Hz, 225ms
+    0x00,0x00, 0x00,0x00,
+};
 
-Arduboy2 arduboy;
-ArduboyTones sound(arduboy.audio.enabled);
+static const PROGMEM uint8_t melody_bing[] = {
+    0x00,0x2E, 0x00,0x6B,  // F#1=46Hz, 107ms
+    0x01,0x05, 0x01,0xF4,  // C4=261Hz, 500ms
+    0x00,0x00, 0x00,0x00,
+};
 
-// Things that make the game work the way it does
-#define FRAMES_PER_SECOND 30   // The update and refresh speed
-#define FRAC_BITS 6            // The number of bits in the fraction part of a fixed point int
-
-// The following values define how fast the ball will accelerate and how high it will jump.
-// They are given as fixed point integers so the true value is multiplied by (1 << FRAC_BITS)
-// to give the value used. The resulting values must be integers.
-#define BALL_ACCELERATION 16      // (0.25) the ball acceleration in pixels per frame squared
-#define BALL_JUMP_VELOCITY (-144) // (-2.25) The inital velocity of a ball jump in pixels per frame
-// ---------------------------
-
-// This value is an offset to make it easier to work with negative numbers.
-// It must be greater than the maximum number of pixels that Floaty will jump above
-// the start height (based on the acceleration and initial velocity values),
-// but must be low enough not to cause an overflow when added to the maximum
-// screen height as an integer.
+// --- Game constants ---
+#define FRAMES_PER_SECOND 30
+#define FRAC_BITS 6
+#define BALL_ACCELERATION 16
+#define BALL_JUMP_VELOCITY (-144)
 #define NEG_OFFSET 64
-
-// Pipe
-#define PIPE_ARRAY_SIZE 4  // At current settings only 3 sets of pipes can be onscreen at once
-#define PIPE_MOVE_DISTANCE 2   // How far each pipe moves per frame
-#define PIPE_GAP_MAX 30        // Maximum pipe gap
-#define PIPE_GAP_MIN 18        // Minimum pipe gap
-#define PIPE_GAP_REDUCE 5      // Number of points scored to reduce gap size
+#define PIPE_ARRAY_SIZE 4
+#define PIPE_MOVE_DISTANCE 2
+#define PIPE_GAP_MAX 30
+#define PIPE_GAP_MIN 18
+#define PIPE_GAP_REDUCE 5
 #define PIPE_WIDTH 12
 #define PIPE_CAP_WIDTH 2
-#define PIPE_CAP_HEIGHT 3      // Caps push back into the pipe, it's not added length
-#define PIPE_MIN_HEIGHT 6      // Higher values center the gaps more
-#define PIPE_GEN_FRAMES 32     // How many frames until a new pipe is generated
-
-// Ball
+#define PIPE_CAP_HEIGHT 3
+#define PIPE_MIN_HEIGHT 6
+#define PIPE_GEN_FRAMES 32
 #define BALL_RADIUS 4
-#define BALL_Y_START ((HEIGHT / 2) - 1) // The height Floaty begins at
-#define BALL_X 32              // Floaty's X Axis
+#define BALL_Y_START ((GFX_HEIGHT / 2) - 1)
+#define BALL_X 32
 
-// Storage Vars
-byte gameState = 0;
-unsigned int gameScore = 0;
-unsigned int gameHighScore = 0;
-char pipes[2][PIPE_ARRAY_SIZE]; // Row 0 for x values, row 1 for gap location
-byte pipeGap = PIPE_GAP_MAX;    // Height of gap between pipes to fly through
-byte pipeReduceCount = PIPE_GAP_REDUCE; // Score tracker for pipe gap reduction
-char ballY = BALL_Y_START;      // Floaty's height
-char ballYprev = BALL_Y_START;  // Previous height
-char ballYi = BALL_Y_START;     // Floaty's initial height for the current arc
-int ballV = 0;                  // For height calculations (Vi + ((a * t) / 2))
-byte ballFrame = 0;             // Frame count for the current arc
-char ballFlapper = BALL_RADIUS; // Floaty's wing length
-char gameScoreX = 0;
-char gameScoreY = 0;
-byte gameScoreRiser = 0;
+// --- Game state ---
+static byte  gameState = 0;
+static uint16_t gameScore = 0;
+static uint16_t gameHighScore = 0;
+static char  pipes[2][PIPE_ARRAY_SIZE];
+static byte  pipeGap = PIPE_GAP_MAX;
+static byte  pipeReduceCount = PIPE_GAP_REDUCE;
+static char  ballY = BALL_Y_START, ballYprev = BALL_Y_START, ballYi = BALL_Y_START;
+static int   ballV = 0;
+static byte  ballFrame = 0;
+static char  ballFlapper = BALL_RADIUS;
+static char  gameScoreX = 0, gameScoreY = 0;
+static byte  gameScoreRiser = 0;
+static bool  audioOn = true;
+static uint32_t frameCount = 0;
 
-// Sounds
-const uint16_t intro[] PROGMEM = {
-  NOTE_C5,500, NOTE_C4,500, NOTE_E4,500, NOTE_A4,500, NOTE_G4,500, NOTE_C4,500,
-  NOTE_C5,500, NOTE_C4,500, NOTE_E4,500, NOTE_A4,500, NOTE_G4,500, NOTE_C4,500,
-  NOTE_A4,500, NOTE_A3,500, NOTE_C4,500, NOTE_F4,500, NOTE_D4,500, NOTE_A3,500,
-  NOTE_A4,500, NOTE_A3,500, NOTE_C4,500, NOTE_G4,500, NOTE_D4,500, NOTE_F4,500,
-  NOTE_C5, 2000, TONES_END
-};
+// --- Helpers ---
 
-const uint16_t bing[] PROGMEM = {
-  NOTE_FS1,107, NOTE_C4,500, TONES_END
-};
+static byte getOffset(unsigned int s) {
+    if (s > 9999) return 24;
+    if (s > 999)  return 18;
+    if (s > 99)   return 12;
+    if (s > 9)    return 6;
+    return 0;
+}
 
-const uint16_t point[] PROGMEM = {
-  NOTE_B5,75, NOTE_E6,225, TONES_END
-};
+static bool jumpPressed() {
+    const uint8_t btns[] = {PIN_BTN_UP, PIN_BTN_DOWN, PIN_BTN_A, PIN_BTN_B};
+    return input::anyPressed(4, btns);
+}
 
-const uint16_t horns[] PROGMEM = {
-  NOTE_C4,300, NOTE_D3,150, NOTE_REST,150, NOTE_C3,150, NOTE_G3,750, NOTE_D4,900,
-  NOTE_B3,37, NOTE_G3,37, NOTE_E3,37, NOTE_C3,37, NOTE_A2,37, NOTE_F2,37,
-  NOTE_D2,37, NOTE_B1,500, TONES_END
-};
+static void debounceButtons() {
+    ostime::delay_ms(1);
+    while (jumpPressed()) { input::update(); }
+    ostime::delay_ms(1);
+}
 
-const uint16_t hit[] PROGMEM = {
-  NOTE_C4,31, NOTE_CS4,31, NOTE_D4,31, TONES_END
-};
+static void beginJump() {
+    ballV = BALL_JUMP_VELOCITY;
+    ballFrame = 0;
+    ballYi = ballY;
+}
+
+static void startFalling() {
+    ballFrame = 0;
+    ballYi = ballY;
+    ballV = 0;
+}
+
+static void moveFloaty() {
+    ballYprev = ballY;
+    ballFrame++;
+    ballV += (BALL_ACCELERATION / 2);
+    ballY = ((((ballV * ballFrame)
+           + (NEG_OFFSET << FRAC_BITS)
+           + (1 << (FRAC_BITS - 1)))
+            >> FRAC_BITS)
+             - NEG_OFFSET)
+              + ballYi;
+}
+
+static void drawFloor() {
+    gfx::drawFastHLine(0, GFX_HEIGHT-1, GFX_WIDTH, GFX_WHITE);
+}
+
+static void drawFloaty() {
+    ballFlapper--;
+    if (ballFlapper > BALL_RADIUS) ballFlapper = BALL_RADIUS;
+    gfx::drawCircle(BALL_X, ballY, BALL_RADIUS, GFX_BLACK);
+    gfx::drawCircle(BALL_X, ballY, BALL_RADIUS, GFX_WHITE);
+    gfx::drawLine(BALL_X, ballY, BALL_X - (BALL_RADIUS+1), ballY - ballFlapper, GFX_WHITE);
+    gfx::drawPixel(BALL_X - (BALL_RADIUS+1), ballY - ballFlapper + 1, GFX_WHITE);
+    gfx::drawPixel(BALL_X + 1, ballY - 2, GFX_WHITE);
+}
+
+static void drawPipes() {
+    for (byte x = 0; x < PIPE_ARRAY_SIZE; x++){
+        if (pipes[0][x] != 0) {
+            gfx::drawRect(pipes[0][x], -1, PIPE_WIDTH, pipes[1][x], GFX_WHITE);
+            gfx::drawRect(pipes[0][x], pipes[1][x] + pipeGap, PIPE_WIDTH,
+                          GFX_HEIGHT - pipes[1][x] - pipeGap, GFX_WHITE);
+            gfx::drawRect(pipes[0][x] - PIPE_CAP_WIDTH, pipes[1][x] - PIPE_CAP_HEIGHT,
+                          PIPE_WIDTH + (PIPE_CAP_WIDTH*2), PIPE_CAP_HEIGHT, GFX_WHITE);
+            gfx::drawRect(pipes[0][x] - PIPE_CAP_WIDTH, pipes[1][x] + pipeGap,
+                          PIPE_WIDTH + (PIPE_CAP_WIDTH*2), PIPE_CAP_HEIGHT, GFX_WHITE);
+            gfx::drawLine(pipes[0][x]+2, 0, pipes[0][x]+2, pipes[1][x]-5, GFX_WHITE);
+            gfx::drawLine(pipes[0][x]+2, pipes[1][x] + pipeGap + 5,
+                          pipes[0][x]+2, GFX_HEIGHT - 3, GFX_WHITE);
+        }
+    }
+}
+
+static void generatePipe() {
+    for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) {
+        if (pipes[0][x] == 0) {
+            pipes[0][x] = GFX_WIDTH;
+            pipes[1][x] = rng::next(PIPE_MIN_HEIGHT, GFX_HEIGHT - PIPE_MIN_HEIGHT - pipeGap);
+            return;
+        }
+    }
+}
+
+static bool checkPipe(byte x) {
+    byte AxA = BALL_X - (BALL_RADIUS-1);
+    byte AxB = BALL_X + (BALL_RADIUS-1);
+    byte AyA = ballY - (BALL_RADIUS-1);
+    byte AyB = ballY + (BALL_RADIUS-1);
+    byte BxA, BxB, ByA, ByB;
+
+    BxA = pipes[0][x]; BxB = pipes[0][x] + PIPE_WIDTH;
+    ByA = 0; ByB = pipes[1][x];
+    if (AxA < BxB && AxB > BxA && AyA < ByB && AyB > ByA) return true;
+    BxA = pipes[0][x] - PIPE_CAP_WIDTH;
+    BxB = BxA + PIPE_WIDTH + (PIPE_CAP_WIDTH*2);
+    ByA = pipes[1][x] - PIPE_CAP_HEIGHT;
+    if (AxA < BxB && AxB > BxA && AyA < ByB && AyB > ByA) return true;
+    BxA = pipes[0][x]; BxB = pipes[0][x] + PIPE_WIDTH;
+    ByA = pipes[1][x] + pipeGap; ByB = GFX_HEIGHT-1;
+    if (AxA < BxB && AxB > BxA && AyA < ByB && AyB > ByA) return true;
+    BxA = pipes[0][x] - PIPE_CAP_WIDTH;
+    BxB = BxA + PIPE_WIDTH + (PIPE_CAP_WIDTH*2);
+    ByB = ByA + PIPE_CAP_HEIGHT;
+    if (AxA < BxB && AxB > BxA && AyA < ByB && AyB > ByA) return true;
+    return false;
+}
+
+static void drawInfo() {
+    gfx::setCursor(6, 3);
+    gfx::print("A,B,Up,Down: Jump");
+    gfx::setCursor(6, 51);
+    gfx::print("Left: Sound On/Off");
+
+    byte ulS = audioOn ? 13*6 : 16*6;
+    byte ulL = audioOn ? 11 : 17;
+    gfx::drawFastHLine(ulS, 59, ulL, GFX_WHITE);
+    gfx::drawFastHLine(ulS, 60, ulL, GFX_WHITE);
+}
+
+// --- Entry points ---
 
 void setup() {
-  arduboy.begin();
-  arduboy.setFrameRate(FRAMES_PER_SECOND);
-  arduboy.clear();
-  arduboy.drawSlowXYBitmap(0,0,floatyball,128,64,1);
-  arduboy.display();
-  sound.tones(intro);
-  delay(500);
-  arduboy.setCursor(18,55);
-  arduboy.print("Press Any Button");
-  arduboy.display();
+    gfx::init();
+    gfx::setTextSize(1);
+    gfx::setTextColor(GFX_WHITE);
+    input::init();
+    ostime::init();
+    beep::init();
+    rng::init();
+    ostime::setFrameRate(FRAMES_PER_SECOND);
 
-  while (!arduboy.buttonsState()) { } // Wait for any key press
+    // Show title screen
+    gfx::drawBitmap(0, 0, floatyball, 128, 64, GFX_WHITE);
+    gfx::display();
+    beep::tone(523, 500);  // C5
+    beep::tone(261, 500);  // C4
+    ostime::delay_ms(500);
+    gfx::clear();
+    gfx::setCursor(18, 55);
+    gfx::print("Press Any Button");
+    gfx::display();
 
-  debounceButtons();
+    while (!jumpPressed()) { input::update(); }
+    debounceButtons();
 
-  arduboy.initRandomSeed();
-  for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) { pipes[0][x] = 0; }  // Set all pipes offscreen
+    for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) pipes[0][x] = 0;
 }
 
 void loop() {
-  if (!arduboy.nextFrame())
-    return;
+    if (!ostime::nextFrame()) return;
+    input::update();
+    frameCount++;
 
-  if (arduboy.pressed(LEFT_BUTTON)) { // If the button for sound toggle is pressed
-    
-    if (arduboy.audio.enabled()) {    // If sound is enabled
-      sound.noTone();                 // Stop anything that's playing
-      arduboy.audio.off();            // Mute sounds
-    } else {
-      arduboy.audio.on();             // Enable sound
-      sound.tones(bing);              // Play a sound to indicate sound has been turned on
-    }
-    debounceButtons();                // Wait for button release
-  }
-
-  arduboy.clear();
-  
-  // ===== State: Wait to begin =====
-  if (gameState == 0) {     // If waiting to begin
-    drawFloor();
-    drawFloaty();
-    drawInfo();             // Display usage info
-
-    if (jumpPressed()) {    // Wait for a jump button press
-      gameState = 1;        // Then start the game
-      sound.noTone();       // Stop any playing sound
-      beginJump();          // And make Floaty jump
-    }
-  }
-
-  // ===== State: Playing =====
-  if (gameState == 1) {     // If the game is playing
-    // If the ball isn't already rising, check for jump
-    if ((ballYprev <= ballY) && jumpPressed()) {
-      beginJump();          // Jump
+    // Sound toggle
+    if (input::justPressed(PIN_BTN_LEFT)) {
+        audioOn = !audioOn;
+        if (audioOn) beep::playMelody(melody_bing);
+        debounceButtons();
     }
 
-    moveFloaty();
+    gfx::clear();
 
-    if (ballY < BALL_RADIUS) {  // If Floaty has moved above the top of the screen
-      ballY = BALL_RADIUS;      // Set position to top
-      startFalling();           // Start falling
-    }
-
-    if (arduboy.everyXFrames(PIPE_GEN_FRAMES)) { // Every PIPE_GEN_FRAMES worth of frames
-      generatePipe();                  // Generate a pipe
-    }
-
-    for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) {  // For each pipe array element
-      if (pipes[0][x] != 0) {           // If the pipe is active
-        pipes[0][x] = pipes[0][x] - PIPE_MOVE_DISTANCE;  // Then move it left
-        if (pipes[0][x] + PIPE_WIDTH < 0) {  // If the pipe's right edge is off screen
-          pipes[0][x] = 0;              // Then set it inactive
+    // --- State: Wait to begin ---
+    if (gameState == 0) {
+        drawFloor();
+        drawFloaty();
+        drawInfo();
+        if (jumpPressed()) {
+            gameState = 1;
+            beginJump();
         }
-        if (pipes[0][x] + PIPE_WIDTH == (BALL_X - BALL_RADIUS)) {  // If the pipe passed Floaty
-          gameScore++;                  // Increment the score
-          pipeReduceCount--;            // Decrement the gap reduction counter
-          gameScoreX = BALL_X;                  // Load up the floating text with
-          gameScoreY = ballY - BALL_RADIUS - 8; //  current ball x/y values
-          gameScoreRiser = 15;          // And set it for 15 frames
-          sound.tones(point);
-        }
-      }
     }
 
-    if (gameScoreRiser > 0) {  // If we have floating text
-      gameScoreY--;
-      if (gameScoreY >= 0) { // If the score will still be on the screen
-        arduboy.setCursor(gameScoreX, gameScoreY);
-        arduboy.print(gameScore);
-        gameScoreX = gameScoreX - 2;
-        gameScoreRiser--;
-      } else {
+    // --- State: Playing ---
+    if (gameState == 1) {
+        if ((ballYprev <= ballY) && jumpPressed()) beginJump();
+        moveFloaty();
+        if (ballY < BALL_RADIUS) { ballY = BALL_RADIUS; startFalling(); }
+
+        if ((frameCount % PIPE_GEN_FRAMES) == 0) generatePipe();
+
+        for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) {
+            if (pipes[0][x] != 0) {
+                pipes[0][x] -= PIPE_MOVE_DISTANCE;
+                if (pipes[0][x] + PIPE_WIDTH < 0) pipes[0][x] = 0;
+                if (pipes[0][x] + PIPE_WIDTH == BALL_X - BALL_RADIUS) {
+                    gameScore++;
+                    pipeReduceCount--;
+                    gameScoreX = BALL_X;
+                    gameScoreY = ballY - BALL_RADIUS - 8;
+                    gameScoreRiser = 15;
+                    if (audioOn) beep::playMelody(melody_point);
+                }
+            }
+        }
+
+        if (gameScoreRiser > 0) {
+            gameScoreY--;
+            if (gameScoreY >= 0) {
+                gfx::setCursor(gameScoreX, gameScoreY);
+                gfx::print((int16_t)gameScore);
+                gameScoreX -= 2;
+                gameScoreRiser--;
+            } else gameScoreRiser = 0;
+        }
+
+        if (ballY + BALL_RADIUS > GFX_HEIGHT-1) {
+            ballY = GFX_HEIGHT-1 - BALL_RADIUS;
+            gameState = 2;
+        }
+
+        for (byte x = 0; x < PIPE_ARRAY_SIZE; x++)
+            if (pipes[0][x] != 0 && checkPipe(x)) gameState = 2;
+
+        drawPipes();
+        drawFloor();
+        drawFloaty();
+
+        if (pipeGap > PIPE_GAP_MIN && pipeReduceCount <= 0) {
+            pipeGap--;
+            pipeReduceCount = PIPE_GAP_REDUCE;
+        }
+    }
+
+    // --- State: Game Over ---
+    if (gameState == 2) {
+        if (gameScore > gameHighScore) gameHighScore = gameScore;
+        gfx::display();
+        if (audioOn) beep::playMelody(melody_hit);
+        ostime::delay_ms(100);
+
+        startFalling();
+        while (ballY + BALL_RADIUS < GFX_HEIGHT-1) {
+            if (!ostime::nextFrame()) continue;
+            moveFloaty();
+            gfx::clear();
+            drawPipes();
+            drawFloor();
+            drawFloaty();
+            gfx::display();
+        }
+
+        beep::tone(261, 300);
+        ostime::delay_ms(100);
+        gfx::drawRect(16, 8, 96, 48, GFX_WHITE);
+        gfx::fillRect(17, 9, 94, 46, GFX_BLACK);
+        gfx::drawBitmap(30, 12, gameover, 72, 14, GFX_WHITE);
+
+        gfx::setCursor(50 - getOffset(gameScore), 30);
+        gfx::print((int16_t)gameScore);
+        gfx::setCursor(62, 30);
+        gfx::print("Score");
+        gfx::setCursor(50 - getOffset(gameHighScore), 42);
+        gfx::print((int16_t)gameHighScore);
+        gfx::setCursor(62, 42);
+        gfx::print("High");
+        gfx::display();
+
+        ostime::delay_ms(1000);
+        while (!jumpPressed()) { input::update(); }
+        debounceButtons();
+
+        gameState = 0;
+        beep::tone(523, 150);
+        gameScore = 0;
         gameScoreRiser = 0;
-      }
+        for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) pipes[0][x] = 0;
+        ballY = BALL_Y_START;
+        pipeGap = PIPE_GAP_MAX;
+        pipeReduceCount = PIPE_GAP_REDUCE;
     }
 
-    if (ballY + BALL_RADIUS > (HEIGHT-1)) {  // If the ball has fallen below the screen
-      ballY = (HEIGHT-1) - BALL_RADIUS;      // Don't let the ball go under :O
-      gameState = 2;                        // Game over. State is 2.
-    }
-    // Collision checking
-    for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) { // For each pipe array element
-      if (pipes[0][x] != 0) {                 // If the pipe is active (not 0)
-        if (checkPipe(x)) { gameState = 2; }  // If the check is true, game over
-      }
-    }
-
-    drawPipes();
-    drawFloor();
-    drawFloaty();
-
-    // Reduce pipe gaps as the game progresses
-    if ((pipeGap > PIPE_GAP_MIN) && (pipeReduceCount <= 0)) {
-      pipeGap--;
-      pipeReduceCount = PIPE_GAP_REDUCE;  // Restart the countdown
-    }
-  }
-
-  // ===== State: Game Over =====
-  if (gameState == 2) {  // If the gameState is 2 then we draw a Game Over screen w/ score
-    if (gameScore > gameHighScore) { gameHighScore = gameScore; }
-    arduboy.display();              // Make sure final frame is drawn
-    sound.tones(hit);               // Hit sound
-    delay(100);                     // Pause for the sound
-    startFalling();                 // Start falling from current position
-    while (ballY + BALL_RADIUS < (HEIGHT-1)) {  // While floaty is still airborne
-      moveFloaty();
-      arduboy.clear();
-      drawPipes();
-      drawFloor();
-      drawFloaty();
-      arduboy.display();
-      while (!arduboy.nextFrame()) { }  // Wait for next frame
-    }
-    sound.tones(horns);                  // Sound the loser's horn
-    arduboy.drawRect(16,8,96,48, WHITE); // Box border
-    arduboy.fillRect(17,9,94,46, BLACK); // Black out the inside
-    arduboy.drawSlowXYBitmap(30,12,gameover,72,14,1);
-    arduboy.setCursor(50 - getOffset(gameScore),30);
-    arduboy.print(gameScore);
-    arduboy.setCursor(62,30);
-    arduboy.print("Score");
-
-    arduboy.setCursor(50 - getOffset(gameHighScore),42);
-    arduboy.print(gameHighScore);
-    arduboy.setCursor(62,42);
-    arduboy.print("High");
-
-    arduboy.display();
-    delay(1000);         // Give some time to stop pressing buttons
-
-    while (!jumpPressed()) { } // Wait for a jump button to be pressed
-    debounceButtons();
-
-    gameState = 0;       // Then start the game paused
-    sound.tones(intro);  // Play the intro
-    gameScore = 0;       // Reset score to 0
-    gameScoreRiser = 0;  // Clear the floating score
-    for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) { pipes[0][x] = 0; }  // set all pipes inactive
-    ballY = BALL_Y_START;   // Reset to initial ball height
-    pipeGap = PIPE_GAP_MAX; // Reset the pipe gap height
-    pipeReduceCount = PIPE_GAP_REDUCE; // Init the pipe gap reduction counter
-  }
-
-  arduboy.display();  // Finally draw this thang
-  
+    gfx::display();
 }
-
-void drawInfo() {
-  byte ulStart;     // Start of underline to indicate sound status
-  byte ulLength;    // Length of underline
-
-  arduboy.setCursor(6, 3);
-  arduboy.print("A,B,Up,Down: Jump");
-  arduboy.setCursor(6, 51);
-  arduboy.print("Left: Sound On/Off");
-
-  if (arduboy.audio.enabled()) {
-    ulStart = 13 * 6;
-    ulLength = 2 * 6 - 1;
-  } else {
-    ulStart = 16 * 6;
-    ulLength = 3 * 6 - 1;
-  }
-  arduboy.drawFastHLine(ulStart, 51 + 8, ulLength, WHITE); // Underline the current sound mode
-  arduboy.drawFastHLine(ulStart, 51 + 9, ulLength, WHITE);
-}
-
-void drawFloor() {
-  arduboy.drawFastHLine(0, HEIGHT-1, WIDTH, WHITE);
-}
-
-void drawFloaty() {
-  ballFlapper--;
-  if (ballFlapper < 0) { ballFlapper = BALL_RADIUS; }  // Flapper starts at the top of the ball
-  arduboy.drawCircle(BALL_X, ballY, BALL_RADIUS, BLACK);  // Black out behind the ball
-  arduboy.drawCircle(BALL_X, ballY, BALL_RADIUS, WHITE);  // Draw outline
-  arduboy.drawLine(BALL_X, ballY, BALL_X - (BALL_RADIUS+1), ballY - ballFlapper, WHITE);  // Draw wing
-  arduboy.drawPixel(BALL_X - (BALL_RADIUS+1), ballY - ballFlapper + 1, WHITE);  // Dot the wing
-  arduboy.drawPixel(BALL_X + 1, ballY - 2, WHITE);  // Eye
-}
-
-void drawPipes() {
-  for (byte x = 0; x < PIPE_ARRAY_SIZE; x++){
-    if (pipes[0][x] != 0) {    // Value set to 0 if array element is inactive,
-                               // otherwise it is the xvalue of the pipe's left edge
-      // Pipes
-      arduboy.drawRect(pipes[0][x], -1, PIPE_WIDTH, pipes[1][x], WHITE);
-      arduboy.drawRect(pipes[0][x], pipes[1][x] + pipeGap, PIPE_WIDTH, HEIGHT - pipes[1][x] - pipeGap, WHITE);
-      // Caps
-      arduboy.drawRect(pipes[0][x] - PIPE_CAP_WIDTH, pipes[1][x] - PIPE_CAP_HEIGHT, PIPE_WIDTH + (PIPE_CAP_WIDTH*2), PIPE_CAP_HEIGHT, WHITE);
-      arduboy.drawRect(pipes[0][x] - PIPE_CAP_WIDTH, pipes[1][x] + pipeGap, PIPE_WIDTH + (PIPE_CAP_WIDTH*2), PIPE_CAP_HEIGHT, WHITE);
-      // Detail lines
-      arduboy.drawLine(pipes[0][x]+2, 0, pipes[0][x]+2, pipes[1][x]-5, WHITE);
-      arduboy.drawLine(pipes[0][x]+2, pipes[1][x] + pipeGap + 5, pipes[0][x]+2, HEIGHT - 3,WHITE);
-    }
-  }
-}
-
-void generatePipe() {
-  for (byte x = 0; x < PIPE_ARRAY_SIZE; x++) {
-    if (pipes[0][x] == 0) { // If the element is inactive
-      pipes[0][x] = WIDTH;  // Then create it starting right of the screen
-      pipes[1][x] = random(PIPE_MIN_HEIGHT, HEIGHT - PIPE_MIN_HEIGHT - pipeGap);
-      return;
-    }
-  }
-}
-
-boolean checkPipe(byte x) {  // Collision detection, x is pipe to check
-  byte AxA = BALL_X - (BALL_RADIUS-1);  // Hit box for floaty is a square
-  byte AxB = BALL_X + (BALL_RADIUS-1);  // If the ball radius increases too much, corners
-  byte AyA = ballY - (BALL_RADIUS-1);  // of the hitbox will go outside of floaty's
-  byte AyB = ballY + (BALL_RADIUS-1);  // drawing
-  byte BxA, BxB, ByA, ByB;
-
-  // check top cylinder
-  BxA = pipes[0][x];
-  BxB = pipes[0][x] + PIPE_WIDTH;
-  ByA = 0;
-  ByB = pipes[1][x];
-  if (AxA < BxB && AxB > BxA && AyA < ByB && AyB > ByA) { return true; } // Collided with top pipe
-
-  // check top cap
-  BxA = pipes[0][x] - PIPE_CAP_WIDTH;
-  BxB = BxA + PIPE_WIDTH + (PIPE_CAP_WIDTH*2);
-  ByA = pipes[1][x] - PIPE_CAP_HEIGHT;
-  if (AxA < BxB && AxB > BxA && AyA < ByB && AyB > ByA) { return true; } // Collided with top cap
-
-  // check bottom cylinder
-  BxA = pipes[0][x];
-  BxB = pipes[0][x] + PIPE_WIDTH;
-  ByA = pipes[1][x] + pipeGap;
-  ByB = HEIGHT-1;
-  if (AxA < BxB && AxB > BxA && AyA < ByB && AyB > ByA) { return true; } // Collided with bottom pipe
-
-  // check bottom cap
-  BxA = pipes[0][x] - PIPE_CAP_WIDTH;
-  BxB = BxA + PIPE_WIDTH + (PIPE_CAP_WIDTH*2);
-  ByB = ByA + PIPE_CAP_HEIGHT;
-  if (AxA < BxB && AxB > BxA && AyA < ByB && AyB > ByA) { return true; } // Collided with bottom pipe
-
-  return false; // Nothing hits
-}
-
-boolean jumpPressed() { // Return "true" if a jump button is pressed
-  return (arduboy.buttonsState() & (UP_BUTTON | DOWN_BUTTON | A_BUTTON | B_BUTTON)) != 0;
-}
-
-void beginJump() {
-  if (!sound.playing()) {   // Play "flap" sound only if nothing is playing
-   sound.tone(NOTE_C1, 125);
-  }
-  ballV = BALL_JUMP_VELOCITY;
-  ballFrame = 0;
-  ballYi = ballY;
-}
-
-void startFalling() {   // Start falling from current height
-  ballFrame = 0;        // Start a new fall
-  ballYi = ballY;       // Set initial arc position
-  ballV = 0;            // Set velocity to 0
-}
-
-void moveFloaty() {
-  ballYprev = ballY;                   // Save the previous height
-  ballFrame++;                         // Next frame
-  ballV += (BALL_ACCELERATION / 2);    // Increase the velocity
-                                     // Calculate Floaty's new height:
-  ballY = ((((ballV * ballFrame)       // Complete "distance from initial height" calculation
-           + (NEG_OFFSET << FRAC_BITS) // Add an offset to make sure the value is positive
-           + (1 << (FRAC_BITS - 1)))   // Add 0.5 to round up
-            >> FRAC_BITS)              // shift down to remove the fraction part
-             - NEG_OFFSET)             // Remove previously added offset
-              + ballYi;                // Add the result to the start height to get the new height
-}
-
-void debounceButtons() { // prevent "noisy" buttons from appearing as multiple presses
-  delay(1);
-  while (arduboy.buttonsState()) { }  // Wait for all keys released
-  delay(1);
-}
-
-byte getOffset(unsigned int s) {
-  if (s > 9999) { return 24; }
-  if (s > 999) { return 18; }
-  if (s > 99) { return 12; }
-  if (s > 9) { return 6; }
-  return 0;
-}
-
