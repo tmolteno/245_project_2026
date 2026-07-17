@@ -4,6 +4,11 @@
 
 uint16_t TouchState (0);
 
+// Per-channel calibrated thresholds (loaded from EEPROM on v2)
+static uint16_t touchThreshold[TOUCH_MAX_CHANNELS];
+static uint16_t touchDebounce[TOUCH_MAX_CHANNELS];
+static bool     touchCalibrated = false;
+
 // Map pin name to ADC touch-key channel (TK0-TK9)
 uint8_t pin_to_touch_adc(uint8_t pin)
 {
@@ -17,6 +22,13 @@ uint8_t pin_to_touch_adc(uint8_t pin)
 
 void initTouchButtons()
 {
+    // Set defaults for all channels
+    for (uint8_t ch = 0; ch < TOUCH_MAX_CHANNELS; ch++) {
+        touchThreshold[ch] = TOUCH_THRESHOLD_DEFAULT;
+        touchDebounce[ch]  = TOUCH_DEBOUNCE_DEFAULT;
+    }
+    touchCalibrated = false;
+
     GPIO_InitTypeDef GPIO_InitStructure={0};
 	ADC_InitTypeDef ADC_InitStructure={0};
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE );
@@ -77,15 +89,104 @@ int IsTouched(unsigned long int channel)
 {
     uint8_t adc_ch = pin_to_touch_adc(channel);
     uint16_t val = Touch_Key_Adc(adc_ch);
-    if ( !(TouchState & (1 << adc_ch)) && val < TOUCH_THRESHOLD )
+    uint16_t thresh = touchThreshold[adc_ch];
+    uint16_t deb    = touchDebounce[adc_ch];
+
+    if ( !(TouchState & (1 << adc_ch)) && val < thresh )
         {
             TouchState |= (1 << adc_ch);
             return 1;
         }
-    if ( (TouchState & (1 << adc_ch)) && val > (TOUCH_THRESHOLD + TOUCH_DEBOUNCE) )
+    if ( (TouchState & (1 << adc_ch)) && val > (thresh + deb) )
         {
             TouchState &= ~(1 << adc_ch);
             return 0;
         }
     return (TouchState & (1 << adc_ch));
 }
+
+#if HW_VERSION == 2
+#include "storage.h"
+
+// Magic tag in EEPROM to know if calibration has been stored
+static const char CALIB_TAG[] = "TCH#";  // 4-char tag
+
+// Packed calibration: 8-bit values (threshold/16, debounce/16) per channel.
+// 6 channels used (PA0-PA3, PB0-PB1) = 12 bytes, fits in EEPROM.
+struct CalibData {
+    uint8_t threshold[6];  // value = real / 16
+    uint8_t debounce[6];
+};
+
+// Map logical channels (0-5) to physical ADC channels
+static uint8_t calibChannelMap[6];
+
+void touchCalibrate()
+{
+    // Build channel map: PA0-PA3 (adc 0-3), PB0-PB1 (adc 8-9)
+    calibChannelMap[0] = pin_to_touch_adc(PIN_BTN_UP);
+    calibChannelMap[1] = pin_to_touch_adc(PIN_BTN_DOWN);
+    calibChannelMap[2] = pin_to_touch_adc(PIN_BTN_LEFT);
+    calibChannelMap[3] = pin_to_touch_adc(PIN_BTN_RIGHT);
+    calibChannelMap[4] = pin_to_touch_adc(PIN_BTN_A);
+    calibChannelMap[5] = pin_to_touch_adc(PIN_BTN_B);
+
+    // Check if already calibrated
+    CalibData calib;
+    if (storage::loadGame(CALIB_TAG, &calib, sizeof(calib)) == sizeof(calib)) {
+        // Restore saved calibration
+        for (uint8_t i = 0; i < 6; i++) {
+            uint8_t ch = calibChannelMap[i];
+            touchThreshold[ch] = ((uint16_t)calib.threshold[i]) << 4;
+            touchDebounce[ch]  = ((uint16_t)calib.debounce[i])  << 4;
+        }
+        touchCalibrated = true;
+        return;
+    }
+
+    // First boot — run calibration. Read baseline (untouched) values
+    // for each used channel and set threshold below the baseline.
+    for (uint8_t i = 0; i < 6; i++) {
+        uint8_t ch = calibChannelMap[i];
+        uint32_t sum = 0;
+        for (uint8_t s = 0; s < 16; s++) {
+            sum += Touch_Key_Adc(ch);
+            delay(2);  // let ADC settle
+        }
+        uint16_t baseline = (uint16_t)(sum / 16);
+
+        // Threshold ~60% of baseline to detect touch reliably
+        uint16_t thresh = (uint16_t)((uint32_t)baseline * 60 / 100);
+        if (thresh < 0x200) thresh = 0x200;
+
+        touchThreshold[ch] = thresh;
+        touchDebounce[ch]  = thresh / 10;
+
+        // Pack into 8-bit (divide by 16, range 0-4080)
+        calib.threshold[i] = (uint8_t)(thresh >> 4);
+        calib.debounce[i]  = (uint8_t)(touchDebounce[ch] >> 4);
+    }
+
+    storage::saveGame(CALIB_TAG, &calib, sizeof(calib));
+    touchCalibrated = true;
+}
+
+bool touchIsCalibrated()
+{
+    return touchCalibrated;
+}
+
+#else
+// v1: no EEPROM, use defaults
+
+void touchCalibrate()
+{
+    // v1 always uses default thresholds — no EEPROM available
+    touchCalibrated = true;
+}
+
+bool touchIsCalibrated()
+{
+    return touchCalibrated;
+}
+#endif

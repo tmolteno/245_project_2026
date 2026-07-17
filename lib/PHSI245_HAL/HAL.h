@@ -47,14 +47,21 @@
 #endif
 
 // Button Management
-    // Tune Sensitivity
-    #define TOUCH_THRESHOLD 0x0E20
-    #define TOUCH_DEBOUNCE  0x01A0
+    // Default touch thresholds (used until calibration runs)
+    #define TOUCH_THRESHOLD_DEFAULT 0x0E20
+    #define TOUCH_DEBOUNCE_DEFAULT  0x01A0
+    #define TOUCH_MAX_CHANNELS 10
 
     // Detect if a certain pin is currently touched
     extern int IsTouched(unsigned long int channel);
     // Start up button adc
     extern void initTouchButtons();
+
+    // Run touch calibration (measures baseline, stores in EEPROM on v2).
+    // Call once on first boot — subsequent calls are no-ops if already calibrated.
+    extern void touchCalibrate();
+    // Returns true if calibration has been run (v2 only; always false on v1).
+    extern bool touchIsCalibrated();
 
     // Useful for random numbers
     uint16_t Touch_Key_Adc(uint8_t ch);
