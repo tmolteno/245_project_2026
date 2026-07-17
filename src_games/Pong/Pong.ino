@@ -16,17 +16,8 @@ static const int16_t PADDLE_X = 120;
 static void drawStartScreen()
 {
     gfx::clear();
-    gfx::drawFastHLine(0, 9, GFX_WIDTH, GFX_WHITE);
-    gfx::setCursor(20, 1);
-    gfx::print("PONG");
-
-    gfx::setCursor(14, 22);
-    gfx::print("UP / DOWN: move");
-    gfx::setCursor(14, 32);
-    gfx::print("A: start game");
-    gfx::setCursor(14, 42);
-    gfx::print("B: quit");
-
+    const char *menu[] = {"Start Game", "Quit"};
+    gfx::drawMenu(14, 22, menu, 2, 0, 14);
     gfx::display();
 }
 
@@ -42,32 +33,26 @@ static void resetGame()
 
 static void updateGame()
 {
-    // Update ball position
     ballX += ballDX;
     ballY += ballDY;
 
-    // Top/bottom bounce
     if (ballY <= 1)  { ballY = 1;  ballDY = -ballDY; }
     if (ballY >= 62) { ballY = 62; ballDY = -ballDY; }
-
-    // Left wall bounce
     if (ballX <= 1)  { ballX = 1;  ballDX = -ballDX; }
 
-    // Paddle hit
     if (ballX >= PADDLE_X - 2 && ballX <= PADDLE_X + 1 &&
         ballY >= paddleY && ballY <= paddleY + PADDLE_H) {
         ballX = PADDLE_X - 2;
         ballDX = -ballDX;
         score++;
+        beep::tone(880, 20);  // short high beep on paddle hit
     }
 
-    // Right wall miss — game over
     if (ballX >= 127) {
         playing = false;
-        beep::beep_error();
+        beep::tone(220, 300); // low tone on game over
     }
 
-    // Player input
     if (input::pressed(PIN_BTN_UP)   && paddleY > 2)           paddleY -= 2;
     if (input::pressed(PIN_BTN_DOWN) && paddleY < 62 - PADDLE_H) paddleY += 2;
 }
@@ -76,16 +61,13 @@ static void drawGame()
 {
     gfx::clear();
 
-    // Ball and paddle
     gfx::drawPixel(ballX, ballY, GFX_WHITE);
     gfx::drawFastVLine(PADDLE_X, paddleY, PADDLE_H, GFX_WHITE);
 
-    // Score bar
+    // Score bar using drawNumber
     gfx::drawFastHLine(0, 0, GFX_WIDTH, GFX_WHITE);
+    gfx::drawNumber(120, GFX_HEIGHT - 7, score, 3);
     gfx::setCursor(2, GFX_HEIGHT - 7);
-    gfx::print("Score:");
-    gfx::print((int16_t)score);
-    gfx::setCursor(90, GFX_HEIGHT - 7);
     gfx::print("B:Quit");
 
     gfx::display();
@@ -101,10 +83,13 @@ void setup()
     input::init();
     ostime::init();
     beep::init();
+    rng::init();
+    ostime::setFrameRate(40);
 }
 
 void loop()
 {
+    if (!ostime::nextFrame()) return;
     input::update();
 
     if (!playing) {
@@ -115,10 +100,8 @@ void loop()
             playing = true;
         }
         if (input::justPressed(PIN_BTN_B)) {
-            // Exit — restart MCU to return to bootloader
             NVIC_SystemReset();
         }
-        ostime::delay_ms(40);
         return;
     }
 
@@ -128,6 +111,4 @@ void loop()
     if (input::justPressed(PIN_BTN_B)) {
         playing = false;
     }
-
-    ostime::delay_ms(25);
 }

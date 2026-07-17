@@ -583,4 +583,46 @@ void print(uint16_t n)
     }
 }
 
+void drawNumber(int16_t x, int16_t y, uint16_t n, uint8_t digits)
+{
+    // Build the number string right-to-left
+    char buf[6];  // max 5 digits + null
+    int8_t pos = digits;
+    buf[pos] = '\0';
+    while (pos > 0) {
+        pos--;
+        if (n > 0 || pos == (int8_t)(digits - 1)) {
+            buf[pos] = '0' + (n % 10);
+            n /= 10;
+        } else {
+            buf[pos] = ' ';  // leading space
+        }
+    }
+
+    // Right-align: compute pixel width and position cursor
+    int16_t charW = 6 * textSize;
+    int16_t cx = x - (digits * charW);
+
+    for (uint8_t i = 0; i < digits; i++) {
+        drawChar(cx, y, buf[i], textColor, textSize);
+        cx += charW;
+    }
+}
+
+void drawMenu(int16_t x, int16_t y, const char *items[], uint8_t count,
+              uint8_t cursor, uint8_t lineH)
+{
+    int16_t prevX = cursorX, prevY = cursorY;
+    for (uint8_t i = 0; i < count; i++) {
+        int16_t lineY = y + i * lineH;
+        setCursor(x, lineY);
+        if (i == cursor)
+            print(">");
+        setCursor(x + 8, lineY);
+        print(items[i]);
+    }
+    cursorX = prevX;
+    cursorY = prevY;
+}
+
 } // namespace gfx

@@ -99,6 +99,17 @@ Sprite draw modes: `GFX_SPRITE_UNMASKED`, `GFX_SPRITE_MASKED`,
 The frame buffer is 1024 bytes (`gfx::buffer`) in RAM. Call `gfx::display()`
 to push it to the OLED.
 
+**Score & Menu Helpers**:
+
+```cpp
+// Right-aligned 5-digit score at x=120 (right edge)
+gfx::drawNumber(120, 0, score, 5);
+
+// Simple text menu with 3 items, line spacing 14px
+const char *items[] = {"Play", "Options", "Quit"};
+gfx::drawMenu(10, 16, items, 3, cursor, 14);
+```
+
 ### Input (`input.h`)
 
 | Function | Description |
@@ -108,6 +119,9 @@ to push it to the OLED.
 | `input::pressed(pin)` | True while button is held |
 | `input::justPressed(pin)` | True on the frame the button is first pressed |
 | `input::justReleased(pin)` | True on the frame the button is released |
+| `input::heldFor(pin, delay, repeat)` | True after `delay` ms, then every `repeat` ms |
+| `input::allPressed(n, pins[])` | True if all N given pins are pressed |
+| `input::anyPressed(n, pins[])` | True if any of N given pins are pressed |
 
 Button pins: `PIN_BTN_UP`, `PIN_BTN_DOWN`, `PIN_BTN_LEFT`, `PIN_BTN_RIGHT`,
 `PIN_BTN_A`, `PIN_BTN_B`.
@@ -172,8 +186,26 @@ uint8_t y = rng::next(5, 15);    // 5..15
 |----------|-------------|
 | `beep::init()` | Initialize speaker GPIO (PA15 on v2) |
 | `beep::beep_ms(ms)` | Square-wave tone at ~2 kHz for `ms` milliseconds |
+| `beep::tone(freq, ms)` | Play frequency in Hz for N ms (blocks) |
 | `beep::beep_startup()` | Single 50 ms beep |
 | `beep::beep_error()` | Three 100 ms beeps with 50 ms gaps |
+| `beep::playMelody(notes)` | Play PROGMEM note sequence (non-blocking, call each frame) |
+
+Melody format: 4 bytes per note — freqHi, freqLo, durHi, durLo (16-bit Hz, 16-bit ms).
+Freq=0 is a rest. Terminated by `{0,0,0,0}`.
+
+```cpp
+// C-E-G arpeggio, 200ms each
+static const PROGMEM uint8_t arp[] = {
+    0x01, 0x04, 0x00, 0xC8,  // 260 Hz, 200ms (C4)
+    0x01, 0x4E, 0x00, 0xC8,  // 334 Hz, 200ms (E4)
+    0x01, 0x90, 0x00, 0xC8,  // 400 Hz, 200ms (G4)
+    0x00, 0x00, 0x00, 0x00,  // end
+};
+void loop() {
+    beep::playMelody(arp);  // call each frame
+}
+```
 
 ### Storage (`storage.h`) — v2 only
 

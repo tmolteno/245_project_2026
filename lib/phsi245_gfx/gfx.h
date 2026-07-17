@@ -67,4 +67,16 @@ void print(const char *str);
 void print(int16_t n);
 void print(uint16_t n);
 
+// Right-aligned fixed-width number rendering (e.g. scores).
+// Draws `n` at (x, y) with exactly `digits` columns, padding with spaces.
+// The number is clipped if it exceeds the column count.
+// Example: gfx::drawNumber(120, 0, score, 5) — 5-digit score, right edge at x=120
+void drawNumber(int16_t x, int16_t y, uint16_t n, uint8_t digits);
+
+// Simple vertical text menu.
+// Renders `count` items starting at (x, y), highlighting `cursor` with ">".
+// Items are spaced `lineH` pixels apart (use 12 for textSize 1, 24 for textSize 2).
+void drawMenu(int16_t x, int16_t y, const char *items[], uint8_t count,
+              uint8_t cursor, uint8_t lineH = 12);
+
 } // namespace gfx
