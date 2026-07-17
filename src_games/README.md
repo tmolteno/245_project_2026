@@ -1,15 +1,48 @@
 # A set of Arduboy applications for the class project.
 
-Some of these have worked without modification, but many of these have subtle differences from their original versions.
+Some of these have worked without modification, but many of these have subtle
+differences from their original versions.
 
-In `platformio.ini`, set the src_dir variable to one of the application folders, and then compile. E.g.
+## Building Games
 
+Games are built from the project root using `make`:
+
+```bash
+# Build a specific game (uses src_games/<name>/ as src_dir)
+make build-game GAME=OSDemo
+make build-game GAME=HelloNOISE
 ```
+
+The default `make build` target builds the bootloader (`src/`).
+
+You can also manually edit `platformio.ini` and set `src_dir`:
+
+```ini
 [platformio]
 src_dir = src_games/HelloNOISE
 ```
 
-Remove or comment out the `src_dir` line to go back to using the default `src/` directory for development.
+Remove or comment out the `src_dir` line to go back to using the default
+`src/` directory for the bootloader.
+
+## OS Libraries
+
+The project provides a set of OS libraries under `lib/` that games can use
+as an alternative to the legacy Arduboy2 framework:
+
+| Library | Header | Purpose |
+|---------|--------|---------|
+| `phsi245_gfx` | `gfx.h` | 128×64 OLED: pixels, shapes, sprites, text |
+| `phsi245_input` | `input.h` | Button polling with edge detection |
+| `phsi245_led` | `led.h` | LED on/off/toggle control |
+| `phsi245_timer` | `ostime.h` | Millisecond timer and delay |
+| `phsi245_beep` | `beep.h` | Buzzer audio feedback |
+| `phsi245_storage` | `storage.h` | FAT filesystem and SD card (v2 only) |
+| `PHSI245_HAL` | `HAL.h` | Hardware abstraction: GPIO, I2C, SPI, touch keys |
+
+See `lib/` and `NEW_VERSION.md` for API details. The reference example is
+`src_games/OSDemo/OSDemo.ino`, which demonstrates graphics, SD card mounting,
+and file I/O using only the OS libraries (no Arduboy2 dependency).
 
 ## A list of games we have
 
