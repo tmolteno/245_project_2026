@@ -17,11 +17,13 @@ void os_libs_init()
 #if HW_VERSION == 2
     // Pull in storage library (SD + FAT + EEPROM save) on v2 hardware
     storage::initSave();
-    touchCalibrate();   // run once on first boot, loads from EEPROM thereafter
     volatile bool storage_retain = false;
     if (storage_retain)
         fat::mount(&sd::DEVICE);
 #endif
+    // Touch calibration — runs once on v2 (persisted in EEPROM),
+    // every boot on v1 (no persistence)
+    touchCalibrate();
     // Touch button init (HAL) — already called elsewhere, retained here
     initTouchButtons();
 }

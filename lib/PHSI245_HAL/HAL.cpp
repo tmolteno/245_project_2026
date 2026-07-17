@@ -107,14 +107,12 @@ int IsTouched(unsigned long int channel)
 
 #if HW_VERSION == 2
 #include "storage.h"
-
-// Magic tag in EEPROM to know if calibration has been stored
-static const char CALIB_TAG[] = "TCH#";  // 4-char tag
+#endif
 
 // Packed calibration: 8-bit values (threshold/16, debounce/16) per channel.
 // 6 channels used (PA0-PA3, PB0-PB1) = 12 bytes, fits in EEPROM.
 struct CalibData {
-    uint8_t threshold[6];  // value = real / 16
+    uint8_t threshold[6];
     uint8_t debounce[6];
 };
 
@@ -131,10 +129,10 @@ void touchCalibrate()
     calibChannelMap[4] = pin_to_touch_adc(PIN_BTN_A);
     calibChannelMap[5] = pin_to_touch_adc(PIN_BTN_B);
 
-    // Check if already calibrated
+#if HW_VERSION == 2
+    // v2: try to load calibration from EEPROM first
     CalibData calib;
-    if (storage::loadGame(CALIB_TAG, &calib, sizeof(calib)) == sizeof(calib)) {
-        // Restore saved calibration
+    if (storage::loadGame("TCH#", &calib, sizeof(calib)) == sizeof(calib)) {
         for (uint8_t i = 0; i < 6; i++) {
             uint8_t ch = calibChannelMap[i];
             touchThreshold[ch] = ((uint16_t)calib.threshold[i]) << 4;
@@ -143,50 +141,36 @@ void touchCalibrate()
         touchCalibrated = true;
         return;
     }
+#endif
 
-    // First boot — run calibration. Read baseline (untouched) values
-    // for each used channel and set threshold below the baseline.
+    // Run calibration: measure baseline for each channel
     for (uint8_t i = 0; i < 6; i++) {
         uint8_t ch = calibChannelMap[i];
         uint32_t sum = 0;
         for (uint8_t s = 0; s < 16; s++) {
             sum += Touch_Key_Adc(ch);
-            delay(2);  // let ADC settle
+            delay(2);
         }
         uint16_t baseline = (uint16_t)(sum / 16);
-
-        // Threshold ~60% of baseline to detect touch reliably
         uint16_t thresh = (uint16_t)((uint32_t)baseline * 60 / 100);
         if (thresh < 0x200) thresh = 0x200;
 
         touchThreshold[ch] = thresh;
         touchDebounce[ch]  = thresh / 10;
 
-        // Pack into 8-bit (divide by 16, range 0-4080)
+#if HW_VERSION == 2
         calib.threshold[i] = (uint8_t)(thresh >> 4);
         calib.debounce[i]  = (uint8_t)(touchDebounce[ch] >> 4);
+#endif
     }
 
-    storage::saveGame(CALIB_TAG, &calib, sizeof(calib));
-    touchCalibrated = true;
-}
-
-bool touchIsCalibrated()
-{
-    return touchCalibrated;
-}
-
-#else
-// v1: no EEPROM, use defaults
-
-void touchCalibrate()
-{
-    // v1 always uses default thresholds — no EEPROM available
-    touchCalibrated = true;
-}
-
-bool touchIsCalibrated()
-{
-    return touchCalibrated;
-}
+#if HW_VERSION == 2
+    storage::saveGame("TCH#", &calib, sizeof(calib));
 #endif
+    touchCalibrated = true;
+}
+
+bool touchIsCalibrated()
+{
+    return touchCalibrated;
+}
