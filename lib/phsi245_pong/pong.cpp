@@ -13,6 +13,10 @@ static int16_t paddleY = 24;
 static uint8_t score   = 0;
 static bool    playing = false;
 
+// Ball speed: frames between moves. Starts slow (8), speeds up with score.
+static uint8_t ballSpeed = 8;
+static uint8_t ballTick  = 0;
+
 static const int16_t PADDLE_H = 16;
 static const int16_t PADDLE_X = 120;
 
@@ -23,11 +27,13 @@ void init()
     paddleY = 24;
     score = 0;
     playing = false;
+    ballSpeed = 8;
+    ballTick  = 0;
 }
 
 static void randomDirection()
 {
-    ballDX = 2 + rng::next(2);           // speed 2-3
+    ballDX = 2 + rng::next(1);           // speed 2-2 (direction only, not magnitude)
     ballDY = (rng::next(2) ? 1 : -1);    // random up or down
 }
 
@@ -44,10 +50,16 @@ void update()
             randomDirection();
             paddleY = 24;
             score = 0;
+            ballSpeed = 8;
+            ballTick  = 0;
             playing = true;
         }
         return;
     }
+
+    ballTick++;
+    if (ballTick < ballSpeed) return;
+    ballTick = 0;
 
     ballX += ballDX;
     ballY += ballDY;
@@ -61,6 +73,7 @@ void update()
         ballX = PADDLE_X - 2;
         ballDX = -ballDX;
         score++;
+        if (ballSpeed > 2) ballSpeed--;
         beep::tone(880, 20);
     }
 
