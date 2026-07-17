@@ -29,21 +29,21 @@
 #define PIN_LED_0 PB12
 #define PIN_LED_1 PB13
 
-#define PIN_BEEP PA9
-#define PIN_BEEP_OFF HIGH // THe speaker is not drawing current when the pin is high.
+#define PIN_BEEP PA15
+#define PIN_BEEP_OFF HIGH // The speaker is not drawing current when the pin is high.
 
-#define IO_D0 PA15
+#define IO_D0 PA4
 #define IO_D1 PA16
 #define IO_D2 PA17
 #define IO_D3 PA18
 
-// SD card interface (v2 only)
+// SD card interface (v2 only) — SPI1 PartialRemap2
 #if HW_VERSION == 2
 #define SD_SPI_PORT     SPI1
-#define SD_CS_PIN       PA4
-#define SD_SCK_PIN      PA5
-#define SD_MISO_PIN     PA6
-#define SD_MOSI_PIN     PA7
+#define SD_CS_PIN       PA12
+#define SD_SCK_PIN      PA11
+#define SD_MISO_PIN     PA9
+#define SD_MOSI_PIN     PA10
 #endif
 
 // Button Management

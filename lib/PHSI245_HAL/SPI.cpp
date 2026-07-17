@@ -11,31 +11,35 @@ void spi_init(void)
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 
-    // SCK: PA5
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+    // SPI1 PartialRemap2: SCK=PA11, MISO=PA9, MOSI=PA10, CS=PA12
+    GPIO_PinRemapConfig(GPIO_PartialRemap2_SPI1, ENABLE);
+
+    // SCK: PA11
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    // MISO: PA6
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    // MISO: PA9
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    // MOSI: PA7
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+    // MOSI: PA10
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    // CS: PA4 (manual control, not hardware NSS)
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    // CS: PA12 (manual control, not hardware NSS)
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     // CS idle high
-    GPIO_SetBits(GPIOA, GPIO_Pin_4);
+    GPIO_SetBits(GPIOA, GPIO_Pin_12);
 
     SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
     SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
@@ -61,12 +65,12 @@ uint8_t spi_transfer(uint8_t data)
 
 void spi_cs_low(void)
 {
-    GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+    GPIO_ResetBits(GPIOA, GPIO_Pin_12);
 }
 
 void spi_cs_high(void)
 {
-    GPIO_SetBits(GPIOA, GPIO_Pin_4);
+    GPIO_SetBits(GPIOA, GPIO_Pin_12);
 }
 
 #endif // HW_VERSION == 2
