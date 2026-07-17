@@ -448,13 +448,14 @@ void loop()
         break;
 
     case STATE_MENU: {
-        static const char *items[] = {
-            "Play Pong",
-            "Calibrate Touch",
-            "Format SD Card",
-            "Restart",
-        };
-        const uint8_t itemCount = 4;
+        const char *items[5];
+        uint8_t itemCount = 0;
+        items[itemCount++] = "Play Pong";
+        items[itemCount++] = "Calibrate Touch";
+        if (storage::sdAvailable()) {
+            items[itemCount++] = "Format SD Card";
+        }
+        items[itemCount++] = "Restart";
 
         gfx::clear();
         drawHeader("Main Menu");
@@ -486,7 +487,7 @@ void loop()
                 state = STATE_PONG;
             } else if (cursor == 1) {
                 state = STATE_CALIBRATE;
-            } else if (cursor == 2) {
+            } else if (cursor == 2 && storage::sdAvailable()) {
                 state = STATE_FORMAT;
             } else {
                 NVIC_SystemReset();
@@ -515,6 +516,7 @@ void loop()
         break;
     }
 
+#if HW_VERSION == 2
     case STATE_FORMAT: {
         static bool confirmed = false;
 
@@ -576,12 +578,12 @@ void loop()
         ostime::delay_ms(80);
         break;
     }
+#endif
 
 #if HW_VERSION == 1
     case STATE_BROWSE:
     case STATE_FILE_INFO:
     case STATE_EXECUTING:
-    case STATE_FORMAT:
         break;
 #endif
     }
