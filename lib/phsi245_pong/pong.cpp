@@ -27,7 +27,7 @@ void init()
     paddleY = 24;
     score = 0;
     playing = false;
-    ballSpeed = 12;
+    ballSpeed = 4;
     ballTick  = 0;
 }
 
@@ -50,7 +50,7 @@ void update()
             randomDirection();
             paddleY = 24;
             score = 0;
-            ballSpeed = 12;
+            ballSpeed = 4;
             ballTick  = 0;
             playing = true;
         }
