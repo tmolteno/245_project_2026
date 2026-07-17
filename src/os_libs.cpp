@@ -21,9 +21,6 @@ void os_libs_init()
     if (storage_retain)
         fat::mount(&sd::DEVICE);
 #endif
-    // Touch calibration — runs once on v2 (persisted in EEPROM),
-    // every boot on v1 (no persistence)
+    // Touch calibration — interactive on first boot, loads from flash thereafter
     touchCalibrate();
-    // Touch button init (HAL) — already called elsewhere, retained here
-    initTouchButtons();
 }
