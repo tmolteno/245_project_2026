@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir *)",
+      "Bash(riscv-none-embed-nm *)",
+      "Bash(riscv-none-embed-objdump *)",
+      "Bash(/home/tim/.platformio/packages/toolchain-riscv/bin/riscv-wch-elf-nm *)",
+      "Bash(make *)"
+    ]
+  },
+  "$version": 4
+}
