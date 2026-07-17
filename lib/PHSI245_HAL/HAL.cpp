@@ -137,15 +137,30 @@ static void doInteractiveCalibration(uint8_t buildHash)
     gfx::drawFastHLine(0, 12, GFX_WIDTH, GFX_WHITE);
     gfx::display();
 
-    // Wait for user to release all buttons
+    // Wait for user to release all buttons (they just pressed A/B to enter)
+    uint32_t startWait = millis();
     bool anyTouched = true;
-    while (anyTouched) {
+    while (anyTouched && (millis() - startWait) < 3000) {
         anyTouched = false;
         for (uint8_t i = 0; i < 6; i++) {
             if (Touch_Key_Adc(calibChannelMap[i]) < TOUCH_THRESHOLD_DEFAULT)
                 anyTouched = true;
         }
+        gfx::setCursor(8, 18);
+        gfx::print("Release all buttons");
+        gfx::display();
         delay(50);
+    }
+    if (anyTouched) {
+        // Timed out — user didn't release, abort calibration
+        gfx::clear();
+        gfx::setCursor(8, 22);
+        gfx::print("Calibration");
+        gfx::setCursor(8, 34);
+        gfx::print("cancelled.");
+        gfx::display();
+        delay(1200);
+        return;
     }
     delay(500);
 
