@@ -142,3 +142,93 @@ The bootloader uses the full OS library stack:
 
 No beep at all means the MCU isn't running (power or clock issue). One beep
 followed by silence means the display init is hanging.
+
+## Program Loading
+
+### Overview
+
+The bootloader's file browser allows the user to select a file from the SD
+card and "execute" it. In the current implementation, execution is simulated:
+the bootloader reads and displays the file's header bytes rather than actually
+loading the binary into flash or RAM. This provides a foundation for future
+flash-programming or relocatable-loader support.
+
+### Flow
+
+```
+Browse ──A──► File Info ──A──► Executing
+  ▲              │                │
+  │              │                │
+  └─────B────────┘       B────────┘
+```
+
+1. **Browse** — User navigates the file list with UP/DOWN, presses **A** to
+   inspect the selected file.
+2. **File Info** — Shows the file's name, type (file or directory), and size.
+   Press **A** to "execute" (directories are ignored).
+3. **Executing** — The bootloader opens the file via the FAT filesystem
+   library, reads the first 16 bytes (the header), and displays them as a hex
+   dump on screen. A progress bar fills to 100%. Press **B** to return to the
+   file browser.
+
+### Header Reader
+
+The current execution path in `src/main.cpp` (`STATE_EXECUTING`):
+
+```cpp
+fat::Result r = fat::open(path);      // open file by name
+uint8_t header[16];
+uint16_t br;
+r = fat::read(header, 16, &br);       // read first 16 bytes
+fat::close();
+
+// display each byte as hex on screen
+```
+
+Files are opened from the SD card root (`/filename`). The FAT library handles
+both FAT16 and FAT32 volumes, including 8.3 filename lookup and subdirectory
+traversal (though the browser currently only scans the root directory).
+
+### Memory Layout (Future)
+
+When real program loading is implemented, the target memory regions are:
+
+| Region | Start | Size | Notes |
+|--------|-------|------|-------|
+| Flash (CodeFlash) | `0x08000000` | 62 KB | Application + bootloader share this space |
+| RAM (SRAM) | `0x20000000` | 20 KB | Stack, heap, and .data/.bss |
+
+The bootloader occupies the beginning of flash (`0x08000000`). A future
+program loader would need to:
+
+1. Reserve a fixed bootloader region (e.g. 16 KB at `0x08000000–0x08003FFF`)
+2. Load applications to `0x08004000` and above
+3. Read the binary from SD card via `fat::read()` in 512-byte blocks
+4. Program flash pages using the on-chip Flash controller
+5. Verify with a checksum
+6. Jump to the application entry point (reset vector at offset `+4`)
+
+The CH32X035 flash controller requires:
+- Unlocking via `FLASH_Unlock()`
+- Erasing pages (1 KB each) before writing
+- Programming in 32-bit words
+- Locking afterwards with `FLASH_Lock()`
+
+### Binary Format (Planned)
+
+Executable files should follow a simple header format so the bootloader can
+validate them before programming:
+
+```
+Offset  Size  Field
+------  ----  -----
+0x00    4     Magic number (e.g. 0x50 0x48 0x32 0x35 = "PH25")
+0x04    4     Entry point address
+0x08    4     Load size (bytes)
+0x0C    4     Checksum (CRC32 over payload)
+0x10    N     Raw binary payload
+```
+
+The magic number prevents accidental execution of non-program files. The
+entry point, size, and checksum allow the bootloader to verify integrity
+before flashing.
