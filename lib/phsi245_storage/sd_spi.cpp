@@ -68,6 +68,26 @@ bool init()
     for (int i = 0; i < 10; i++)
         spi_transfer(0xFF);
 
+    // Debug: read MISO with CS high vs CS low
+    gfx::setCursor(0, 0);
+    gfx::print("SPI test...");
+    gfx::display();
+    
+    uint8_t misoHigh = spi_transfer(0xFF);  // CS is high, MISO should be 0xFF (pulled up)
+    
+    spi_cs_low();
+    uint8_t misoLow = spi_transfer(0xFF);   // CS is low, card may respond
+    spi_cs_high();
+    spi_transfer(0xFF);
+    
+    gfx::setCursor(0, 10);
+    gfx::print("MISO H:");
+    gfx::print((int16_t)misoHigh);
+    gfx::print(" L:");
+    gfx::print((int16_t)misoLow);
+    gfx::display();
+    delay(2000);
+
     // CMD0: go idle
     spi_cs_low();
     uint8_t r1 = sdCommand(CMD0, 0);
