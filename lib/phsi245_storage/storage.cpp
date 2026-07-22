@@ -7,6 +7,7 @@
 namespace storage {
 
 static bool sdReady = false;
+static bool sdChecked = false;  // don't retry after first attempt
 
 bool sdAvailable()
 {
@@ -14,7 +15,9 @@ bool sdAvailable()
     return false;
 #else
     if (sdReady) return true;
+    if (sdChecked) return false;  // already tried — don't retry
 
+    sdChecked = true;
     fat::Result r = fat::mount(&sd::DEVICE);
     if (r == fat::OK) {
         sdReady = true;
