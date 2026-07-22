@@ -1,7 +1,6 @@
 #include "storage.h"
 #include <HAL.h>
 #include <Arduino.h>
-#include "gfx.h"
 
 #if HW_VERSION == 2
 
@@ -39,7 +38,6 @@ static uint8_t sdCommand(uint8_t cmd, uint32_t arg)
     for (int i = 0; i < 6; i++)
         spi_transfer(buf[i]);
 
-    // Wait for non-0xFF response (up to 100 bytes)
     uint8_t r1;
     for (int i = 0; i < 100; i++) {
         r1 = spi_transfer(0xFF);
@@ -58,38 +56,6 @@ bool init()
     spi_init();
     delay(500);  // let SD card power stabilize
 
-    // --- Debug: show init start ---
-    gfx::clear();
-    gfx::setCursor(0, 0);
-    gfx::print("SD Init...");
-    gfx::display();
-
-    // --- Debug: verify CS pin toggles correctly ---
-    spi_cs_high();
-    delay(1);
-    int csHigh = (GPIOA->INDR & GPIO_Pin_12) ? 1 : 0;  // read actual pin state
-
-    spi_cs_low();
-    delay(1);
-    int csLow  = (GPIOA->INDR & GPIO_Pin_12) ? 1 : 0;
-
-    spi_cs_high();  // leave CS high for clock pulses
-
-    gfx::setCursor(0, 10);
-    gfx::print("CS H:");
-    gfx::print((int16_t)csHigh);
-    gfx::print(" L:");
-    gfx::print((int16_t)csLow);
-    gfx::display();
-
-    if (csHigh != 1 || csLow != 0) {
-        gfx::setCursor(0, 20);
-        gfx::print("CS PIN BAD!");
-        gfx::display();
-        delay(5000);
-        return false;
-    }
-
     // Send >= 74 clock pulses with CS high
     spi_cs_high();
     for (int i = 0; i < 10; i++)
@@ -101,86 +67,38 @@ bool init()
     uint8_t r1 = sdCommand(CMD0, 0);
     spi_cs_high();
     spi_transfer(0xFF);
-
-    gfx::setCursor(0, 30);
-    gfx::print("CMD0: ");
-    gfx::print((int16_t)r1);
-    gfx::display();
-
-    if (r1 != 0x01) {
-        gfx::setCursor(0, 40);
-        gfx::print("FAIL (no card?)");
-        gfx::display();
-        delay(3000);
-        return false;
-    }
+    if (r1 != 0x01) return false;
 
     // CMD8: check voltage range (2.7-3.6V)
     spi_cs_low();
     r1 = sdCommand(CMD8, 0x000001AA);
     if (r1 == 0x01) {
-        // R7 response: 4 more bytes
         uint8_t r7[4];
         for (int i = 0; i < 4; i++) r7[i] = spi_transfer(0xFF);
         spi_cs_high();
         spi_transfer(0xFF);
-
-        gfx::setCursor(0, 20);
-        gfx::print("CMD8 r7: ");
-        gfx::print((int16_t)r7[2]);
-        gfx::print(" ");
-        gfx::print((int16_t)r7[3]);
-        gfx::display();
-
-        if (r7[2] != 0x01 || r7[3] != 0xAA) {
-            gfx::setCursor(0, 30);
-            gfx::print("FAIL (bad pattern)");
-            gfx::display();
-            delay(3000);
+        if (r7[2] != 0x01 || r7[3] != 0xAA)
             return false;
-        }
     } else if (r1 & 0x04) {
-        // Illegal command — v1 card, fine
         spi_cs_high();
         spi_transfer(0xFF);
-        gfx::setCursor(0, 20);
-        gfx::print("v1 card (no CMD8)");
-        gfx::display();
     } else {
         spi_cs_high();
-        gfx::setCursor(0, 20);
-        gfx::print("CMD8: ");
-        gfx::print((int16_t)r1);
-        gfx::display();
-        gfx::setCursor(0, 30);
-        gfx::print("FAIL");
-        gfx::display();
-        delay(3000);
         return false;
     }
 
     // ACMD41: initialize card
-    gfx::setCursor(0, 30);
-    gfx::print("ACMD41...");
-    gfx::display();
-
     uint32_t timeout = 0;
     do {
         spi_cs_low();
         sdCommand(CMD55, 0);
-        r1 = sdCommand(ACMD41, 0x40000000); // HCS bit for SDHC
+        r1 = sdCommand(ACMD41, 0x40000000);
         spi_cs_high();
         spi_transfer(0xFF);
-        if (++timeout > 1000) {
-            gfx::setCursor(0, 40);
-            gfx::print("ACMD41 timeout");
-            gfx::display();
-            delay(3000);
-            return false;
-        }
+        if (++timeout > 1000) return false;
     } while (r1 != 0x00);
 
-    // CMD58: read OCR (check CCS bit for SDHC)
+    // CMD58: read OCR
     spi_cs_low();
     r1 = sdCommand(CMD58, 0);
     if (r1 == 0x00) {
@@ -191,12 +109,7 @@ bool init()
     spi_cs_high();
     spi_transfer(0xFF);
 
-    gfx::setCursor(0, 40);
-    gfx::print("SDHC: ");
-    gfx::print(sdhc ? "yes" : "no");
-    gfx::display();
-
-    // CMD16: set block length to 512
+    // CMD16: set block length
     spi_cs_low();
     sdCommand(CMD16, 512);
     spi_cs_high();
@@ -227,24 +140,6 @@ bool init()
         }
     }
     spi_cs_high();
-
-    gfx::setCursor(0, 50);
-    gfx::print("Blocks: ");
-    gfx::print((int16_t)(blocks >> 16));
-    gfx::print("K");
-    gfx::display();
-
-    if (blocks == 0) {
-        gfx::setCursor(0, 56);
-        gfx::print("CSD read FAIL");
-        gfx::display();
-        delay(3000);
-    } else {
-        gfx::setCursor(0, 56);
-        gfx::print("SD OK!");
-        gfx::display();
-        delay(1000);
-    }
 
     return blocks > 0;
 }
