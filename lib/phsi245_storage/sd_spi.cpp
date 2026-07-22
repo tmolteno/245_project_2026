@@ -68,44 +68,61 @@ bool init()
     for (int i = 0; i < 10; i++)
         spi_transfer(0xFF);
 
-    // Debug: read MISO with CS high vs CS low
+    // Debug: send CMD0 and dump raw bytes on screen
     gfx::setCursor(0, 0);
-    gfx::print("SPI test...");
+    gfx::print("CMD0 send:");
     gfx::display();
     
-    uint8_t misoHigh = spi_transfer(0xFF);  // CS is high, MISO should be 0xFF (pulled up)
+    // Build CMD0 command bytes
+    uint8_t cmd0[6];
+    cmd0[0] = 0x40; // CMD0
+    cmd0[1] = 0;    // arg = 0
+    cmd0[2] = 0;
+    cmd0[3] = 0;
+    cmd0[4] = 0;
+    cmd0[5] = 0x95; // CRC
     
     spi_cs_low();
-    uint8_t misoLow = spi_transfer(0xFF);   // CS is low, card may respond
-    spi_cs_high();
-    spi_transfer(0xFF);
     
-    gfx::setCursor(0, 10);
-    gfx::print("MISO H:");
-    gfx::print((int16_t)misoHigh);
-    gfx::print(" L:");
-    gfx::print((int16_t)misoLow);
-    gfx::display();
-    delay(2000);
-
-    // CMD0: go idle
-    spi_cs_low();
-    uint8_t r1 = sdCommand(CMD0, 0);
-    spi_cs_high();
-    spi_transfer(0xFF);
-
-    gfx::setCursor(0, 10);
-    gfx::print("CMD0: ");
-    gfx::print((int16_t)r1);
-    gfx::display();
-
-    if (r1 != 0x01) {
-        gfx::setCursor(0, 20);
-        gfx::print("FAIL (no card?)");
+    // Send 6 command bytes showing each one
+    for (int i = 0; i < 6; i++) {
+        uint8_t rx = spi_transfer(cmd0[i]);
+        gfx::setCursor(0, 10 + i * 8);
+        gfx::print("TX:");
+        gfx::print((int16_t)cmd0[i]);
+        gfx::print(" RX:");
+        gfx::print((int16_t)rx);
         gfx::display();
-        delay(3000);
-        return false;
+        delay(100);
     }
+    
+    // Read R1 response (up to 8 bytes)
+    gfx::setCursor(0, 56);
+    gfx::print("R1:");
+    uint8_t r1 = 0xFF;
+    for (int i = 0; i < 8; i++) {
+        r1 = spi_transfer(0xFF);
+        gfx::print(" ");
+        gfx::print((int16_t)r1);
+        gfx::display();
+        delay(100);
+        if (!(r1 & 0x80)) break;
+    }
+    
+    spi_cs_high();
+    spi_transfer(0xFF);
+    
+    gfx::setCursor(64, 0);
+    if (r1 == 0x01) {
+        gfx::print("OK");
+    } else {
+        gfx::print("FAIL:");
+        gfx::print((int16_t)r1);
+    }
+    gfx::display();
+    delay(5000);
+
+    if (r1 != 0x01) return false;
 
     // CMD8: check voltage range (2.7-3.6V)
     spi_cs_low();
