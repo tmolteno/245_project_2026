@@ -39,9 +39,9 @@ static uint8_t sdCommand(uint8_t cmd, uint32_t arg)
     for (int i = 0; i < 6; i++)
         spi_transfer(buf[i]);
 
-    // Wait for non-0xFF response (up to 8 bytes)
+    // Wait for non-0xFF response (up to 100 bytes)
     uint8_t r1;
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 100; i++) {
         r1 = spi_transfer(0xFF);
         if (!(r1 & 0x80)) break;
     }
@@ -56,6 +56,7 @@ uint8_t spiRecv()
 bool init()
 {
     spi_init();
+    delay(500);  // let SD card power stabilize
 
     // --- Debug: show init start ---
     gfx::clear();
@@ -96,6 +97,7 @@ bool init()
 
     // CMD0: go idle
     spi_cs_low();
+    spi_transfer(0xFF);  // dummy clock after CS low
     uint8_t r1 = sdCommand(CMD0, 0);
     spi_cs_high();
     spi_transfer(0xFF);
