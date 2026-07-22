@@ -22,9 +22,12 @@ void spi_init(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    // MISO: PA9 (input with pull-up — card DO floats before SPI mode)
+    // MISO: PA9 (alternate function — SPI1 receives data here)
+    // SD card DO floats before SPI mode, but after CMD0 it drives actively.
+    // If a pull-up is needed, use the internal pull-up via GPIO_IPU + AF,
+    // or add an external 10kΩ pull-up to VDD.
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     // MOSI: PA10
