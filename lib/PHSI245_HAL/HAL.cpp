@@ -1,6 +1,7 @@
 #include "HAL.h"
 #include <Arduino.h>
 #include <ch32x035.h>
+#include <ch32x035_flash.h>
 
 uint16_t TouchState (0);
 
@@ -78,10 +79,14 @@ void initTouchButtons()
 
 uint16_t Touch_Key_Adc(uint8_t ch)
 {
+  ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
   ADC_RegularChannelConfig(ADC1, ch, 1, ADC_SampleTime_11Cycles );
   TKey1->IDATAR1 =0x80;  //Charging Time
   TKey1->RDATAR =0x8;   //Discharging Time
-  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC ));
+  uint32_t timeout = 100000;
+  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC )) {
+      if (--timeout == 0) break;
+  }
   return (uint16_t) TKey1->RDATAR;
 }
 
@@ -108,10 +113,10 @@ int IsTouched(unsigned long int channel)
 #include <EEPROM.h>
 #include "gfx.h"
 
-// Calibration stored at EEPROM offsets 0–11 (12 bytes for 6 channels).
-// Offset 12 stores a build hash to detect firmware reflash.
-#define CALIB_EEPROM_OFFSET 0
-#define CALIB_HASH_OFFSET   12
+// Calibration stored at EEPROM offsets 13–24 (12 bytes for 6 channels).
+// Offset 25 stores a build hash to detect firmware reflash.
+#define CALIB_EEPROM_OFFSET 13
+#define CALIB_HASH_OFFSET   25
 
 // Packed calibration: 8-bit values (threshold/16, debounce/16) per channel.
 struct CalibData {
@@ -145,6 +150,7 @@ static void doInteractiveCalibration(uint8_t buildHash)
         for (uint8_t i = 0; i < 6; i++) {
             if (Touch_Key_Adc(calibChannelMap[i]) < TOUCH_THRESHOLD_DEFAULT)
                 anyTouched = true;
+            delay(1);  // let touch key controller settle between channels
         }
         gfx::setCursor(8, 18);
         gfx::print("Release all buttons");
@@ -323,3 +329,15 @@ bool touchIsCalibrated()
 {
     return touchCalibrated;
 }
+
+#if HW_VERSION == 2
+void initNRST()
+{
+    uint32_t ob = FLASH_GetUserOptionByte();
+    // Bits 4:3 control NRST; 0x18 (OB_RST_NoEN) means disabled
+    if ((ob & 0x18) == 0x18) {
+        FLASH_UserOptionByteConfig(OB_IWDG_SW, OB_STOP_NoRST, OB_STDBY_NoRST, OB_RST_EN_DT1ms);
+        NVIC_SystemReset();  // option byte changes require reset to take effect
+    }
+}
+#endif

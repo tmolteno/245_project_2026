@@ -44,6 +44,10 @@
 #define SD_SCK_PIN      PA11
 #define SD_MISO_PIN     PA9
 #define SD_MOSI_PIN     PA10
+#define PIN_RESET       PA21    // hardware NRST — active-low, no GPIO config needed
+
+// Enable hardware NRST on PA21 (v2 only — one-time option byte config)
+void initNRST();
 #endif
 
 // Button Management

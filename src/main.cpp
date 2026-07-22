@@ -278,9 +278,11 @@ void setup()
 {
     os_libs_init();  // ensure all OS libraries are linked (even if unused elsewhere)
 
+#if HW_VERSION == 2
+    initNRST();  // ensure PA21 NRST is enabled (one-time option byte config)
+#endif
+
     // Blink test: 3 quick flashes to confirm the MCU is alive
-    led::init();
-    ostime::init();
     for (uint8_t i = 0; i < 3; i++) {
         led::on(PIN_LED_0);
         ostime::delay_ms(150);
@@ -288,15 +290,11 @@ void setup()
         ostime::delay_ms(150);
     }
 
-    beep::init();
     beep::beep_startup();
 
-    gfx::init();
     beep::beep_startup();  // confirm display init completed
     gfx::setTextSize(1);
     gfx::setTextColor(GFX_WHITE);
-    input::init();
-
     // Wait for user to release all buttons (debounce from boot)
     // before attempting SD mount (touch ADC may interfere with SPI)
     ostime::delay_ms(100);
@@ -518,6 +516,18 @@ void loop()
         ostime::delay_ms(25);
         break;
     }
+
+#if HW_VERSION == 2
+    case STATE_CALIBRATE: {
+        const char *s = __DATE__ " " __TIME__;
+        uint8_t hash = 0;
+        while (*s) hash ^= (uint8_t)*s++;
+        touchRecalibrate(hash);
+        state = STATE_MENU;
+        cursor = 1;
+        break;
+    }
+#endif
 
 #if HW_VERSION == 2
     case STATE_FORMAT: {

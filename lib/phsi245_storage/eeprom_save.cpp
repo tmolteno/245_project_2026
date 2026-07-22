@@ -7,10 +7,10 @@ namespace storage {
 // Magic bytes to validate the save area has been initialized
 static const char MAGIC[4] = {'P', 'H', '2', '5'};
 
-// Total EEPROM size on CH32X035 (option bytes area)
-static const uint8_t EEPROM_SIZE = 26;
+// Save area uses EEPROM offsets 0–12 (magic at 0–3, data at 4–12)
+static const uint8_t EEPROM_DATA_END = 13;
 
-// We use bytes 4..25 for user data (22 bytes available)
+// We use bytes 4..12 for user data (9 bytes available)
 static const uint8_t DATA_OFFSET = 4;
 
 static EEPROMClass eeprom;
@@ -32,7 +32,7 @@ void initSave()
         // Write magic and clear the data area
         for (uint8_t i = 0; i < 4; i++)
             eeprom.write(i, MAGIC[i]);
-        for (uint8_t i = DATA_OFFSET; i < EEPROM_SIZE; i++)
+        for (uint8_t i = DATA_OFFSET; i < EEPROM_DATA_END; i++)
             eeprom.write(i, 0);
         eeprom.commit();
     }
@@ -42,7 +42,7 @@ static int8_t findTag(const char tag[4])
 {
     // Scan the data area for a matching tag
     uint8_t pos = DATA_OFFSET;
-    while (pos + 5 <= EEPROM_SIZE) {
+    while (pos + 5 <= EEPROM_DATA_END) {
         uint8_t len = eeprom.read(pos + 4);
         if (len == 0) break;  // end of used slots
 
@@ -63,7 +63,7 @@ static int8_t findTag(const char tag[4])
 
 bool saveGame(const char tag[4], const void *data, uint8_t len)
 {
-    if (len == 0 || len > (EEPROM_SIZE - DATA_OFFSET - 5))
+    if (len == 0 || len > (EEPROM_DATA_END - DATA_OFFSET - 5))
         return false;
 
     // Find existing entry or the end of used data
@@ -79,7 +79,7 @@ bool saveGame(const char tag[4], const void *data, uint8_t len)
             // New data is larger — erase and re-create at end
             eraseGame(tag);
             pos = DATA_OFFSET;
-            while (pos + 5 <= EEPROM_SIZE) {
+            while (pos + 5 <= EEPROM_DATA_END) {
                 if (eeprom.read(pos + 4) == 0) break;
                 pos += 5 + eeprom.read(pos + 4);
             }
@@ -87,14 +87,14 @@ bool saveGame(const char tag[4], const void *data, uint8_t len)
     } else {
         // Find end of data
         pos = DATA_OFFSET;
-        while (pos + 5 <= EEPROM_SIZE) {
+        while (pos + 5 <= EEPROM_DATA_END) {
             if (eeprom.read(pos + 4) == 0) break;
             pos += 5 + eeprom.read(pos + 4);
         }
     }
 
     // Check if it fits
-    if (pos + 5 + len > EEPROM_SIZE)
+    if (pos + 5 + len > EEPROM_DATA_END)
         return false;
 
     // Write tag
@@ -137,7 +137,7 @@ void eraseGame(const char tag[4])
     uint8_t start = pos;
     uint8_t nextPos = pos + gap;
     uint8_t end = DATA_OFFSET;
-    while (end + 5 <= EEPROM_SIZE) {
+    while (end + 5 <= EEPROM_DATA_END) {
         if (eeprom.read(end + 4) == 0) break;
         end += 5 + eeprom.read(end + 4);
     }
