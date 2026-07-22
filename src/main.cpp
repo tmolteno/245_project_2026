@@ -290,9 +290,9 @@ void setup()
         ostime::delay_ms(150);
     }
 
-    beep::beep_startup();
+    // beep::beep_startup();  // DEBUG: buzzer disabled
 
-    beep::beep_startup();  // confirm display init completed
+    // beep::beep_startup();  // confirm display init completed // DEBUG: buzzer disabled
     gfx::setTextSize(1);
     gfx::setTextColor(GFX_WHITE);
     // Wait for user to release all buttons (debounce from boot)
@@ -396,7 +396,7 @@ void loop()
 #endif
 
     case STATE_ERROR:
-        beep::beep_error();
+        // beep::beep_error();  // DEBUG: buzzer disabled
         gfx::clear();
         drawHeader("No SD Card");
 

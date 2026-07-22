@@ -63,7 +63,6 @@ bool init()
 
     // CMD0: go idle
     spi_cs_low();
-    spi_transfer(0xFF);  // dummy clock after CS low
     uint8_t r1 = sdCommand(CMD0, 0);
     spi_cs_high();
     spi_transfer(0xFF);
