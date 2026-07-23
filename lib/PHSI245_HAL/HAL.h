@@ -97,4 +97,9 @@ void initNRST();
     void spi_cs_high(void);
 #endif
 
+// Sensor readings (v2 analog inputs)
+uint16_t photoRead(void);        // PT331C phototransistor on PA5 — raw ADC (0–4095)
+uint16_t thermRead(void);        // NTC thermistor on PA6 — raw ADC (0–4095)
+int16_t  thermReadCelsius(void); // NTC thermistor on PA6 — temperature in °C × 10
+
 #include "extras.h"

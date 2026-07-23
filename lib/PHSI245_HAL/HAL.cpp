@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <ch32x035.h>
 #include <ch32x035_flash.h>
+#include <math.h>
 
 uint16_t TouchState (0);
 
@@ -338,6 +339,34 @@ void initNRST()
     if ((ob & 0x18) == 0x18) {
         FLASH_UserOptionByteConfig(OB_IWDG_SW, OB_STOP_NoRST, OB_STDBY_NoRST, OB_RST_EN_DT1ms);
         NVIC_SystemReset();  // option byte changes require reset to take effect
+        }
     }
-}
-#endif
+    #endif
+
+    uint16_t photoRead(void)
+    {
+        return analogRead(PIN_PHOTO);
+    }
+
+    uint16_t thermRead(void)
+    {
+        return analogRead(PIN_THERM);
+    }
+
+    int16_t thermReadCelsius(void)
+    {
+        uint16_t adc = analogRead(PIN_THERM);
+    
+        // Clamp to avoid ln(0) and division by zero
+        if (adc < 10) adc = 10;
+        if (adc > 4085) adc = 4085;
+    
+        // T(K) = 1 / (1/T₀ + (1/B) · ln(adc/(4095-adc)))
+        // T₀ = 298.15 K, B = 3950 K
+        float ratio = (float)adc / (4095.0f - (float)adc);
+        float lnRatio = logf(ratio);
+        float tKelvin = 1.0f / (0.003354f + 0.0002532f * lnRatio);
+        float tCelsius = tKelvin - 273.15f;
+    
+        return (int16_t)(tCelsius * 10.0f);  // e.g., 250 = 25.0°C
+    }
