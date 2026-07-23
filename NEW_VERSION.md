@@ -13,7 +13,7 @@ This document describes the software changes for the next hardware revision (202
 | PA2 | Button DOWN | Button DOWN | Unchanged (TK2) |
 | PA3 | Button RIGHT | Button RIGHT | Unchanged (TK3) |
 | PA4 | Button B | IO_D0 | Freed from SPI (was SD CS) |
-| PA5 | Button A | *(free)* | Freed from SPI (was SD SCK) |
+| PA5 | Button A | **Phototransistor** | ADC input, emitter-follower circuit (see below) |
 | PA6 | *(unused)* | *(free)* | Freed from SPI (was SD MISO) |
 | PA7 | *(unused)* | *(free)* | Freed from SPI (was SD MOSI) |
 | PA9 | *(speaker)* | **SD MISO** | SPI1 PartialRemap2 |
@@ -45,6 +45,34 @@ PA21 (LQFP48 pin 7) ──┬── button ── GND
 No firmware changes required — the CH32X035 configures PA21 as active-low
 reset by default. The internal pull-up (~40kΩ) is usually sufficient;
 the external 10kΩ pull-up improves noise immunity in harsh environments.
+
+### Phototransistor (Light Sensor)
+
+A PT331C NPN silicon phototransistor (LCSC C53413645) on PA5 provides
+ambient light sensing. The emitter-follower circuit requires one resistor:
+
+```
+        VDD (3.3V)
+          │
+          │  Collector (pin 2)
+        ┌─┴─┐
+        │ Q │  PT331C
+        └─┬─┘
+          │  Emitter (pin 1)
+          ├───────────► PA5 (ADC input)
+          │
+          ║
+          ║ R8 = 10kΩ
+          ║
+          │
+         GND
+```
+
+- **Dark**: ~1 mV at ADC
+- **Room light (~500 lux)**: ~1 V at ADC (reading ~1240)
+- **Bright light**: saturates at 3.3 V (reading 4095)
+- Adjust R8 for sensitivity: 47kΩ for low-light, 1kΩ to prevent saturation in bright conditions.
+- Pin 3 (base) is unconnected — light provides the base current.
 
 ### HAL Changes (`lib/PHSI245_HAL/`)
 
