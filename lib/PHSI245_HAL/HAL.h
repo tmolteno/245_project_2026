@@ -37,6 +37,7 @@
 #define IO_D2 PA17
 #define IO_D3 PA18
 #define PIN_PHOTO       PA5     // PT331C phototransistor (LCSC C53413645), emitter-follower to ADC
+#define PIN_THERM       PA6     // NTC 10kΩ B=3950K (LCSC C338623), voltage divider to ADC
 
 // SD card interface (v2 only) — SPI1 PartialRemap2
 #if HW_VERSION == 2

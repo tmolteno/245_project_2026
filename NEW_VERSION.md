@@ -14,7 +14,7 @@ This document describes the software changes for the next hardware revision (202
 | PA3 | Button RIGHT | Button RIGHT | Unchanged (TK3) |
 | PA4 | Button B | IO_D0 | Freed from SPI (was SD CS) |
 | PA5 | Button A | **Phototransistor** | ADC input, emitter-follower circuit (see below) |
-| PA6 | *(unused)* | *(free)* | Freed from SPI (was SD MISO) |
+| PA6 | *(unused)* | **Thermistor** | NTC voltage divider to ADC (see below) |
 | PA7 | *(unused)* | *(free)* | Freed from SPI (was SD MOSI) |
 | PA9 | *(speaker)* | **SD MISO** | SPI1 PartialRemap2 |
 | PA10 | *(I2C SCL)* | **SD MOSI** | SPI1 PartialRemap2 |
@@ -73,6 +73,69 @@ ambient light sensing. The emitter-follower circuit requires one resistor:
 - **Bright light**: saturates at 3.3 V (reading 4095)
 - Adjust R8 for sensitivity: 47kΩ for low-light, 1kΩ to prevent saturation in bright conditions.
 - Pin 3 (base) is unconnected — light provides the base current.
+
+### Thermistor (Temperature Sensor)
+
+An FH CMFB103J3950HANT NTC thermistor (LCSC C338623, 0805, 10kΩ @ 25°C, B=3950K)
+on PA6 provides temperature sensing from -40°C to +120°C.
+
+```
+        VDD (3.3V)
+          │
+          ║
+          ║ R9 = 10kΩ 1% (fixed)
+          ║
+          ├───────────► PA6 (ADC input)
+          │
+          ║
+          ║ RT = NTC 10kΩ, B=3950K
+          ║   (LCSC C338623)
+          │
+         GND
+```
+
+**Voltage table** (10kΩ fixed resistor, B=3950K):
+
+| Temp | NTC Resistance | V(ADC) | ADC Reading |
+|------|---------------|--------|-------------|
+| -20°C | ~105 kΩ | 3.01 V | ~3740 |
+| 0°C   | ~33 kΩ  | 2.54 V | ~3155 |
+| 25°C  | 10 kΩ   | 1.65 V | ~2050 |
+| 50°C  | ~3.6 kΩ | 0.87 V | ~1082 |
+| 100°C | ~700 Ω  | 0.22 V | ~267  |
+
+**Derivation of conversion formula:**
+
+The NTC resistance follows the B-parameter equation:
+
+    R(T) = R₀ · exp(B · (1/T - 1/T₀))
+
+    where R₀ = 10kΩ, T₀ = 298.15K (25°C), B = 3950K
+
+The voltage divider gives:
+
+    V_adc = VDD · R_ntc / (R_fixed + R_ntc)
+
+Since V_adc / VDD = adc / 4095 (12-bit ADC) and R_fixed = R₀ = 10kΩ:
+
+    R_ntc = R₀ · adc / (4095 - adc)
+
+Substituting into the B-equation:
+
+    R₀ · adc/(4095-adc) = R₀ · exp(B · (1/T - 1/T₀))
+
+    adc/(4095-adc) = exp(B · (1/T - 1/T₀))
+
+    ln(adc/(4095-adc)) = B · (1/T - 1/T₀)
+
+Solving for T:
+
+    1/T = 1/T₀ + (1/B) · ln(adc/(4095-adc))
+
+With 1/T₀ = 1/298.15 = 0.003354 and 1/B = 1/3950 = 0.0002532:
+
+    T(K) = 1 / (0.003354 + 0.0002532 · ln(adc/(4095-adc)))
+    T(°C) = T(K) - 273.15
 
 ### HAL Changes (`lib/PHSI245_HAL/`)
 
