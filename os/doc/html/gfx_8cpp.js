@@ -9,6 +9,8 @@ var gfx_8cpp =
     [ "gfx::drawFastHLine", "namespacegfx.html#a0f390e6deafee9fa9ef1a281c6721ede", null ],
     [ "gfx::drawFastVLine", "namespacegfx.html#a4f0d93f4f2e2b2b23c4173d2a1ca5323", null ],
     [ "gfx::drawLine", "namespacegfx.html#a618b393e8079e51a4fdfaef60781df01", null ],
+    [ "gfx::drawMenu", "namespacegfx.html#a8cfdb399163b494a2b5bf01427297c04", null ],
+    [ "gfx::drawNumber", "namespacegfx.html#a664fb045bd9d144fa61cbc17588b8bdb", null ],
     [ "gfx::drawPixel", "namespacegfx.html#a1fcdc7d3247f0631b8c1cccdc0eb8d48", null ],
     [ "gfx::drawPlusMask", "namespacegfx.html#a03cfb2643ecaa40b522ae1569f278c6a", null ],
     [ "gfx::drawRect", "namespacegfx.html#a2a6cc470537fb5263403d89b02990af6", null ],
@@ -24,6 +26,7 @@ var gfx_8cpp =
     [ "gfx::print", "namespacegfx.html#a4fe40cda0a16589ef5d96207a728894b", null ],
     [ "gfx::print", "namespacegfx.html#aada7c199604cce95c19dd41f5f920415", null ],
     [ "gfx::setCursor", "namespacegfx.html#aacb4cbd5b1ff64aa2b48ff9949a1f36e", null ],
+    [ "gfx::setTextBgColor", "namespacegfx.html#a231e83231f2c65265ef31969e6f10195", null ],
     [ "gfx::setTextColor", "namespacegfx.html#a7539559e82a86c55fbb4065d802c9927", null ],
     [ "gfx::setTextSize", "namespacegfx.html#aea73a8878ffd7bfea4220060ed2c00d0", null ],
     [ "gfx::sheetFrame", "namespacegfx.html#a91eb7c55cdf975adc683edbb41a5cbfb", null ],
@@ -33,6 +36,7 @@ var gfx_8cpp =
     [ "gfx::cursorX", "namespacegfx.html#ae64c13f65a2695efceb71c03f90bef5b", null ],
     [ "gfx::cursorY", "namespacegfx.html#afb40de68d0c013b6600b9b96a06f6fe3", null ],
     [ "gfx::font5x7", "namespacegfx.html#a68cf20b99e0a37455f335bd0b4a6ca7b", null ],
+    [ "gfx::textBgColor", "namespacegfx.html#a8cb7cbdd9563281d86082d0ba92c5977", null ],
     [ "gfx::textColor", "namespacegfx.html#a51e3c7c95cae18afbccadfe38115958f", null ],
     [ "gfx::textSize", "namespacegfx.html#ae15d0a524abf87ae2b24f0ced70911cc", null ]
 ];

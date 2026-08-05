@@ -5,9 +5,16 @@ var searchData=
   ['readblock_2',['readBlock',['../structBlockDevice.html#aa1ff399077aaa23dfb6e859629495ed3',1,'BlockDevice::readBlock'],['../namespacesd.html#ae966915e850848d0a1c75215f9c12a0f',1,'sd::readBlock()']]],
   ['readdir_3',['readDir',['../namespacefat.html#a63a9c60fad1139387f119aa10f787f93',1,'fat']]],
   ['readdirsector_4',['readDirSector',['../namespacefat.html#a1d006025fe628ee7bac5179817750182',1,'fat']]],
-  ['reserved_5',['reserved',['../structDirEntry.html#ad9d35a682c2a8933ad05c1af1af90734',1,'DirEntry']]],
-  ['reservedsectors_6',['reservedSectors',['../namespacefat.html#ab7715537b4922eaa5be08a8189ef8cd4',1,'fat']]],
-  ['result_7',['Result',['../namespacefat.html#a0dbf5cd9681704ffcfd5c2d7ef38c136',1,'fat']]],
-  ['rootdircluster_8',['rootDirCluster',['../namespacefat.html#a99ac70ef3145ae7fdcb4b7de7cee1e7a',1,'fat']]],
-  ['rootdirsectors_9',['rootDirSectors',['../namespacefat.html#a2abd14785c7dedaf91866d0ef4e456f4',1,'fat']]]
+  ['req_5fclear_5ffeature_5',['REQ_CLEAR_FEATURE',['../usb__msd_8cpp.html#a4e73b2f61276a7a20e8524f387423f74',1,'usb_msd.cpp']]],
+  ['req_5fget_5fconfiguration_6',['REQ_GET_CONFIGURATION',['../usb__msd_8cpp.html#ab4bf7ad46bbff5da91d99d393f1a42d9',1,'usb_msd.cpp']]],
+  ['req_5fget_5fdescriptor_7',['REQ_GET_DESCRIPTOR',['../usb__msd_8cpp.html#a165d690ac007bee82226f68c836a695f',1,'usb_msd.cpp']]],
+  ['req_5fget_5fstatus_8',['REQ_GET_STATUS',['../usb__msd_8cpp.html#aedf240842145fc449aa8636e7d0fc6c0',1,'usb_msd.cpp']]],
+  ['req_5fset_5faddress_9',['REQ_SET_ADDRESS',['../usb__msd_8cpp.html#a568528ba54cc1ed6ef29d3e568afe05c',1,'usb_msd.cpp']]],
+  ['req_5fset_5fconfiguration_10',['REQ_SET_CONFIGURATION',['../usb__msd_8cpp.html#ad9a00d89fed05db51bcdc4ab1c30da89',1,'usb_msd.cpp']]],
+  ['req_5fset_5ffeature_11',['REQ_SET_FEATURE',['../usb__msd_8cpp.html#a5d7081c81be5716529f83c21e7d94ac0',1,'usb_msd.cpp']]],
+  ['reserved_12',['reserved',['../structDirEntry.html#ad9d35a682c2a8933ad05c1af1af90734',1,'DirEntry']]],
+  ['reservedsectors_13',['reservedSectors',['../namespacefat.html#ab7715537b4922eaa5be08a8189ef8cd4',1,'fat']]],
+  ['result_14',['Result',['../namespacefat.html#a0dbf5cd9681704ffcfd5c2d7ef38c136',1,'fat']]],
+  ['rootdircluster_15',['rootDirCluster',['../namespacefat.html#a99ac70ef3145ae7fdcb4b7de7cee1e7a',1,'fat']]],
+  ['rootdirsectors_16',['rootDirSectors',['../namespacefat.html#a2abd14785c7dedaf91866d0ef4e456f4',1,'fat']]]
 ];

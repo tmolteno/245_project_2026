@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['namematch_0',['nameMatch',['../namespacefat.html#a8f7b588c0f0a74f6b2fec3ce416c7bad',1,'fat']]],
-  ['nextcluster_1',['nextCluster',['../namespacefat.html#ac973c73b0d0c52766edebe3f2c935866',1,'fat']]]
+  ['justpressed_0',['justPressed',['../namespaceinput.html#aa194a48f355e4434010cd9338dd850b5',1,'input']]],
+  ['justreleased_1',['justReleased',['../namespaceinput.html#a3a6f8b72ac25d5eababf6cc454366a64',1,'input']]]
 ];

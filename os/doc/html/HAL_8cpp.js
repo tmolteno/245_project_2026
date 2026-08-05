@@ -1,8 +1,26 @@
 var HAL_8cpp =
 [
+    [ "CalibData", "structCalibData.html", "structCalibData" ],
+    [ "CALIB_EEPROM_OFFSET", "HAL_8cpp.html#a8d415f954586e70c30704c7a8e8cf8b7", null ],
+    [ "CALIB_HASH_OFFSET", "HAL_8cpp.html#a155839916a789799a5205e7eab8c9934", null ],
+    [ "doInteractiveCalibration", "HAL_8cpp.html#ae94813f9b92bc7ec349fce87eeaf1e91", null ],
+    [ "initNRST", "HAL_8cpp.html#af4a28d5a643b39bd1630917d246273ae", null ],
     [ "initTouchButtons", "HAL_8cpp.html#a9bb0ac9520e165976832cb6c7a95fa2f", null ],
     [ "IsTouched", "HAL_8cpp.html#a92a4b22faebf3dcee2337218422f35fa", null ],
-    [ "pin_to_touch_adc", "HAL_8cpp.html#ae1278c3047c3780edfae20597898b109", null ],
+    [ "photoRead", "HAL_8cpp.html#aa5184f862c49c333b2ee8fad490e3087", null ],
+    [ "pin_to_touch_adc", "HAL_8cpp.html#afabb72c2b82f3535f1de49741f806de0", null ],
+    [ "thermRead", "HAL_8cpp.html#a88d56de2f4934badffc6561d4e7370ec", null ],
+    [ "thermReadCelsius", "HAL_8cpp.html#a94355800b861826386636dc3ff3fa32c", null ],
     [ "Touch_Key_Adc", "HAL_8cpp.html#afeb52ba20bb7f3be12a3c1e3db4f749c", null ],
-    [ "TouchState", "HAL_8cpp.html#a0b7ffb1ef938abb09d6a7217fbd1a11f", null ]
+    [ "touchCalibrate", "HAL_8cpp.html#a4cce362cd27d6682345303c87a6692a3", null ],
+    [ "touchCalibrate", "HAL_8cpp.html#a5eae75e05ddf6b6d03cc8ae0ed3bd314", null ],
+    [ "touchIsCalibrated", "HAL_8cpp.html#af1a793d7d5cb724aae28dcd849592bd9", null ],
+    [ "touchRecalibrate", "HAL_8cpp.html#a8238129ec04c25e28b423de2b2dd4a60", null ],
+    [ "TouchState", "HAL_8cpp.html#a0b7ffb1ef938abb09d6a7217fbd1a11f", null ],
+    [ "calibChannelMap", "HAL_8cpp.html#a42f1567b7e072d74c45b4f1d01209649", null ],
+    [ "calibEEPROM", "HAL_8cpp.html#afd0c332ab21de0d8eb9b594af4d7494b", null ],
+    [ "calibNames", "HAL_8cpp.html#af2021cfe019458381a925a17c2056311", null ],
+    [ "touchCalibrated", "HAL_8cpp.html#a48fbf2d88e2c18651a58c9989cac597c", null ],
+    [ "touchDebounce", "HAL_8cpp.html#a5639ceabff9c9da33b022057963ae135", null ],
+    [ "touchThreshold", "HAL_8cpp.html#a1fbc28376d38d47d352dbf52e3670093", null ]
 ];

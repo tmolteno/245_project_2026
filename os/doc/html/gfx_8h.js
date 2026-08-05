@@ -7,6 +7,7 @@ var gfx_8h =
     [ "GFX_SPRITE_PLUS_MASK", "gfx_8h.html#a4ba99bad32cd2a8b274fda64c406c83a", null ],
     [ "GFX_SPRITE_SELF_MASKED", "gfx_8h.html#af94ec5445bcab1881ab737c9d4fb8d95", null ],
     [ "GFX_SPRITE_UNMASKED", "gfx_8h.html#ac70a559931988633a4d56c2a3a87f8c3", null ],
+    [ "GFX_TRANSPARENT", "gfx_8h.html#ac780cd6890ec9e5dbfb4f0e302ef1ff9", null ],
     [ "GFX_WHITE", "gfx_8h.html#add601334440d0397cd1d61222498f049", null ],
     [ "GFX_WIDTH", "gfx_8h.html#aae91ae7a3ca585293a2c1031652a49f9", null ],
     [ "gfx::clear", "namespacegfx.html#a20b73b64667bba20da2e22ffaa345164", null ],
@@ -17,6 +18,8 @@ var gfx_8h =
     [ "gfx::drawFastHLine", "namespacegfx.html#a0f390e6deafee9fa9ef1a281c6721ede", null ],
     [ "gfx::drawFastVLine", "namespacegfx.html#a4f0d93f4f2e2b2b23c4173d2a1ca5323", null ],
     [ "gfx::drawLine", "namespacegfx.html#a618b393e8079e51a4fdfaef60781df01", null ],
+    [ "gfx::drawMenu", "namespacegfx.html#a8cfdb399163b494a2b5bf01427297c04", null ],
+    [ "gfx::drawNumber", "namespacegfx.html#a664fb045bd9d144fa61cbc17588b8bdb", null ],
     [ "gfx::drawPixel", "namespacegfx.html#a1fcdc7d3247f0631b8c1cccdc0eb8d48", null ],
     [ "gfx::drawPlusMask", "namespacegfx.html#a03cfb2643ecaa40b522ae1569f278c6a", null ],
     [ "gfx::drawRect", "namespacegfx.html#a2a6cc470537fb5263403d89b02990af6", null ],
@@ -32,6 +35,7 @@ var gfx_8h =
     [ "gfx::print", "namespacegfx.html#a4fe40cda0a16589ef5d96207a728894b", null ],
     [ "gfx::print", "namespacegfx.html#aada7c199604cce95c19dd41f5f920415", null ],
     [ "gfx::setCursor", "namespacegfx.html#aacb4cbd5b1ff64aa2b48ff9949a1f36e", null ],
+    [ "gfx::setTextBgColor", "namespacegfx.html#a231e83231f2c65265ef31969e6f10195", null ],
     [ "gfx::setTextColor", "namespacegfx.html#a7539559e82a86c55fbb4065d802c9927", null ],
     [ "gfx::setTextSize", "namespacegfx.html#aea73a8878ffd7bfea4220060ed2c00d0", null ]
 ];

@@ -99,6 +99,16 @@ Functions</h2></td></tr>
 <tr class="memitem:ae5d5d064526cae798ca823734454affd" id="r_ae5d5d064526cae798ca823734454affd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5d5d064526cae798ca823734454affd">beep_ms</a> (uint16_t duration_ms)</td></tr>
 <tr class="memitem:a7f6cd8f60c48c3b66d8e4f3a078b39cd" id="r_a7f6cd8f60c48c3b66d8e4f3a078b39cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f6cd8f60c48c3b66d8e4f3a078b39cd">beep_startup</a> ()</td></tr>
 <tr class="memitem:a595dd99ec6ab60b424949d40899d1e52" id="r_a595dd99ec6ab60b424949d40899d1e52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a595dd99ec6ab60b424949d40899d1e52">init</a> ()</td></tr>
+<tr class="memitem:a0e53d362b1e1870ab65e976ae9c72095" id="r_a0e53d362b1e1870ab65e976ae9c72095"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e53d362b1e1870ab65e976ae9c72095">playMelody</a> (const uint8_t *notes)</td></tr>
+<tr class="memitem:a5f172f03c6e98f351d6f0a628e7436f5" id="r_a5f172f03c6e98f351d6f0a628e7436f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5f172f03c6e98f351d6f0a628e7436f5">tone</a> (uint16_t freqHz, uint16_t durationMs)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a1eb270b5feb603052ed8a4b7af5157d5" id="r_a1eb270b5feb603052ed8a4b7af5157d5"><td class="memItemLeft" align="right" valign="top">static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1eb270b5feb603052ed8a4b7af5157d5">melodyIndex</a> = 0</td></tr>
+<tr class="memitem:a92d661300f7b62c50e4d29585da72c7c" id="r_a92d661300f7b62c50e4d29585da72c7c"><td class="memItemLeft" align="right" valign="top">static const uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92d661300f7b62c50e4d29585da72c7c">melodyNotes</a> = nullptr</td></tr>
+<tr class="memitem:a37e9945238589bcb796cd9e963b63b2d" id="r_a37e9945238589bcb796cd9e963b63b2d"><td class="memItemLeft" align="right" valign="top">static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37e9945238589bcb796cd9e963b63b2d">noteDur</a> = 0</td></tr>
+<tr class="memitem:a362af37afd400febee50048bea2f3d9e" id="r_a362af37afd400febee50048bea2f3d9e"><td class="memItemLeft" align="right" valign="top">static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a362af37afd400febee50048bea2f3d9e">noteFreq</a> = 0</td></tr>
+<tr class="memitem:a5859147678a55dca650546aa6366e1e6" id="r_a5859147678a55dca650546aa6366e1e6"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5859147678a55dca650546aa6366e1e6">noteStartMs</a> = 0</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="ab66e41886a68f27f81204f98dd5a9dab" name="ab66e41886a68f27f81204f98dd5a9dab"></a>
@@ -165,6 +175,155 @@ Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0e53d362b1e1870ab65e976ae9c72095" name="a0e53d362b1e1870ab65e976ae9c72095"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e53d362b1e1870ab65e976ae9c72095">&#9670;&#160;</a></span>playMelody()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool beep::playMelody </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *</td>          <td class="paramname"><span class="paramname"><em>notes</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5f172f03c6e98f351d6f0a628e7436f5" name="a5f172f03c6e98f351d6f0a628e7436f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f172f03c6e98f351d6f0a628e7436f5">&#9670;&#160;</a></span>tone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void beep::tone </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t</td>          <td class="paramname"><span class="paramname"><em>freqHz</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t</td>          <td class="paramname"><span class="paramname"><em>durationMs</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
+<a id="a1eb270b5feb603052ed8a4b7af5157d5" name="a1eb270b5feb603052ed8a4b7af5157d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1eb270b5feb603052ed8a4b7af5157d5">&#9670;&#160;</a></span>melodyIndex</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t beep::melodyIndex = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a92d661300f7b62c50e4d29585da72c7c" name="a92d661300f7b62c50e4d29585da72c7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92d661300f7b62c50e4d29585da72c7c">&#9670;&#160;</a></span>melodyNotes</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint8_t* beep::melodyNotes = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a37e9945238589bcb796cd9e963b63b2d" name="a37e9945238589bcb796cd9e963b63b2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37e9945238589bcb796cd9e963b63b2d">&#9670;&#160;</a></span>noteDur</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t beep::noteDur = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a362af37afd400febee50048bea2f3d9e" name="a362af37afd400febee50048bea2f3d9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a362af37afd400febee50048bea2f3d9e">&#9670;&#160;</a></span>noteFreq</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t beep::noteFreq = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5859147678a55dca650546aa6366e1e6" name="a5859147678a55dca650546aa6366e1e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5859147678a55dca650546aa6366e1e6">&#9670;&#160;</a></span>noteStartMs</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t beep::noteStartMs = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

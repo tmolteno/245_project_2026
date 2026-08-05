@@ -95,16 +95,118 @@ $(function(){initNavTree('HAL_8cpp.html','',''); });
 <div class="textblock"><code>#include &quot;<a class="el" href="HAL_8h_source.html">HAL.h</a>&quot;</code><br />
 <code>#include &lt;Arduino.h&gt;</code><br />
 <code>#include &lt;ch32x035.h&gt;</code><br />
+<code>#include &lt;ch32x035_flash.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+<code>#include &lt;EEPROM.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="gfx_8h_source.html">gfx.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:CalibData" id="r_CalibData"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCalibData.html">CalibData</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a8d415f954586e70c30704c7a8e8cf8b7" id="r_a8d415f954586e70c30704c7a8e8cf8b7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d415f954586e70c30704c7a8e8cf8b7">CALIB_EEPROM_OFFSET</a>&#160;&#160;&#160;13</td></tr>
+<tr class="memitem:a155839916a789799a5205e7eab8c9934" id="r_a155839916a789799a5205e7eab8c9934"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a155839916a789799a5205e7eab8c9934">CALIB_HASH_OFFSET</a>&#160;&#160;&#160;25</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ae94813f9b92bc7ec349fce87eeaf1e91" id="r_ae94813f9b92bc7ec349fce87eeaf1e91"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae94813f9b92bc7ec349fce87eeaf1e91">doInteractiveCalibration</a> (uint8_t buildHash)</td></tr>
+<tr class="memitem:af4a28d5a643b39bd1630917d246273ae" id="r_af4a28d5a643b39bd1630917d246273ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4a28d5a643b39bd1630917d246273ae">initNRST</a> ()</td></tr>
 <tr class="memitem:a9bb0ac9520e165976832cb6c7a95fa2f" id="r_a9bb0ac9520e165976832cb6c7a95fa2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bb0ac9520e165976832cb6c7a95fa2f">initTouchButtons</a> ()</td></tr>
 <tr class="memitem:a92a4b22faebf3dcee2337218422f35fa" id="r_a92a4b22faebf3dcee2337218422f35fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92a4b22faebf3dcee2337218422f35fa">IsTouched</a> (unsigned long int channel)</td></tr>
-<tr class="memitem:ae1278c3047c3780edfae20597898b109" id="r_ae1278c3047c3780edfae20597898b109"><td class="memItemLeft" align="right" valign="top">static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1278c3047c3780edfae20597898b109">pin_to_touch_adc</a> (uint8_t pin)</td></tr>
+<tr class="memitem:aa5184f862c49c333b2ee8fad490e3087" id="r_aa5184f862c49c333b2ee8fad490e3087"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5184f862c49c333b2ee8fad490e3087">photoRead</a> (void)</td></tr>
+<tr class="memitem:afabb72c2b82f3535f1de49741f806de0" id="r_afabb72c2b82f3535f1de49741f806de0"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afabb72c2b82f3535f1de49741f806de0">pin_to_touch_adc</a> (uint8_t pin)</td></tr>
+<tr class="memitem:a88d56de2f4934badffc6561d4e7370ec" id="r_a88d56de2f4934badffc6561d4e7370ec"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a88d56de2f4934badffc6561d4e7370ec">thermRead</a> (void)</td></tr>
+<tr class="memitem:a94355800b861826386636dc3ff3fa32c" id="r_a94355800b861826386636dc3ff3fa32c"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94355800b861826386636dc3ff3fa32c">thermReadCelsius</a> (void)</td></tr>
 <tr class="memitem:afeb52ba20bb7f3be12a3c1e3db4f749c" id="r_afeb52ba20bb7f3be12a3c1e3db4f749c"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afeb52ba20bb7f3be12a3c1e3db4f749c">Touch_Key_Adc</a> (uint8_t ch)</td></tr>
+<tr class="memitem:a4cce362cd27d6682345303c87a6692a3" id="r_a4cce362cd27d6682345303c87a6692a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4cce362cd27d6682345303c87a6692a3">touchCalibrate</a> ()</td></tr>
+<tr class="memitem:a5eae75e05ddf6b6d03cc8ae0ed3bd314" id="r_a5eae75e05ddf6b6d03cc8ae0ed3bd314"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5eae75e05ddf6b6d03cc8ae0ed3bd314">touchCalibrate</a> (uint8_t buildHash)</td></tr>
+<tr class="memitem:af1a793d7d5cb724aae28dcd849592bd9" id="r_af1a793d7d5cb724aae28dcd849592bd9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1a793d7d5cb724aae28dcd849592bd9">touchIsCalibrated</a> ()</td></tr>
+<tr class="memitem:a8238129ec04c25e28b423de2b2dd4a60" id="r_a8238129ec04c25e28b423de2b2dd4a60"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8238129ec04c25e28b423de2b2dd4a60">touchRecalibrate</a> (uint8_t buildHash)</td></tr>
 <tr class="memitem:a0b7ffb1ef938abb09d6a7217fbd1a11f" id="r_a0b7ffb1ef938abb09d6a7217fbd1a11f"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b7ffb1ef938abb09d6a7217fbd1a11f">TouchState</a> (0)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a42f1567b7e072d74c45b4f1d01209649" id="r_a42f1567b7e072d74c45b4f1d01209649"><td class="memItemLeft" align="right" valign="top">static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a42f1567b7e072d74c45b4f1d01209649">calibChannelMap</a> [6]</td></tr>
+<tr class="memitem:afd0c332ab21de0d8eb9b594af4d7494b" id="r_afd0c332ab21de0d8eb9b594af4d7494b"><td class="memItemLeft" align="right" valign="top">static EEPROMClass&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd0c332ab21de0d8eb9b594af4d7494b">calibEEPROM</a></td></tr>
+<tr class="memitem:af2021cfe019458381a925a17c2056311" id="r_af2021cfe019458381a925a17c2056311"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af2021cfe019458381a925a17c2056311">calibNames</a> [] = {&quot;UP&quot;, &quot;DOWN&quot;, &quot;LEFT&quot;, &quot;RIGHT&quot;, &quot;A&quot;, &quot;B&quot;}</td></tr>
+<tr class="memitem:a48fbf2d88e2c18651a58c9989cac597c" id="r_a48fbf2d88e2c18651a58c9989cac597c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48fbf2d88e2c18651a58c9989cac597c">touchCalibrated</a> = false</td></tr>
+<tr class="memitem:a5639ceabff9c9da33b022057963ae135" id="r_a5639ceabff9c9da33b022057963ae135"><td class="memItemLeft" align="right" valign="top">static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5639ceabff9c9da33b022057963ae135">touchDebounce</a> [<a class="el" href="HAL_8h.html#a35259f5bc99b311e53f6030bb1299bd6">TOUCH_MAX_CHANNELS</a>]</td></tr>
+<tr class="memitem:a1fbc28376d38d47d352dbf52e3670093" id="r_a1fbc28376d38d47d352dbf52e3670093"><td class="memItemLeft" align="right" valign="top">static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fbc28376d38d47d352dbf52e3670093">touchThreshold</a> [<a class="el" href="HAL_8h.html#a35259f5bc99b311e53f6030bb1299bd6">TOUCH_MAX_CHANNELS</a>]</td></tr>
 </table>
+<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
+<a id="a8d415f954586e70c30704c7a8e8cf8b7" name="a8d415f954586e70c30704c7a8e8cf8b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d415f954586e70c30704c7a8e8cf8b7">&#9670;&#160;</a></span>CALIB_EEPROM_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CALIB_EEPROM_OFFSET&#160;&#160;&#160;13</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a155839916a789799a5205e7eab8c9934" name="a155839916a789799a5205e7eab8c9934"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a155839916a789799a5205e7eab8c9934">&#9670;&#160;</a></span>CALIB_HASH_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CALIB_HASH_OFFSET&#160;&#160;&#160;25</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="ae94813f9b92bc7ec349fce87eeaf1e91" name="ae94813f9b92bc7ec349fce87eeaf1e91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae94813f9b92bc7ec349fce87eeaf1e91">&#9670;&#160;</a></span>doInteractiveCalibration()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void doInteractiveCalibration </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>buildHash</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af4a28d5a643b39bd1630917d246273ae" name="af4a28d5a643b39bd1630917d246273ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4a28d5a643b39bd1630917d246273ae">&#9670;&#160;</a></span>initNRST()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void initNRST </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a9bb0ac9520e165976832cb6c7a95fa2f" name="a9bb0ac9520e165976832cb6c7a95fa2f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9bb0ac9520e165976832cb6c7a95fa2f">&#9670;&#160;</a></span>initTouchButtons()</h2>
 
@@ -139,14 +241,28 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae1278c3047c3780edfae20597898b109" name="ae1278c3047c3780edfae20597898b109"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1278c3047c3780edfae20597898b109">&#9670;&#160;</a></span>pin_to_touch_adc()</h2>
+<a id="aa5184f862c49c333b2ee8fad490e3087" name="aa5184f862c49c333b2ee8fad490e3087"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5184f862c49c333b2ee8fad490e3087">&#9670;&#160;</a></span>photoRead()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t photoRead </td>
+          <td>(</td>
+          <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afabb72c2b82f3535f1de49741f806de0" name="afabb72c2b82f3535f1de49741f806de0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afabb72c2b82f3535f1de49741f806de0">&#9670;&#160;</a></span>pin_to_touch_adc()</h2>
+
+<div class="memitem">
+<div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">uint8_t pin_to_touch_adc </td>
@@ -155,11 +271,40 @@ Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
-  </tr>
-</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a88d56de2f4934badffc6561d4e7370ec" name="a88d56de2f4934badffc6561d4e7370ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88d56de2f4934badffc6561d4e7370ec">&#9670;&#160;</a></span>thermRead()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t thermRead </td>
+          <td>(</td>
+          <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a94355800b861826386636dc3ff3fa32c" name="a94355800b861826386636dc3ff3fa32c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94355800b861826386636dc3ff3fa32c">&#9670;&#160;</a></span>thermReadCelsius()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int16_t thermReadCelsius </td>
+          <td>(</td>
+          <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -181,6 +326,74 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a4cce362cd27d6682345303c87a6692a3" name="a4cce362cd27d6682345303c87a6692a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cce362cd27d6682345303c87a6692a3">&#9670;&#160;</a></span>touchCalibrate() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void touchCalibrate </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5eae75e05ddf6b6d03cc8ae0ed3bd314" name="a5eae75e05ddf6b6d03cc8ae0ed3bd314"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5eae75e05ddf6b6d03cc8ae0ed3bd314">&#9670;&#160;</a></span>touchCalibrate() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void touchCalibrate </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>buildHash</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af1a793d7d5cb724aae28dcd849592bd9" name="af1a793d7d5cb724aae28dcd849592bd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1a793d7d5cb724aae28dcd849592bd9">&#9670;&#160;</a></span>touchIsCalibrated()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool touchIsCalibrated </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8238129ec04c25e28b423de2b2dd4a60" name="a8238129ec04c25e28b423de2b2dd4a60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8238129ec04c25e28b423de2b2dd4a60">&#9670;&#160;</a></span>touchRecalibrate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void touchRecalibrate </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>buildHash</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0b7ffb1ef938abb09d6a7217fbd1a11f" name="a0b7ffb1ef938abb09d6a7217fbd1a11f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0b7ffb1ef938abb09d6a7217fbd1a11f">&#9670;&#160;</a></span>TouchState()</h2>
 
@@ -194,6 +407,139 @@ Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
+<a id="a42f1567b7e072d74c45b4f1d01209649" name="a42f1567b7e072d74c45b4f1d01209649"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42f1567b7e072d74c45b4f1d01209649">&#9670;&#160;</a></span>calibChannelMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t calibChannelMap[6]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afd0c332ab21de0d8eb9b594af4d7494b" name="afd0c332ab21de0d8eb9b594af4d7494b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd0c332ab21de0d8eb9b594af4d7494b">&#9670;&#160;</a></span>calibEEPROM</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">EEPROMClass calibEEPROM</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af2021cfe019458381a925a17c2056311" name="af2021cfe019458381a925a17c2056311"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2021cfe019458381a925a17c2056311">&#9670;&#160;</a></span>calibNames</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* calibNames[] = {&quot;UP&quot;, &quot;DOWN&quot;, &quot;LEFT&quot;, &quot;RIGHT&quot;, &quot;A&quot;, &quot;B&quot;}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a48fbf2d88e2c18651a58c9989cac597c" name="a48fbf2d88e2c18651a58c9989cac597c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48fbf2d88e2c18651a58c9989cac597c">&#9670;&#160;</a></span>touchCalibrated</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool touchCalibrated = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5639ceabff9c9da33b022057963ae135" name="a5639ceabff9c9da33b022057963ae135"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5639ceabff9c9da33b022057963ae135">&#9670;&#160;</a></span>touchDebounce</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t touchDebounce[<a class="el" href="HAL_8h.html#a35259f5bc99b311e53f6030bb1299bd6">TOUCH_MAX_CHANNELS</a>]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1fbc28376d38d47d352dbf52e3670093" name="a1fbc28376d38d47d352dbf52e3670093"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fbc28376d38d47d352dbf52e3670093">&#9670;&#160;</a></span>touchThreshold</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t touchThreshold[<a class="el" href="HAL_8h.html#a35259f5bc99b311e53f6030bb1299bd6">TOUCH_MAX_CHANNELS</a>]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

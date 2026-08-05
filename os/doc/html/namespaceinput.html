@@ -95,7 +95,11 @@ $(function(){initNavTree('namespaceinput.html','',''); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:aa5a38202c402f4a1af42e439e5408e74" id="r_aa5a38202c402f4a1af42e439e5408e74"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5a38202c402f4a1af42e439e5408e74">allPressed</a> (uint8_t count, const uint8_t pins[])</td></tr>
+<tr class="memitem:aa896d692678fde8b1a3004c1cef94777" id="r_aa896d692678fde8b1a3004c1cef94777"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa896d692678fde8b1a3004c1cef94777">anyPressed</a> (uint8_t count, const uint8_t pins[])</td></tr>
+<tr class="memitem:afe58013ee0051d2e332f46a456b254c3" id="r_afe58013ee0051d2e332f46a456b254c3"><td class="memItemLeft" align="right" valign="top">static int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe58013ee0051d2e332f46a456b254c3">btnIndex</a> (uint8_t pin)</td></tr>
 <tr class="memitem:aa3c646edf3e48b8a0b785874fd5649c0" id="r_aa3c646edf3e48b8a0b785874fd5649c0"><td class="memItemLeft" align="right" valign="top">static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3c646edf3e48b8a0b785874fd5649c0">btnMask</a> (uint8_t pin)</td></tr>
+<tr class="memitem:ad20b91530b68784e25e7426cb09403b8" id="r_ad20b91530b68784e25e7426cb09403b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad20b91530b68784e25e7426cb09403b8">heldFor</a> (uint8_t pin, uint16_t delayMs, uint16_t repeatMs)</td></tr>
 <tr class="memitem:a1afc5d8279ae80b351ea485b9f03c0b4" id="r_a1afc5d8279ae80b351ea485b9f03c0b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1afc5d8279ae80b351ea485b9f03c0b4">init</a> ()</td></tr>
 <tr class="memitem:aa194a48f355e4434010cd9338dd850b5" id="r_aa194a48f355e4434010cd9338dd850b5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa194a48f355e4434010cd9338dd850b5">justPressed</a> (uint8_t pin)</td></tr>
 <tr class="memitem:a3a6f8b72ac25d5eababf6cc454366a64" id="r_a3a6f8b72ac25d5eababf6cc454366a64"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a6f8b72ac25d5eababf6cc454366a64">justReleased</a> (uint8_t pin)</td></tr>
@@ -108,9 +112,78 @@ Variables</h2></td></tr>
 <tr class="memitem:a76ae9c4a1a15e888048de241c47f7804" id="r_a76ae9c4a1a15e888048de241c47f7804"><td class="memItemLeft" align="right" valign="top">static const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76ae9c4a1a15e888048de241c47f7804">btnPins</a> []</td></tr>
 <tr class="memitem:ad54711662dd1a3cef3ff62d5f2ad3cfc" id="r_ad54711662dd1a3cef3ff62d5f2ad3cfc"><td class="memItemLeft" align="right" valign="top">static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad54711662dd1a3cef3ff62d5f2ad3cfc">edgePress</a> = 0</td></tr>
 <tr class="memitem:a4f020e0b87e5bcd9e79356b2b83fb485" id="r_a4f020e0b87e5bcd9e79356b2b83fb485"><td class="memItemLeft" align="right" valign="top">static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f020e0b87e5bcd9e79356b2b83fb485">edgeRelease</a> = 0</td></tr>
+<tr class="memitem:a174c644ef6f5329bb432c9aca8d5759a" id="r_a174c644ef6f5329bb432c9aca8d5759a"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a174c644ef6f5329bb432c9aca8d5759a">holdStart</a> [6]</td></tr>
+<tr class="memitem:a90c048b56793d2e0728a8ba27f37d0f1" id="r_a90c048b56793d2e0728a8ba27f37d0f1"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90c048b56793d2e0728a8ba27f37d0f1">lastRepeat</a> [6]</td></tr>
 <tr class="memitem:a5169b84c83702f74cd65e2ec62c03a17" id="r_a5169b84c83702f74cd65e2ec62c03a17"><td class="memItemLeft" align="right" valign="top">static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5169b84c83702f74cd65e2ec62c03a17">prevState</a> = 0</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="aa5a38202c402f4a1af42e439e5408e74" name="aa5a38202c402f4a1af42e439e5408e74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5a38202c402f4a1af42e439e5408e74">&#9670;&#160;</a></span>allPressed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool input::allPressed </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>count</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t</td>          <td class="paramname"><span class="paramname"><em>pins</em></span>[]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa896d692678fde8b1a3004c1cef94777" name="aa896d692678fde8b1a3004c1cef94777"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa896d692678fde8b1a3004c1cef94777">&#9670;&#160;</a></span>anyPressed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool input::anyPressed </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>count</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t</td>          <td class="paramname"><span class="paramname"><em>pins</em></span>[]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afe58013ee0051d2e332f46a456b254c3" name="afe58013ee0051d2e332f46a456b254c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe58013ee0051d2e332f46a456b254c3">&#9670;&#160;</a></span>btnIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int8_t input::btnIndex </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>pin</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa3c646edf3e48b8a0b785874fd5649c0" name="aa3c646edf3e48b8a0b785874fd5649c0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa3c646edf3e48b8a0b785874fd5649c0">&#9670;&#160;</a></span>btnMask()</h2>
 
@@ -132,6 +205,32 @@ Variables</h2></td></tr>
 <span class="mlabels"><span class="mlabel static">static</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad20b91530b68784e25e7426cb09403b8" name="ad20b91530b68784e25e7426cb09403b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad20b91530b68784e25e7426cb09403b8">&#9670;&#160;</a></span>heldFor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool input::heldFor </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>pin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t</td>          <td class="paramname"><span class="paramname"><em>delayMs</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t</td>          <td class="paramname"><span class="paramname"><em>repeatMs</em></span>&#160;)</td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -313,6 +412,50 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">uint8_t input::edgeRelease = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a174c644ef6f5329bb432c9aca8d5759a" name="a174c644ef6f5329bb432c9aca8d5759a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a174c644ef6f5329bb432c9aca8d5759a">&#9670;&#160;</a></span>holdStart</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t input::holdStart[6]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a90c048b56793d2e0728a8ba27f37d0f1" name="a90c048b56793d2e0728a8ba27f37d0f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90c048b56793d2e0728a8ba27f37d0f1">&#9670;&#160;</a></span>lastRepeat</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t input::lastRepeat[6]</td>
         </tr>
       </table>
   </td>

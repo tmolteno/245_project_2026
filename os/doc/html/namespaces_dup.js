@@ -4,7 +4,14 @@ var namespaces_dup =
       [ "beep_error", "namespacebeep.html#ab66e41886a68f27f81204f98dd5a9dab", null ],
       [ "beep_ms", "namespacebeep.html#ae5d5d064526cae798ca823734454affd", null ],
       [ "beep_startup", "namespacebeep.html#a7f6cd8f60c48c3b66d8e4f3a078b39cd", null ],
-      [ "init", "namespacebeep.html#a595dd99ec6ab60b424949d40899d1e52", null ]
+      [ "init", "namespacebeep.html#a595dd99ec6ab60b424949d40899d1e52", null ],
+      [ "playMelody", "namespacebeep.html#a0e53d362b1e1870ab65e976ae9c72095", null ],
+      [ "tone", "namespacebeep.html#a5f172f03c6e98f351d6f0a628e7436f5", null ],
+      [ "melodyIndex", "namespacebeep.html#a1eb270b5feb603052ed8a4b7af5157d5", null ],
+      [ "melodyNotes", "namespacebeep.html#a92d661300f7b62c50e4d29585da72c7c", null ],
+      [ "noteDur", "namespacebeep.html#a37e9945238589bcb796cd9e963b63b2d", null ],
+      [ "noteFreq", "namespacebeep.html#a362af37afd400febee50048bea2f3d9e", null ],
+      [ "noteStartMs", "namespacebeep.html#a5859147678a55dca650546aa6366e1e6", null ]
     ] ],
     [ "fat", "namespacefat.html", [
       [ "Result", "namespacefat.html#a0dbf5cd9681704ffcfd5c2d7ef38c136", [
@@ -22,6 +29,7 @@ var namespaces_dup =
       [ "clustToSector", "namespacefat.html#a2f7d57d0ed1912b1a3e3e42f1e7396e9", null ],
       [ "create", "namespacefat.html#ab283865fff87a820906bd6dbdaeccc57", null ],
       [ "findDirEntry", "namespacefat.html#ae465c9bcb2437e1763aedd15bb25b4b5", null ],
+      [ "format", "namespacefat.html#ace93810bab26612bb536acc628042fc4", null ],
       [ "getStartCluster", "namespacefat.html#a7d611656198a18ec3322d97977d08b8b", null ],
       [ "isLastCluster", "namespacefat.html#a7287594159fae6522f62dfc87232fad0", null ],
       [ "mount", "namespacefat.html#a5d2bea92c9fdbe7e4ee777f4d4822fd3", null ],
@@ -71,6 +79,8 @@ var namespaces_dup =
       [ "drawFastHLine", "namespacegfx.html#a0f390e6deafee9fa9ef1a281c6721ede", null ],
       [ "drawFastVLine", "namespacegfx.html#a4f0d93f4f2e2b2b23c4173d2a1ca5323", null ],
       [ "drawLine", "namespacegfx.html#a618b393e8079e51a4fdfaef60781df01", null ],
+      [ "drawMenu", "namespacegfx.html#a8cfdb399163b494a2b5bf01427297c04", null ],
+      [ "drawNumber", "namespacegfx.html#a664fb045bd9d144fa61cbc17588b8bdb", null ],
       [ "drawPixel", "namespacegfx.html#a1fcdc7d3247f0631b8c1cccdc0eb8d48", null ],
       [ "drawPlusMask", "namespacegfx.html#a03cfb2643ecaa40b522ae1569f278c6a", null ],
       [ "drawRect", "namespacegfx.html#a2a6cc470537fb5263403d89b02990af6", null ],
@@ -86,6 +96,7 @@ var namespaces_dup =
       [ "print", "namespacegfx.html#a4fe40cda0a16589ef5d96207a728894b", null ],
       [ "print", "namespacegfx.html#aada7c199604cce95c19dd41f5f920415", null ],
       [ "setCursor", "namespacegfx.html#aacb4cbd5b1ff64aa2b48ff9949a1f36e", null ],
+      [ "setTextBgColor", "namespacegfx.html#a231e83231f2c65265ef31969e6f10195", null ],
       [ "setTextColor", "namespacegfx.html#a7539559e82a86c55fbb4065d802c9927", null ],
       [ "setTextSize", "namespacegfx.html#aea73a8878ffd7bfea4220060ed2c00d0", null ],
       [ "sheetFrame", "namespacegfx.html#a91eb7c55cdf975adc683edbb41a5cbfb", null ],
@@ -95,11 +106,16 @@ var namespaces_dup =
       [ "cursorX", "namespacegfx.html#ae64c13f65a2695efceb71c03f90bef5b", null ],
       [ "cursorY", "namespacegfx.html#afb40de68d0c013b6600b9b96a06f6fe3", null ],
       [ "font5x7", "namespacegfx.html#a68cf20b99e0a37455f335bd0b4a6ca7b", null ],
+      [ "textBgColor", "namespacegfx.html#a8cb7cbdd9563281d86082d0ba92c5977", null ],
       [ "textColor", "namespacegfx.html#a51e3c7c95cae18afbccadfe38115958f", null ],
       [ "textSize", "namespacegfx.html#ae15d0a524abf87ae2b24f0ced70911cc", null ]
     ] ],
     [ "input", "namespaceinput.html", [
+      [ "allPressed", "namespaceinput.html#aa5a38202c402f4a1af42e439e5408e74", null ],
+      [ "anyPressed", "namespaceinput.html#aa896d692678fde8b1a3004c1cef94777", null ],
+      [ "btnIndex", "namespaceinput.html#afe58013ee0051d2e332f46a456b254c3", null ],
       [ "btnMask", "namespaceinput.html#aa3c646edf3e48b8a0b785874fd5649c0", null ],
+      [ "heldFor", "namespaceinput.html#ad20b91530b68784e25e7426cb09403b8", null ],
       [ "init", "namespaceinput.html#a1afc5d8279ae80b351ea485b9f03c0b4", null ],
       [ "justPressed", "namespaceinput.html#aa194a48f355e4434010cd9338dd850b5", null ],
       [ "justReleased", "namespaceinput.html#a3a6f8b72ac25d5eababf6cc454366a64", null ],
@@ -109,6 +125,8 @@ var namespaces_dup =
       [ "btnPins", "namespaceinput.html#a76ae9c4a1a15e888048de241c47f7804", null ],
       [ "edgePress", "namespaceinput.html#ad54711662dd1a3cef3ff62d5f2ad3cfc", null ],
       [ "edgeRelease", "namespaceinput.html#a4f020e0b87e5bcd9e79356b2b83fb485", null ],
+      [ "holdStart", "namespaceinput.html#a174c644ef6f5329bb432c9aca8d5759a", null ],
+      [ "lastRepeat", "namespaceinput.html#a90c048b56793d2e0728a8ba27f37d0f1", null ],
       [ "prevState", "namespaceinput.html#a5169b84c83702f74cd65e2ec62c03a17", null ]
     ] ],
     [ "led", "namespaceled.html", [
@@ -119,8 +137,14 @@ var namespaces_dup =
     ] ],
     [ "ostime", "namespaceostime.html", [
       [ "delay_ms", "namespaceostime.html#a20a131e93295e616839447cf6200e600", null ],
+      [ "frameCount", "namespaceostime.html#aabbfc11e99e17a0e8c5dba13d4021968", null ],
       [ "init", "namespaceostime.html#aba807dbf2c000901cf6c38188786105c", null ],
-      [ "ticks", "namespaceostime.html#aa4e14740a9cfa58bb8dc1ad58d0c2193", null ]
+      [ "nextFrame", "namespaceostime.html#a93aaa2c670d181e2f509c7a66d867480", null ],
+      [ "setFrameRate", "namespaceostime.html#a811cc1e08a8aa55444ff2f56bfd11908", null ],
+      [ "ticks", "namespaceostime.html#aa4e14740a9cfa58bb8dc1ad58d0c2193", null ],
+      [ "frameCounter", "namespaceostime.html#a48896e57948cba6a455b435ec9d6a23d", null ],
+      [ "framePeriodMs", "namespaceostime.html#a4ef6b39f1259e7a8a2591decf53ef20d", null ],
+      [ "nextFrameTime", "namespaceostime.html#a467df83f27b0d2ae579a7f848c6fdada", null ]
     ] ],
     [ "sd", "namespacesd.html", [
       [ "blockCount", "namespacesd.html#ab4aa62ee85d09826649ab46861b35772", null ],
@@ -129,5 +153,26 @@ var namespaces_dup =
       [ "spiRecv", "namespacesd.html#ab3eaf2bb3d10f2d67d8f869ff9bfdba9", null ],
       [ "writeBlock", "namespacesd.html#afe9cae02c4c1aa2687c3bfcdd1cda513", null ],
       [ "DEVICE", "namespacesd.html#a0ea88963312a6c18d8cf7c5ec97fa7f1", null ]
+    ] ],
+    [ "storage", "namespacestorage.html", [
+      [ "eraseGame", "namespacestorage.html#a15a505150a7209e18368885d14348857", null ],
+      [ "findTag", "namespacestorage.html#aca3aff37d46af86e76f97947220cd73b", null ],
+      [ "highScoreLoad", "namespacestorage.html#aac0c1373eaf82b1eae398bdf7e1ced01", null ],
+      [ "highScoreSave", "namespacestorage.html#a6d3fbc6e6e269539e3e834e1de985f8d", null ],
+      [ "initSave", "namespacestorage.html#a99300411648e7accab30bb104d11ca63", null ],
+      [ "loadGame", "namespacestorage.html#ae538c78438c1b61dd0f46ec263ff502e", null ],
+      [ "saveGame", "namespacestorage.html#aaf437f411bcecf3498f3baef1637f8f3", null ],
+      [ "sdAvailable", "namespacestorage.html#aaacd0e5254d7010dbcbfee39521acfea", null ],
+      [ "DATA_OFFSET", "namespacestorage.html#a9f9eb58a7d332ffb71a130c8034c2bd5", null ],
+      [ "eeprom", "namespacestorage.html#adb3041f5583615313e852b533711a389", null ],
+      [ "EEPROM_DATA_END", "namespacestorage.html#ac89e2ddaf69470c6737f7600c57607a2", null ],
+      [ "MAGIC", "namespacestorage.html#ab294ee42311d54a83e8dce7b1e46f07e", null ],
+      [ "sdChecked", "namespacestorage.html#ad172dba0005cb1c0f2feeeed55ef36bb", null ],
+      [ "sdReady", "namespacestorage.html#aa88af8d7b9471ca9c27de2629878f578", null ]
+    ] ],
+    [ "usb_msd", "namespaceusb__msd.html", [
+      [ "init", "namespaceusb__msd.html#a2f05322605c8c3e02568f6d60c53e117", null ],
+      [ "isConnected", "namespaceusb__msd.html#a7f39d1a8f264c2b48fd1d5bbe677ef86", null ],
+      [ "update", "namespaceusb__msd.html#a6ba8885ebd03adfffa639d383cb2c3ae", null ]
     ] ]
 ];

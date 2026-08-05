@@ -4,5 +4,6 @@ var searchData=
   ['beep_5fms_1',['beep_ms',['../namespacebeep.html#ae5d5d064526cae798ca823734454affd',1,'beep']]],
   ['beep_5fstartup_2',['beep_startup',['../namespacebeep.html#a7f6cd8f60c48c3b66d8e4f3a078b39cd',1,'beep']]],
   ['blockcount_3',['blockCount',['../namespacesd.html#ab4aa62ee85d09826649ab46861b35772',1,'sd']]],
-  ['btnmask_4',['btnMask',['../namespaceinput.html#aa3c646edf3e48b8a0b785874fd5649c0',1,'input']]]
+  ['btnindex_4',['btnIndex',['../namespaceinput.html#afe58013ee0051d2e332f46a456b254c3',1,'input']]],
+  ['btnmask_5',['btnMask',['../namespaceinput.html#aa3c646edf3e48b8a0b785874fd5649c0',1,'input']]]
 ];

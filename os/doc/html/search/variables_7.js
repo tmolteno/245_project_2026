@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lstaccdate_0',['lstAccDate',['../structDirEntry.html#a6c8a8f9f75bcd3aa0acd71aa5b171370',1,'DirEntry']]]
+  ['init_0',['init',['../structBlockDevice.html#a7f3cc1f397d2573da37577c86f60303a',1,'BlockDevice']]]
 ];

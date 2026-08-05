@@ -10,6 +10,8 @@ var searchData=
   ['firstdatasector_7',['firstDataSector',['../namespacefat.html#aadc0f10dc2b3fda681e310df141067da',1,'fat']]],
   ['firstfatsector_8',['firstFATSector',['../namespacefat.html#a6e5bdc5d2fd53919fd33caaec6850e50',1,'fat']]],
   ['font5x7_9',['font5x7',['../namespacegfx.html#a68cf20b99e0a37455f335bd0b4a6ca7b',1,'gfx']]],
-  ['fstclushi_10',['fstClusHI',['../structDirEntry.html#a34547a2823508e03511e19ac822cb42e',1,'DirEntry']]],
-  ['fstcluslo_11',['fstClusLO',['../structDirEntry.html#aaf032bf1aa1dde5a7a7506302389855e',1,'DirEntry']]]
+  ['framecounter_10',['frameCounter',['../namespaceostime.html#a48896e57948cba6a455b435ec9d6a23d',1,'ostime']]],
+  ['frameperiodms_11',['framePeriodMs',['../namespaceostime.html#a4ef6b39f1259e7a8a2591decf53ef20d',1,'ostime']]],
+  ['fstclushi_12',['fstClusHI',['../structDirEntry.html#a34547a2823508e03511e19ac822cb42e',1,'DirEntry']]],
+  ['fstcluslo_13',['fstClusLO',['../structDirEntry.html#aaf032bf1aa1dde5a7a7506302389855e',1,'DirEntry']]]
 ];

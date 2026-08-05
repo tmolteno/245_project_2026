@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['readblock_0',['readBlock',['../structBlockDevice.html#aa1ff399077aaa23dfb6e859629495ed3',1,'BlockDevice']]],
-  ['reserved_1',['reserved',['../structDirEntry.html#ad9d35a682c2a8933ad05c1af1af90734',1,'DirEntry']]],
-  ['reservedsectors_2',['reservedSectors',['../namespacefat.html#ab7715537b4922eaa5be08a8189ef8cd4',1,'fat']]],
-  ['rootdircluster_3',['rootDirCluster',['../namespacefat.html#a99ac70ef3145ae7fdcb4b7de7cee1e7a',1,'fat']]],
-  ['rootdirsectors_4',['rootDirSectors',['../namespacefat.html#a2abd14785c7dedaf91866d0ef4e456f4',1,'fat']]]
+  ['name_0',['name',['../structDirEntry.html#a9b74289cea71edd46b50d1e405f71bec',1,'DirEntry']]],
+  ['nextframetime_1',['nextFrameTime',['../namespaceostime.html#a467df83f27b0d2ae579a7f848c6fdada',1,'ostime']]],
+  ['notedur_2',['noteDur',['../namespacebeep.html#a37e9945238589bcb796cd9e963b63b2d',1,'beep']]],
+  ['notefreq_3',['noteFreq',['../namespacebeep.html#a362af37afd400febee50048bea2f3d9e',1,'beep']]],
+  ['notestartms_4',['noteStartMs',['../namespacebeep.html#a5859147678a55dca650546aa6366e1e6',1,'beep']]],
+  ['numfats_5',['numFATs',['../namespacefat.html#ad8c9f25e2be351f9782d1a68c48aa1ad',1,'fat']]]
 ];

@@ -1,7 +1,28 @@
 var searchData=
 [
-  ['write_0',['write',['../namespacefat.html#a60de10f4107f16f731f9d3f28aea28cd',1,'fat']]],
-  ['writeblock_1',['writeBlock',['../namespacesd.html#afe9cae02c4c1aa2687c3bfcdd1cda513',1,'sd']]],
-  ['writedirsector_2',['writeDirSector',['../namespacefat.html#ad0e5b65690c86990c47375696715dcd1',1,'fat']]],
-  ['writefatentry_3',['writeFATEntry',['../namespacefat.html#abdb7d048a19b9489517b3b1ce7ad6985',1,'fat']]]
+  ['savegame_0',['saveGame',['../namespacestorage.html#aaf437f411bcecf3498f3baef1637f8f3',1,'storage']]],
+  ['scsiinquiry_1',['scsiInquiry',['../usb__msd_8cpp.html#a4495d4b0497b476d8627838ca6d31be1',1,'usb_msd.cpp']]],
+  ['scsimodesense6_2',['scsiModeSense6',['../usb__msd_8cpp.html#a50d2e56bce58a960bee002178e5aa452',1,'usb_msd.cpp']]],
+  ['scsipreventallow_3',['scsiPreventAllow',['../usb__msd_8cpp.html#a90b43baebcdd60b0b5a99e4ae6f7071c',1,'usb_msd.cpp']]],
+  ['scsiread10_4',['scsiRead10',['../usb__msd_8cpp.html#a6db1abaefe3f9520560fe42e81cc3395',1,'usb_msd.cpp']]],
+  ['scsireadcapacity10_5',['scsiReadCapacity10',['../usb__msd_8cpp.html#a7325c7f2b560005c17eafd296cdb0a18',1,'usb_msd.cpp']]],
+  ['scsirequestsense_6',['scsiRequestSense',['../usb__msd_8cpp.html#ad06f72e58a5641cb1edd41429b4ae5f2',1,'usb_msd.cpp']]],
+  ['scsistopstart_7',['scsiStopStart',['../usb__msd_8cpp.html#aa59607c49e027ef14cb288ce28439ad4',1,'usb_msd.cpp']]],
+  ['scsitestunitready_8',['scsiTestUnitReady',['../usb__msd_8cpp.html#a2f011c9b3efff410e225cfa8106a0f5f',1,'usb_msd.cpp']]],
+  ['scsiwrite10_9',['scsiWrite10',['../usb__msd_8cpp.html#ac64d0b2fce8cd6d7e5961c6a16177df0',1,'usb_msd.cpp']]],
+  ['sdavailable_10',['sdAvailable',['../namespacestorage.html#aaacd0e5254d7010dbcbfee39521acfea',1,'storage']]],
+  ['sendcsw_11',['sendCSW',['../usb__msd_8cpp.html#a3cd100ac0d64b9bc4df9aea22b377862',1,'usb_msd.cpp']]],
+  ['setcursor_12',['setCursor',['../namespacegfx.html#aacb4cbd5b1ff64aa2b48ff9949a1f36e',1,'gfx']]],
+  ['setframerate_13',['setFrameRate',['../namespaceostime.html#a811cc1e08a8aa55444ff2f56bfd11908',1,'ostime']]],
+  ['settextbgcolor_14',['setTextBgColor',['../namespacegfx.html#a231e83231f2c65265ef31969e6f10195',1,'gfx']]],
+  ['settextcolor_15',['setTextColor',['../namespacegfx.html#a7539559e82a86c55fbb4065d802c9927',1,'gfx']]],
+  ['settextsize_16',['setTextSize',['../namespacegfx.html#aea73a8878ffd7bfea4220060ed2c00d0',1,'gfx']]],
+  ['sheetframe_17',['sheetFrame',['../namespacegfx.html#a91eb7c55cdf975adc683edbb41a5cbfb',1,'gfx']]],
+  ['sheetheight_18',['sheetHeight',['../namespacegfx.html#a823a2d9e670a7e3481ba95a09ba134fa',1,'gfx']]],
+  ['sheetwidth_19',['sheetWidth',['../namespacegfx.html#a1569e79e84f9303ed14e346798d1e69d',1,'gfx']]],
+  ['spi_5fcs_5fhigh_20',['spi_cs_high',['../HAL_8h.html#ac8b962e3122f4c63c9d0249afaaaf47a',1,'spi_cs_high(void):&#160;SPI.cpp'],['../SPI_8cpp.html#ac8b962e3122f4c63c9d0249afaaaf47a',1,'spi_cs_high(void):&#160;SPI.cpp']]],
+  ['spi_5fcs_5flow_21',['spi_cs_low',['../HAL_8h.html#ad036dee73ca9ee1e1d15178d69cc069b',1,'spi_cs_low(void):&#160;SPI.cpp'],['../SPI_8cpp.html#ad036dee73ca9ee1e1d15178d69cc069b',1,'spi_cs_low(void):&#160;SPI.cpp']]],
+  ['spi_5finit_22',['spi_init',['../HAL_8h.html#ae909944aa85ae98323073c628be541aa',1,'spi_init(void):&#160;SPI.cpp'],['../SPI_8cpp.html#ae909944aa85ae98323073c628be541aa',1,'spi_init(void):&#160;SPI.cpp']]],
+  ['spi_5ftransfer_23',['spi_transfer',['../HAL_8h.html#a50084189a01c481aebe4e4d1e1968910',1,'spi_transfer(uint8_t data):&#160;SPI.cpp'],['../SPI_8cpp.html#a50084189a01c481aebe4e4d1e1968910',1,'spi_transfer(uint8_t data):&#160;SPI.cpp']]],
+  ['spirecv_24',['spiRecv',['../namespacesd.html#ab3eaf2bb3d10f2d67d8f869ff9bfdba9',1,'sd']]]
 ];

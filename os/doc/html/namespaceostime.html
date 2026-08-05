@@ -96,8 +96,17 @@ $(function(){initNavTree('namespaceostime.html','',''); });
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a20a131e93295e616839447cf6200e600" id="r_a20a131e93295e616839447cf6200e600"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20a131e93295e616839447cf6200e600">delay_ms</a> (uint32_t ms)</td></tr>
+<tr class="memitem:aabbfc11e99e17a0e8c5dba13d4021968" id="r_aabbfc11e99e17a0e8c5dba13d4021968"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aabbfc11e99e17a0e8c5dba13d4021968">frameCount</a> ()</td></tr>
 <tr class="memitem:aba807dbf2c000901cf6c38188786105c" id="r_aba807dbf2c000901cf6c38188786105c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba807dbf2c000901cf6c38188786105c">init</a> ()</td></tr>
+<tr class="memitem:a93aaa2c670d181e2f509c7a66d867480" id="r_a93aaa2c670d181e2f509c7a66d867480"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93aaa2c670d181e2f509c7a66d867480">nextFrame</a> ()</td></tr>
+<tr class="memitem:a811cc1e08a8aa55444ff2f56bfd11908" id="r_a811cc1e08a8aa55444ff2f56bfd11908"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a811cc1e08a8aa55444ff2f56bfd11908">setFrameRate</a> (uint8_t fps)</td></tr>
 <tr class="memitem:aa4e14740a9cfa58bb8dc1ad58d0c2193" id="r_aa4e14740a9cfa58bb8dc1ad58d0c2193"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4e14740a9cfa58bb8dc1ad58d0c2193">ticks</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a48896e57948cba6a455b435ec9d6a23d" id="r_a48896e57948cba6a455b435ec9d6a23d"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48896e57948cba6a455b435ec9d6a23d">frameCounter</a> = 0</td></tr>
+<tr class="memitem:a4ef6b39f1259e7a8a2591decf53ef20d" id="r_a4ef6b39f1259e7a8a2591decf53ef20d"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ef6b39f1259e7a8a2591decf53ef20d">framePeriodMs</a> = 33</td></tr>
+<tr class="memitem:a467df83f27b0d2ae579a7f848c6fdada" id="r_a467df83f27b0d2ae579a7f848c6fdada"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a467df83f27b0d2ae579a7f848c6fdada">nextFrameTime</a> = 0</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="a20a131e93295e616839447cf6200e600" name="a20a131e93295e616839447cf6200e600"></a>
@@ -110,6 +119,23 @@ Functions</h2></td></tr>
           <td class="memname">void ostime::delay_ms </td>
           <td>(</td>
           <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>ms</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aabbfc11e99e17a0e8c5dba13d4021968" name="aabbfc11e99e17a0e8c5dba13d4021968"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabbfc11e99e17a0e8c5dba13d4021968">&#9670;&#160;</a></span>frameCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t ostime::frameCount </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -134,6 +160,40 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a93aaa2c670d181e2f509c7a66d867480" name="a93aaa2c670d181e2f509c7a66d867480"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93aaa2c670d181e2f509c7a66d867480">&#9670;&#160;</a></span>nextFrame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ostime::nextFrame </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a811cc1e08a8aa55444ff2f56bfd11908" name="a811cc1e08a8aa55444ff2f56bfd11908"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a811cc1e08a8aa55444ff2f56bfd11908">&#9670;&#160;</a></span>setFrameRate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ostime::setFrameRate </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t</td>          <td class="paramname"><span class="paramname"><em>fps</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa4e14740a9cfa58bb8dc1ad58d0c2193" name="aa4e14740a9cfa58bb8dc1ad58d0c2193"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa4e14740a9cfa58bb8dc1ad58d0c2193">&#9670;&#160;</a></span>ticks()</h2>
 
@@ -147,6 +207,73 @@ Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
+<a id="a48896e57948cba6a455b435ec9d6a23d" name="a48896e57948cba6a455b435ec9d6a23d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48896e57948cba6a455b435ec9d6a23d">&#9670;&#160;</a></span>frameCounter</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t ostime::frameCounter = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4ef6b39f1259e7a8a2591decf53ef20d" name="a4ef6b39f1259e7a8a2591decf53ef20d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ef6b39f1259e7a8a2591decf53ef20d">&#9670;&#160;</a></span>framePeriodMs</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t ostime::framePeriodMs = 33</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a467df83f27b0d2ae579a7f848c6fdada" name="a467df83f27b0d2ae579a7f848c6fdada"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a467df83f27b0d2ae579a7f848c6fdada">&#9670;&#160;</a></span>nextFrameTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t ostime::nextFrameTime = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

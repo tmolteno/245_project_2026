@@ -14,6 +14,7 @@ var fat_8cpp =
     [ "fat::clustToSector", "namespacefat.html#a2f7d57d0ed1912b1a3e3e42f1e7396e9", null ],
     [ "fat::create", "namespacefat.html#ab283865fff87a820906bd6dbdaeccc57", null ],
     [ "fat::findDirEntry", "namespacefat.html#ae465c9bcb2437e1763aedd15bb25b4b5", null ],
+    [ "fat::format", "namespacefat.html#ace93810bab26612bb536acc628042fc4", null ],
     [ "fat::getStartCluster", "namespacefat.html#a7d611656198a18ec3322d97977d08b8b", null ],
     [ "fat::isLastCluster", "namespacefat.html#a7287594159fae6522f62dfc87232fad0", null ],
     [ "fat::mount", "namespacefat.html#a5d2bea92c9fdbe7e4ee777f4d4822fd3", null ],
