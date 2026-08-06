@@ -34,6 +34,7 @@ enum State {
     STATE_PONG,
     STATE_CALIBRATE,
     STATE_FORMAT,
+    STATE_SENSORS,
 };
 
 static State   state      = STATE_LOADING;
@@ -138,6 +139,38 @@ static void drawLoading()
     gfx::print("Mounting SD card...");
     gfx::display();
 }
+
+#if HW_VERSION == 2
+static void drawSensors()
+{
+    uint16_t photo = photoRead();
+    int16_t tempC = thermReadCelsius();  // degree C x 10
+
+    gfx::clear();
+    drawHeader("Sensors");
+
+    gfx::setCursor(4, LIST_Y + 4);
+    gfx::print("Photo: ");
+    gfx::print(photo);
+
+    gfx::setCursor(4, LIST_Y + 18);
+    gfx::print("Temp:  ");
+    if (tempC < 0) {
+        gfx::print("-");
+        tempC = -tempC;
+    }
+    gfx::print((int16_t)(tempC / 10));
+    gfx::print(".");
+    gfx::print((int16_t)(tempC % 10));
+    gfx::print(" C");
+
+    gfx::drawFastHLine(0, GFX_HEIGHT - 9, GFX_WIDTH, GFX_WHITE);
+    gfx::setCursor(2, GFX_HEIGHT - 7);
+    gfx::print("B:Menu");
+
+    gfx::display();
+}
+#endif
 
 #if HW_VERSION == 2
 static void drawBrowse()
@@ -626,6 +659,7 @@ void loop()
 #endif
 
 #if HW_VERSION == 1
+    case STATE_SENSORS:
     case STATE_BROWSE:
     case STATE_FILE_INFO:
     case STATE_EXECUTING:
