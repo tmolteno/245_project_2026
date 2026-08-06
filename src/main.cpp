@@ -514,9 +514,11 @@ void loop()
         break;
 
     case STATE_MENU: {
-        const char *items[5];
+        const char *items[6];
         uint8_t itemCount = 0;
-        items[itemCount++] = "Play Pong";
+#if HW_VERSION == 2
+        items[itemCount++] = "Sensors";
+#endif
         items[itemCount++] = "Calibrate Touch";
         if (storage::sdAvailable()) {
             items[itemCount++] = "Format SD Card";
@@ -527,7 +529,7 @@ void loop()
         drawHeader("Main Menu");
 
         for (uint8_t i = 0; i < itemCount; i++) {
-            int16_t y = LIST_Y + i * 14;
+            int16_t y = LIST_Y + i * 12;
             if (i == cursor) {
                 gfx::setCursor(0, y);
                 gfx::print(">");
@@ -549,8 +551,9 @@ void loop()
             cursor++;
         }
         if (input::justPressed(PIN_BTN_A)) {
+#if HW_VERSION == 2
             if (cursor == 0) {
-                state = STATE_PONG;
+                state = STATE_SENSORS;
             } else if (cursor == 1) {
                 state = STATE_CALIBRATE;
             } else if (cursor == 2 && storage::sdAvailable()) {
@@ -558,6 +561,15 @@ void loop()
             } else {
                 NVIC_SystemReset();
             }
+#else
+            if (cursor == 0) {
+                state = STATE_CALIBRATE;
+            } else if (cursor == 1 && storage::sdAvailable()) {
+                state = STATE_FORMAT;
+            } else {
+                NVIC_SystemReset();
+            }
+#endif
         }
         if (input::justPressed(PIN_BTN_B)) {
             if (storage::sdAvailable())
