@@ -23,6 +23,12 @@ namespace sd {
 static bool sdhc = false;    // true if SDHC/SDXC card
 static uint32_t blocks = 0;  // total block count
 
+// Diagnostics for the most recent init() attempt (declared in storage.h)
+static SdDiag diag = {0xFF, 0xFF, 0xFF, 0xFF, 0, SD_STAGE_NONE, 0, 0};
+
+// Returns the diagnostics for the most recent init() attempt.
+const SdDiag& getDiag() { return diag; }
+
 // Send a command and get R1 response
 static uint8_t sdCommand(uint8_t cmd, uint32_t arg)
 {
@@ -66,18 +72,25 @@ bool init()
     uint8_t r1 = sdCommand(CMD0, 0);
     spi_cs_high();
     spi_transfer(0xFF);
+    diag.r1Cmd0 = r1;
+    diag.stage  = SD_STAGE_CMD0;
     if (r1 != 0x01) return false;
 
     // CMD8: check voltage range (2.7-3.6V)
     spi_cs_low();
     r1 = sdCommand(CMD8, 0x000001AA);
+    diag.r1Cmd8 = r1;
+    diag.stage  = SD_STAGE_CMD8;
     if (r1 == 0x01) {
         uint8_t r7[4];
         for (int i = 0; i < 4; i++) r7[i] = spi_transfer(0xFF);
         spi_cs_high();
         spi_transfer(0xFF);
-        if (r7[2] != 0x01 || r7[3] != 0xAA)
+        if (r7[2] != 0x01 || r7[3] != 0xAA) {
+            // Card echoed a bad voltage pattern — store it for diagnostics
+            diag.r1Cmd8 = 0x02;
             return false;
+        }
     } else if (r1 & 0x04) {
         spi_cs_high();
         spi_transfer(0xFF);
@@ -94,6 +107,10 @@ bool init()
         r1 = sdCommand(ACMD41, 0x40000000);
         spi_cs_high();
         spi_transfer(0xFF);
+        if (timeout == 0) diag.r1Acmd41First = r1;
+        if (r1 == 0x01 && diag.busyCount < 255) diag.busyCount++;
+        diag.r1Acmd41 = r1;
+        diag.stage    = SD_STAGE_ACMD41;
         if (++timeout > 1000) return false;
     } while (r1 != 0x00);
 
@@ -105,6 +122,7 @@ bool init()
         for (int i = 0; i < 4; i++) ocr[i] = spi_transfer(0xFF);
         sdhc = (ocr[0] & 0x40) != 0;
     }
+    diag.sdhc = sdhc;
     spi_cs_high();
     spi_transfer(0xFF);
 
@@ -140,6 +158,8 @@ bool init()
     }
     spi_cs_high();
 
+    diag.blocksHi = (uint16_t)(blocks >> 16);
+    diag.stage    = (blocks > 0) ? SD_STAGE_READY : SD_STAGE_CSD;
     return blocks > 0;
 }
 

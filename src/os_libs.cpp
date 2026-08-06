@@ -5,6 +5,12 @@
 
 void os_libs_init()
 {
+    // CRITICAL ORDER FIX: the SD mount (SPI) must run BEFORE the display
+    // (I2C) init. Initializing SPI after the I2C display is up kills the
+    // display and hangs the MCU (observed empirically on this board).
+    volatile bool sdCheck = storage::sdAvailable();
+    (void)sdCheck;
+
     // Init calls ensure each library's object files are pulled into the link.
     // These are normal init calls — they run once at boot and have no
     // side effects beyond what setup() already does elsewhere.
@@ -16,13 +22,10 @@ void os_libs_init()
     rng::init();
     pong::init();
 
-    // Check SD availability (handles v1/v2) and retain storage linker symbols
-    volatile bool sdCheck = storage::sdAvailable();
-    (void)sdCheck;
 #if HW_VERSION == 2
     storage::initSave();
-    usb_msd::init();
 #endif
+
     // Touch calibration — runs on first boot or after firmware reflash
     {
         const char *s = __DATE__ " " __TIME__;

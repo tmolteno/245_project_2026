@@ -26,6 +26,40 @@ uint32_t blockCount();
 // Raw byte read (bypasses block buffer, for internal use)
 uint8_t spiRecv();
 
+// --- Diagnostics (for "SD not detected" debugging) ---
+// Filled in by the most recent init() attempt:
+//   r1Cmd0        R1 from CMD0 (0x01 = idle OK)
+//   r1Cmd8        R1 from CMD8; 0x02 = R7 voltage-pattern mismatch
+//   r1Acmd41      FINAL R1 from ACMD41 loop (0x00 = card ready)
+//   r1Acmd41First FIRST R1 from ACMD41 (0xFF = never responded at all)
+//   busyCount     number of ACMD41 replies that were 0x01 (card was
+//                 initializing) before the response vanished
+//   stage         last init stage reached (SD_STAGE_*)
+//   sdhc          OCR CCS bit (1 = SDHC/SDXC)
+//   blocksHi      blocks >> 16 (0 if CSD parse failed)
+struct SdDiag {
+    uint8_t r1Cmd0;
+    uint8_t r1Cmd8;
+    uint8_t r1Acmd41;
+    uint8_t r1Acmd41First;
+    uint8_t busyCount;
+    uint8_t stage;
+    uint8_t sdhc;
+    uint16_t blocksHi;
+};
+
+// Init-stage markers (match sd_spi.cpp)
+enum {
+    SD_STAGE_NONE   = 0,
+    SD_STAGE_CMD0   = 1,
+    SD_STAGE_CMD8   = 2,
+    SD_STAGE_ACMD41 = 3,
+    SD_STAGE_CSD    = 4,
+    SD_STAGE_READY  = 5,
+};
+
+const SdDiag& getDiag();
+
 } // namespace sd
 
 // --- Minimal FAT Filesystem ---

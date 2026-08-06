@@ -16,8 +16,5 @@
 #endif
 #include <HAL.h>
 #include "pong.h"
-#if HW_VERSION == 2
-#include "usb_msd.h"
-#endif
 
 void os_libs_init();

@@ -52,6 +52,18 @@ static void drawHeader(const char *title)
     gfx::print(title);
 }
 
+#if HW_VERSION == 2
+// Print a byte as two hex digits (for the SD diagnostic screen)
+static void printHex8(uint8_t v)
+{
+    char buf[3];
+    buf[0] = "0123456789ABCDEF"[v >> 4];
+    buf[1] = "0123456789ABCDEF"[v & 0x0F];
+    buf[2] = '\0';
+    gfx::print(buf);
+}
+#endif
+
 static void drawProgressBar(uint8_t pct)
 {
     int16_t barW = 100;
@@ -278,10 +290,6 @@ void setup()
 {
     os_libs_init();  // ensure all OS libraries are linked (even if unused elsewhere)
 
-#if HW_VERSION == 2
-    initNRST();  // ensure PA21 NRST is enabled (one-time option byte config)
-#endif
-
     // Blink test: 3 quick flashes to confirm the MCU is alive
     for (uint8_t i = 0; i < 3; i++) {
         led::on(PIN_LED_0);
@@ -295,6 +303,33 @@ void setup()
     // beep::beep_startup();  // confirm display init completed // DEBUG: buzzer disabled
     gfx::setTextSize(1);
     gfx::setTextColor(GFX_WHITE);
+
+#if HW_VERSION == 2
+    // --- SD diagnostics (debug aid): show for 1 second, then continue ---
+    {
+        bool sd = storage::sdAvailable();  // cached — the mount already ran in os_libs_init
+        const sd::SdDiag &d = sd::getDiag();
+        gfx::clear();
+        gfx::setCursor(0, 0);
+        gfx::print(sd ? "SD: OK" : "SD: FAIL");
+        gfx::setCursor(0, 10);
+        gfx::print("R0:"); printHex8(d.r1Cmd0);
+        gfx::print(" R8:"); printHex8(d.r1Cmd8);
+        gfx::print(" 41:"); printHex8(d.r1Acmd41);
+        gfx::setCursor(0, 20);
+        gfx::print("41F:"); printHex8(d.r1Acmd41First);
+        gfx::print(" busy:"); gfx::print((int16_t)d.busyCount);
+        gfx::setCursor(0, 30);
+        gfx::print("stg:"); gfx::print((int16_t)d.stage);
+        gfx::print(" hc:");   gfx::print((int16_t)d.sdhc);
+        gfx::print(" blk:");  gfx::print((int16_t)d.blocksHi);
+        gfx::setCursor(0, 40);
+        gfx::print("mount:"); gfx::print((int16_t)storage::lastMountError());
+        gfx::display();
+        ostime::delay_ms(1000);
+    }
+#endif
+
     // Wait for user to release all buttons (debounce from boot)
     // before attempting SD mount (touch ADC may interfere with SPI)
     ostime::delay_ms(100);
@@ -303,9 +338,6 @@ void setup()
 void loop()
 {
     input::update();
-#if HW_VERSION == 2
-    usb_msd::update();  // process USB MSD commands
-#endif
 
     switch (state) {
 

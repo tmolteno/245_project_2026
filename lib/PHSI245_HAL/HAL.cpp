@@ -1,7 +1,6 @@
 #include "HAL.h"
 #include <Arduino.h>
 #include <ch32x035.h>
-#include <ch32x035_flash.h>
 #include <math.h>
 
 uint16_t TouchState (0);
@@ -330,18 +329,6 @@ bool touchIsCalibrated()
 {
     return touchCalibrated;
 }
-
-#if HW_VERSION == 2
-void initNRST()
-{
-    uint32_t ob = FLASH_GetUserOptionByte();
-    // Bits 4:3 control NRST; 0x18 (OB_RST_NoEN) means disabled
-    if ((ob & 0x18) == 0x18) {
-        FLASH_UserOptionByteConfig(OB_IWDG_SW, OB_STOP_NoRST, OB_STDBY_NoRST, OB_RST_EN_DT1ms);
-        NVIC_SystemReset();  // option byte changes require reset to take effect
-        }
-    }
-    #endif
 
     uint16_t photoRead(void)
     {

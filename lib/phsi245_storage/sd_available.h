@@ -9,4 +9,8 @@ namespace storage {
 // On v2 hardware: mounts the card on first call, returns result.
 bool sdAvailable();
 
+// Returns the last FAT mount result code (for diagnostics):
+// -1 = never attempted, otherwise a value from `fat::Result` in storage.h.
+int lastMountError();
+
 } // namespace storage

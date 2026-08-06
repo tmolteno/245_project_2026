@@ -8,6 +8,7 @@ namespace storage {
 
 static bool sdReady = false;
 static bool sdChecked = false;  // don't retry after first attempt
+static int  lastErr = -1;       // last fat::Result from mount (diagnostics)
 
 bool sdAvailable()
 {
@@ -19,12 +20,20 @@ bool sdAvailable()
 
     sdChecked = true;
     fat::Result r = fat::mount(&sd::DEVICE);
+    lastErr = (int)r;
     if (r == fat::OK) {
         sdReady = true;
         return true;
     }
     return false;
 #endif
+}
+
+// Returns the last FAT mount result code (for diagnostics).
+// -1 = never attempted, otherwise a value from fat::Result.
+int lastMountError()
+{
+    return lastErr;
 }
 
 } // namespace storage
