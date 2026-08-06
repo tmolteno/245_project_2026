@@ -144,14 +144,29 @@ static void drawLoading()
 #if HW_VERSION == 2
 static void drawSensors()
 {
-    // Disable touch-key mode on ADC1 so analogRead does not conflict.
+    // Disable touch-key mode on ADC1 and re-init for regular conversion.
+    ADC_Cmd(ADC1, DISABLE);
     TKey1->CTLR1 &= ~(1UL << 24);
+
+    ADC_InitTypeDef adc = {0};
+    ADC_StructInit(&adc);
+    adc.ADC_Mode = ADC_Mode_Independent;
+    adc.ADC_ScanConvMode = DISABLE;
+    adc.ADC_ContinuousConvMode = DISABLE;
+    adc.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+    adc.ADC_DataAlign = ADC_DataAlign_Right;
+    adc.ADC_NbrOfChannel = 1;
+    ADC_Init(ADC1, &adc);
+    ADC_CLKConfig(ADC1, ADC_CLK_Div6);
+    ADC_Cmd(ADC1, ENABLE);
 
     uint16_t photo = photoRead();
     int16_t tempC = thermReadCelsius();  // deg C x 10
 
-    // Re-enable touch-key mode.
+    // Restore touch-key mode for button scanning.
+    ADC_Cmd(ADC1, DISABLE);
     TKey1->CTLR1 |= (1UL << 24);
+    ADC_Cmd(ADC1, ENABLE);
 
     gfx::clear();
     drawHeader("Sensors");
