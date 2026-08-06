@@ -13,6 +13,24 @@ See `README.md` in `src_games` for details on the working games/apps and how to 
 
 The final step depends on your operating system.
 
+### Arduino UART must be disabled
+
+The Arduino framework's UART peripheral (`UART_MODULE_ENABLED`) claims PB11
+as `PIN_SERIAL_RX`. This conflicts with the board's LED1 which is also wired
+to PB11 — enabling both creates pin-level contention that hangs the MCU.
+
+The variant (`variant/CH32X035C8T6/variant_CH32X035C8T6.h`) has UART disabled:
+
+```c
+//#define  UART_MODULE_ENABLED    // disabled: PB11 (RX) conflicts with LED1
+```
+
+No code in this project uses `Serial`, so there is no loss of functionality.
+The UART can be re-enabled only after moving LED1 to a different, uncontested
+pin on the board.
+
+The final step depends on your operating system.
+
 ### Setting up a Windows machine
   Use Zadig (https://zadig.akeo.ie/) to install drivers: Go to `File`->`Load Config` and select`prog_tools/X035ZadigConfig.cfg`, and click to install WinUSB. (This is required for `chprog` to work.)
 
