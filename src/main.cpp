@@ -531,14 +531,21 @@ void loop()
             cursor++;
         }
         if (input::justPressed(PIN_BTN_A)) {
-            if (cursor == 0) {
+            // Restart is always the last item
+            if (cursor == itemCount - 1) {
+                gfx::clear();
+                drawHeader("Restart");
+                gfx::setCursor(4, LIST_Y + 16);
+                gfx::print("Restarting...");
+                gfx::display();
+                ostime::delay_ms(500);
+                NVIC_SystemReset();
+            } else if (cursor == 0) {
                 state = STATE_SENSORS;
             } else if (cursor == 1) {
                 state = STATE_CALIBRATE;
             } else if (cursor == 2 && storage::sdAvailable()) {
                 state = STATE_FORMAT;
-            } else {
-                NVIC_SystemReset();
             }
         }
         if (input::justPressed(PIN_BTN_B)) {
@@ -550,6 +557,16 @@ void loop()
         ostime::delay_ms(80);
         break;
     }
+
+    case STATE_SENSORS:
+        drawSensors();
+
+        if (input::justPressed(PIN_BTN_B)) {
+            state = STATE_MENU;
+            cursor = 0;
+        }
+        ostime::delay_ms(80);
+        break;
 
     case STATE_PONG: {
         pong::update();
