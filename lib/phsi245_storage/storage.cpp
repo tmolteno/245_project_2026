@@ -1,8 +1,5 @@
 #include "sd_available.h"
-
-#if HW_VERSION == 2
 #include "storage.h"   // for fat::mount, sd::DEVICE
-#endif
 
 namespace storage {
 
@@ -12,9 +9,6 @@ static int  lastErr = -1;       // last fat::Result from mount (diagnostics)
 
 bool sdAvailable()
 {
-#if HW_VERSION == 1
-    return false;
-#else
     if (sdReady) return true;
     if (sdChecked) return false;  // already tried — don't retry
 
@@ -26,7 +20,6 @@ bool sdAvailable()
         return true;
     }
     return false;
-#endif
 }
 
 // Returns the last FAT mount result code (for diagnostics).

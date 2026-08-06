@@ -22,9 +22,7 @@ void os_libs_init()
     rng::init();
     pong::init();
 
-#if HW_VERSION == 2
     storage::initSave();
-#endif
 
     // Touch calibration — runs on first boot or after firmware reflash
     {

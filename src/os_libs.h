@@ -11,9 +11,8 @@
 #include "beep.h"
 #include "random.h"
 #include "sd_available.h"
-#if HW_VERSION == 2
 #include "storage.h"
-#endif
+
 #include <HAL.h>
 #include "pong.h"
 

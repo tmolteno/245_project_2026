@@ -12,7 +12,6 @@
 
 // --- File entry ---
 
-#if HW_VERSION == 2
 struct FileEntry {
     char name[13];
     bool isDir;
@@ -21,7 +20,6 @@ struct FileEntry {
 
 static FileEntry files[MAX_FILES];
 static uint8_t  fileCount = 0;
-#endif
 
 // --- UI State ---
 
@@ -30,8 +28,7 @@ enum State {
     STATE_BROWSE,
     STATE_FILE_INFO,
     STATE_EXECUTING,
-    STATE_ERROR,
-    STATE_V1_INFO,
+    STATE_NO_SD,
     STATE_MENU,
     STATE_PONG,
     STATE_CALIBRATE,
@@ -41,9 +38,7 @@ enum State {
 
 static State   state      = STATE_LOADING;
 static uint8_t cursor     = 0;
-#if HW_VERSION == 2
 static uint8_t scrollOff  = 0;
-#endif
 static uint8_t loadingPct = 0;
 
 // --- Helpers ---
@@ -55,7 +50,6 @@ static void drawHeader(const char *title)
     gfx::print(title);
 }
 
-#if HW_VERSION == 2
 // Print a byte as two hex digits (for the SD diagnostic screen)
 static void printHex8(uint8_t v)
 {
@@ -65,7 +59,6 @@ static void printHex8(uint8_t v)
     buf[2] = '\0';
     gfx::print(buf);
 }
-#endif
 
 static void drawProgressBar(uint8_t pct)
 {
@@ -80,7 +73,6 @@ static void drawProgressBar(uint8_t pct)
         gfx::fillRect(barX, barY, fill, barH, GFX_WHITE);
 }
 
-#if HW_VERSION == 2
 static void collectFiles()
 {
     fileCount = 0;
@@ -100,9 +92,7 @@ static void collectFiles()
         fileCount++;
     }
 }
-#endif
 
-#if HW_VERSION == 2
 static void formatSize(char *buf, uint32_t size)
 {
     if (size < 1024) {
@@ -125,7 +115,6 @@ static void formatSize(char *buf, uint32_t size)
         buf[0] = '>'; buf[1] = '1'; buf[2] = 'M'; buf[3] = '\0';
     }
 }
-#endif
 
 // --- Drawing ---
 
@@ -142,7 +131,6 @@ static void drawLoading()
     gfx::display();
 }
 
-#if HW_VERSION == 2
 static void drawSensors()
 {
     // Temporarily disable touch-key mode, read sensors with raw ADC,
@@ -204,9 +192,7 @@ static void drawSensors()
 
     gfx::display();
 }
-#endif
 
-#if HW_VERSION == 2
 static void drawBrowse()
 {
     gfx::clear();
@@ -261,9 +247,7 @@ static void drawBrowse()
 
     gfx::display();
 }
-#endif
 
-#if HW_VERSION == 2
 static void drawFileInfo()
 {
     FileEntry *e = &files[cursor];
@@ -298,9 +282,7 @@ static void drawFileInfo()
 
     gfx::display();
 }
-#endif
 
-#if HW_VERSION == 2
 static void drawExecuting()
 {
     FileEntry *e = &files[cursor];
@@ -349,7 +331,6 @@ static void drawExecuting()
 
     gfx::display();
 }
-#endif
 
 // --- Setup & Loop ---
 
@@ -371,7 +352,6 @@ void setup()
     gfx::setTextSize(1);
     gfx::setTextColor(GFX_WHITE);
 
-#if HW_VERSION == 2
     // --- SD diagnostics (debug aid): show for 1 second, then continue ---
     {
         bool sd = storage::sdAvailable();  // cached — the mount already ran in os_libs_init
@@ -395,7 +375,6 @@ void setup()
         gfx::display();
         ostime::delay_ms(1000);
     }
-#endif
 
     // Wait for user to release all buttons (debounce from boot)
     // before attempting SD mount (touch ADC may interfere with SPI)
@@ -425,19 +404,16 @@ void loop()
             loadingPct += 1;
         } else {
             if (storage::sdAvailable()) {
-#if HW_VERSION == 2
                 collectFiles();
                 scrollOff = 0;
-#endif
                 cursor    = 0;
                 state     = STATE_BROWSE;
             } else {
-                state = STATE_V1_INFO;
+                state = STATE_NO_SD;
             }
         }
         break;
 
-#if HW_VERSION == 2
     case STATE_BROWSE:
         drawBrowse();
 
@@ -492,36 +468,8 @@ void loop()
 
         ostime::delay_ms(80);
         break;
-#endif
 
-    case STATE_ERROR:
-        // beep::beep_error();  // DEBUG: buzzer disabled
-        gfx::clear();
-        drawHeader("No SD Card");
-
-        gfx::setCursor(4, LIST_Y + 4);
-        gfx::print("No SD card detected.");
-        gfx::setCursor(4, LIST_Y + 14);
-        gfx::print("Insert a FAT-formatted");
-        gfx::setCursor(4, LIST_Y + 22);
-        gfx::print("SD card for storage.");
-        gfx::setCursor(4, LIST_Y + 30);
-        gfx::print("Press B for menu.");
-
-        gfx::drawFastHLine(0, GFX_HEIGHT - 9, GFX_WIDTH, GFX_WHITE);
-        gfx::setCursor(2, GFX_HEIGHT - 7);
-        gfx::print("B:Menu");
-
-        gfx::display();
-
-        if (input::justPressed(PIN_BTN_B)) {
-            cursor = 0;
-            state = STATE_MENU;
-        }
-        ostime::delay_ms(80);
-        break;
-
-    case STATE_V1_INFO:
+    case STATE_NO_SD:
         gfx::clear();
         drawHeader("PHSI245 OS");
 
@@ -550,9 +498,7 @@ void loop()
     case STATE_MENU: {
         const char *items[6];
         uint8_t itemCount = 0;
-#if HW_VERSION == 2
         items[itemCount++] = "Sensors";
-#endif
         items[itemCount++] = "Calibrate Touch";
         if (storage::sdAvailable()) {
             items[itemCount++] = "Format SD Card";
@@ -585,7 +531,6 @@ void loop()
             cursor++;
         }
         if (input::justPressed(PIN_BTN_A)) {
-#if HW_VERSION == 2
             if (cursor == 0) {
                 state = STATE_SENSORS;
             } else if (cursor == 1) {
@@ -595,21 +540,12 @@ void loop()
             } else {
                 NVIC_SystemReset();
             }
-#else
-            if (cursor == 0) {
-                state = STATE_CALIBRATE;
-            } else if (cursor == 1 && storage::sdAvailable()) {
-                state = STATE_FORMAT;
-            } else {
-                NVIC_SystemReset();
-            }
-#endif
         }
         if (input::justPressed(PIN_BTN_B)) {
             if (storage::sdAvailable())
                 state = STATE_BROWSE;
             else
-                state = STATE_V1_INFO;
+                state = STATE_NO_SD;
         }
         ostime::delay_ms(80);
         break;
@@ -628,7 +564,6 @@ void loop()
         break;
     }
 
-#if HW_VERSION == 2
     case STATE_CALIBRATE: {
         const char *s = __DATE__ " " __TIME__;
         uint8_t hash = 0;
@@ -638,9 +573,7 @@ void loop()
         cursor = 1;
         break;
     }
-#endif
 
-#if HW_VERSION == 2
     case STATE_FORMAT: {
         static bool confirmed = false;
 
@@ -702,14 +635,5 @@ void loop()
         ostime::delay_ms(80);
         break;
     }
-#endif
-
-#if HW_VERSION == 1
-    case STATE_SENSORS:
-    case STATE_BROWSE:
-    case STATE_FILE_INFO:
-    case STATE_EXECUTING:
-        break;
-#endif
     }
 }

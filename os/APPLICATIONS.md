@@ -278,9 +278,6 @@ Pin defines: `PIN_BTN_UP` (PA0), `PIN_BTN_LEFT` (PA1), `PIN_BTN_DOWN` (PA2),
 ```bash
 # Build a specific game
 make build-game GAME=MyGame
-
-# Build for v1 hardware (no SD card)
-make build-game GAME=MyGame ENV=v1
 ```
 
 The `build-game` target temporarily sets `src_dir` in `platformio.ini`,
@@ -290,22 +287,20 @@ automatically found by PlatformIO's dependency finder.
 To add a new game, just create the directory and `.ino` file — no Makefile
 or build configuration changes are needed.
 
-## Hardware Versions
+## Hardware
 
-Games can use `#if HW_VERSION == 2` to conditionally include SD card code:
+All games run on the v2 hardware. The SD card is available on every build,
+so SD code needs no version guard:
 
 ```cpp
-#if HW_VERSION == 2
     fat::Result r = fat::mount(&sd::DEVICE);
     if (r == fat::OK) {
         // SD card available
     }
-#endif
 ```
 
-On v1 hardware, `PIN_BTN_A` and `PIN_BTN_B` map to PA5/PA4. On v2, they
-map to PB0/PB1. The touch button API (`IsTouched(PIN_BTN_A)`) works
-identically on both.
+`PIN_BTN_A` and `PIN_BTN_B` map to PB0/PB1 (touch-key channels 8/9). The
+touch button API (`IsTouched(PIN_BTN_A)`) works identically for all buttons.
 
 ## Frame Loop Pattern
 

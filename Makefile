@@ -1,4 +1,4 @@
-.PHONY: upload upload-v1 build build-v1 clean build-game
+.PHONY: upload build clean build-game
 
 ENV ?= v2
 
@@ -7,12 +7,6 @@ build:
 
 upload: build
 	pio run -e $(ENV) -t upload
-
-build-v1:
-	pio run -e v1
-
-upload-v1: build-v1
-	pio run -e v1 -t upload
 
 # Build a game from src_games/ (e.g. make build-game GAME=OSDemo)
 build-game:

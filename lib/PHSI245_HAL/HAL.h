@@ -2,29 +2,15 @@
 
 #include <stdint.h>
 
-// --- Hardware version selection ---
-// Build with -D HW_VERSION=1 for v1 (original) pinout
-// Build with -D HW_VERSION=2 for v2 (SD card) pinout
-#ifndef HW_VERSION
-#define HW_VERSION 2
-#endif
-
+// v2 pinout (current hardware)
 #define PIN_BTN_UP PA0
 #define PIN_BTN_LEFT PA1
 #define PIN_BTN_DOWN PA2
 #define PIN_BTN_RIGHT PA3
 
-#if HW_VERSION == 1
-    // v1: buttons A/B on PA5/PA4, no SD card
-    #define PIN_BTN_A PA5
-    #define PIN_BTN_B PA4
-#elif HW_VERSION == 2
-    // v2: buttons A/B on PB0/PB1, SD card on SPI1
-    #define PIN_BTN_A PB0
-    #define PIN_BTN_B PB1
-#else
-    #error "HW_VERSION must be 1 or 2"
-#endif
+// v2: buttons A/B on PB0/PB1, SD card on SPI1
+#define PIN_BTN_A PB0
+#define PIN_BTN_B PB1
 
 #define PIN_LED_0 PB12   // LED2
 #define PIN_LED_1 PB13   // LED3
@@ -42,14 +28,12 @@
 #define PIN_PHOTO       PA5     // PT331C phototransistor (LCSC C53413645), emitter-follower to ADC
 #define PIN_THERM       PA6     // NTC 10kΩ B=3950K (LCSC C338623), voltage divider to ADC
 
-// SD card interface (v2 only) — SPI1 PartialRemap2
-#if HW_VERSION == 2
+// SD card interface — SPI1 PartialRemap2
 #define SD_SPI_PORT     SPI1
 #define SD_CS_PIN       PA12
 #define SD_SCK_PIN      PA11
 #define SD_MISO_PIN     PA9
 #define SD_MOSI_PIN     PA10
-#endif
 
 // Button Management
     // Default touch thresholds (used until calibration runs)
@@ -65,7 +49,7 @@
     // Run touch calibration (measures baseline, stores in EEPROM on v2).
     // Call once on first boot — subsequent calls are no-ops if already calibrated.
     extern void touchCalibrate();
-    // Returns true if calibration has been run (v2 only; always false on v1).
+    // Returns true if calibration has been run.
     extern bool touchIsCalibrated();
 
     // Run calibration unconditionally (ignores stored state), saves to flash.
@@ -88,13 +72,11 @@
     void i2c_send_byte(unsigned char data);
     void i2c_stop(void);
 
-#if HW_VERSION == 2
 /// SPI connection (for SD card)
     void spi_init(void);
     uint8_t spi_transfer(uint8_t data);
     void spi_cs_low(void);
     void spi_cs_high(void);
-#endif
 
 // Sensor readings (v2 analog inputs)
 uint16_t photoRead(void);        // PT331C phototransistor on PA5 — raw ADC (0–4095)

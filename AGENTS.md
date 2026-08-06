@@ -1,20 +1,17 @@
 # AGENTS.md
 
-## Hardware Versions
+## Hardware
 
-The project supports two board revisions via the `HW_VERSION` build flag:
+Only the **v2** board revision is supported:
 
-| Version | Buttons A/B | SD Card | Build command |
-|---------|------------|---------|---------------|
-| **v1** (original) | PA5 / PA4 | None | `make build-v1` / `pio run -e v1` |
-| **v2** (current)   | PB0 / PB1 | SPI1 (PA4–PA7) | `make build` / `pio run -e v2` |
+- Buttons A/B on PB0 / PB1
+- SD card on SPI1 (PA9–PA12: MISO=PA9, MOSI=PA10, SCK=PA11, CS=PA12)
+- Display on I2C1 (SCL=PA13, SDA=PA14)
+- Sensors on PA5 (phototransistor) / PA6 (NTC thermistor)
+- Build with `make build` / `pio run -e v2` (default `ENV=v2`)
 
-The pinout is managed in `lib/PHSI245_HAL/HAL.h` via `#if HW_VERSION == 1` / `#elif HW_VERSION == 2`.
-Default is v2. To switch, change the `ENV` variable in the Makefile or pass `-e v1` / `-e v2` to `pio run`.
-
-On v1 hardware, the bootloader displays an info screen indicating that storage is unavailable
-(since there is no SD card slot). On v2, it proceeds to mount the SD card and launch the
-file browser.
+On boot the bootloader mounts the SD card; if none is present it shows the
+"No SD card" screen and offers the main menu.
 
 ## Documentation
 
