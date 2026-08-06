@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ch32x035.h>
 #include "os_libs.h"
 
 // --- Constants ---
@@ -143,8 +144,14 @@ static void drawLoading()
 #if HW_VERSION == 2
 static void drawSensors()
 {
+    // Disable touch-key mode on ADC1 so analogRead does not conflict.
+    TKey1->CTLR1 &= ~(1UL << 24);
+
     uint16_t photo = photoRead();
-    int16_t tempC = thermReadCelsius();  // degree C x 10
+    int16_t tempC = thermReadCelsius();  // deg C x 10
+
+    // Re-enable touch-key mode.
+    TKey1->CTLR1 |= (1UL << 24);
 
     gfx::clear();
     drawHeader("Sensors");
