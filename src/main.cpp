@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <ch32x035.h>
+#include <math.h>
 #include "os_libs.h"
 
 // --- Constants ---
@@ -144,26 +145,37 @@ static void drawLoading()
 #if HW_VERSION == 2
 static void drawSensors()
 {
-    // Disable touch-key mode on ADC1 and re-init for regular conversion.
+    // Temporarily disable touch-key mode, read sensors with raw ADC,
+    // then restore touch-key without disturbing its calibration.
     ADC_Cmd(ADC1, DISABLE);
     TKey1->CTLR1 &= ~(1UL << 24);
-
-    ADC_InitTypeDef adc = {0};
-    ADC_StructInit(&adc);
-    adc.ADC_Mode = ADC_Mode_Independent;
-    adc.ADC_ScanConvMode = DISABLE;
-    adc.ADC_ContinuousConvMode = DISABLE;
-    adc.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
-    adc.ADC_DataAlign = ADC_DataAlign_Right;
-    adc.ADC_NbrOfChannel = 1;
-    ADC_Init(ADC1, &adc);
-    ADC_CLKConfig(ADC1, ADC_CLK_Div6);
     ADC_Cmd(ADC1, ENABLE);
 
-    uint16_t photo = photoRead();
-    int16_t tempC = thermReadCelsius();  // deg C x 10
+    // Read phototransistor (PA5 = ADC channel 5).
+    ADC_RegularChannelConfig(ADC1, 5, 1, ADC_SampleTime_11Cycles);
+    ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
+    ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    while (!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+    uint16_t photo = ADC_GetConversionValue(ADC1);
 
-    // Restore touch-key mode for button scanning.
+    // Read thermistor (PA6 = ADC channel 6) + compute deg C x 10.
+    ADC_RegularChannelConfig(ADC1, 6, 1, ADC_SampleTime_11Cycles);
+    ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
+    ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    while (!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
+    uint16_t adc = ADC_GetConversionValue(ADC1);
+    int16_t tempC;
+    if (adc < 10) adc = 10;
+    if (adc > 4085) adc = 4085;
+    {
+        // T(K) = 1 / (1/To + (1/B) * ln(adc/(4095-adc)))
+        float ratio = (float)adc / (4095.0f - (float)adc);
+        float lnR  = logf(ratio);
+        float tK   = 1.0f / (0.003354f + 0.0002532f * lnR);
+        tempC = (int16_t)((tK - 273.15f) * 10.0f);
+    }
+
+    // Restore touch-key mode.
     ADC_Cmd(ADC1, DISABLE);
     TKey1->CTLR1 |= (1UL << 24);
     ADC_Cmd(ADC1, ENABLE);
