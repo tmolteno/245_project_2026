@@ -8,10 +8,8 @@ void init()
 {
     pinMode(PIN_LED_0, OUTPUT);
     pinMode(PIN_LED_1, OUTPUT);
-    pinMode(PIN_LED_2, OUTPUT);
     off(PIN_LED_0);
     off(PIN_LED_1);
-    off(PIN_LED_2);
 }
 
 void on(uint8_t pin)
