@@ -26,10 +26,8 @@
     #error "HW_VERSION must be 1 or 2"
 #endif
 
-// LEDs: LED1=PB11, LED2=PB12, LED3=PB13
-#define PIN_LED_0 PB12   // LED2
-#define PIN_LED_1 PB13   // LED3
-#define PIN_LED_2 PB11   // LED1
+#define PIN_LED_0 PB12
+#define PIN_LED_1 PB13
 
 #define PIN_BEEP PA15
 #define PIN_BEEP_OFF HIGH // The speaker is not drawing current when the pin is high.
